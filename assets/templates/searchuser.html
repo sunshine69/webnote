@@ -1,0 +1,12 @@
+{% load myutils %}
+<table rules="rows,cols" border="1" cellpadding="1" cellspacing="1" id="display_search_results">
+{% for res in searchuser_results %}
+<tr id="row_{{ forloop.counter0 }}" bgcolor="{% cycle '#FFFFFF'  '#F8F8F8' %}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{% cycle '#FFFFFF'  '#F8F8F8' %}';">
+<td>{{res.f_name}} {{res.l_name}}</td>
+<td>{{res.email}}</td>
+<td>{{res.address}}</td>
+<td>{{res.m_phone}}</td>
+<td><textarea>{{res.extra_info}}</textarea></td>
+</tr>
+{% endfor %}
+</table>

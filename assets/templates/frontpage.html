@@ -1,0 +1,79 @@
+{% load set_var %}
+{% load myutils %}
+{% set BASE_URL = seetings.BASE_URL %}
+{% set action = request.REQUEST.action %}
+{% set page = 'frontpage' %}
+{% include "header.html" %}
+{% include "head_menu.html" %}
+<br>
+<form method="POST" action="{{BASE_URL}}" name="note" id="note">{% csrf_token %}
+<input type="hidden" name="action" value="save_newnote"/>
+<input type="hidden" name="id" value="{{ note.id }}"/>
+<table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;"><tr><TD><i>Title</i></TD><td colspan="3"><input type="text" name="title" value="{{note.title}}" size="65"/> </td></TR>
+<tr><TD><i>Datelog</i></TD><td><input type="text" name="datelog" value="{{ note.datelog|time_fmt:'%Y/%m/%d %H:%M:%S' }}" size="25"/></td><td><i>Tags :A:B:C</i></td><td><input type="text" name="flags" value="{{note.flags}}" size="25"/></td></tr>
+<!-- <tr><TD>&nbsp;</TD><td colspan="2"><textareA class='ckeditor' id="content" name="content" -->
+<tr><TD>&nbsp;</TD><td colspan="3"><textarea id="content" name="content" wrap="soft" autocomplete="on"
+cols="150" rows="25">{{note.content}}</textarea> </td>  </tr>
+{% if note.raw_editor|is_equal:1 %}
+<!-- No HTML editor Handle TAB key -->
+<script language="javascript">
+var textareas = document.getElementsByName('content');
+var count = textareas.length;
+for(var i=0;i<count;i++){
+    textareas[i].onkeydown = function(e){
+        if(e.keyCode==9 || e.which==9){
+            e.preventDefault();
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s + 1;
+        }
+    }
+}
+</script>
+{% else %}
+<script>CKEDITOR.replace( 'content', {
+    allowedContent: true,
+    dataIndentationChars: '  ',
+    tabSpaces: 2,
+    fullPage: true,
+    extraPlugins: 'imagepaste'
+});
+</script>
+{% endif %}
+<tr><TD><i>Url</i></TD><td colspan="2"><input type="text" name="url" value="{{note.url}}" size="55" /> </td><td>raw editor<input type="checkbox" {% if note.raw_editor|is_equal:1 %}checked="checked"{% endif %} value="1" name="raw_editor"></td> </tr>
+<tr><TD>
+{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
+    <select name="ngroup">
+    {% if note.group %}
+        {% set ngroup = note.group.name %}
+    {% else %}
+        {% set ngroup = 'default' %}
+    {% endif %}
+    {% for gr in groups %}
+    <option value="{{gr.name}}" {% ifequal ngroup gr.name %} selected="selected" {% endifequal %}>{{gr.name}}</option>
+    {% endfor %}
+    </select>
+{% endif %}
+<td>
+{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
+    <select name="permission">
+    {% for perm in permission_list %}
+    {% set count = forloop.counter0 %}
+    <option value="{{count}}" {% ifequal count note.permission %} selected="selected" {% endifequal %}>{{perm}}</option>
+    {% endfor %}
+    </select>
+{% endif %}
+
+<!-- Reminder <input type="checkbox" name="reminder" {% if note.reminder_ticks and note.reminder_ticks|is_gt:0 %} checked="true" {% endif %} value=""/> -->
+</td>
+</TD><td align="center" colspan="2">
+<!-- <input type="submit" name="sendmail" value="Email note"/> -->
+<input type="submit" name="savenote" value="Save"/> </td>
+</tr>
+</table>
+</form><br>
+{% include "list_note_attachment.html" %}
+<br><br>
+{% include "footer.html" %}
+</body>
+</html>

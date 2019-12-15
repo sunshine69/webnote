@@ -1,0 +1,66 @@
+{% load set_var %}
+{% load myutils %}
+{% set title = 'Webnote Attachment list' %}
+{% set page = 'list_att' %}
+{% include "header.html" %}
+<h2>Web note - Attachment list</h2>
+{% include "head_menu.html" %}
+<table class="editable" border="1" cellpadding="3" cellspacing="3">
+<TR>
+<TD class="commands uneditable">name</TD>
+<td class="commands uneditable">description</td>
+<td class="commands uneditable">group</td>
+<td class="commands uneditable">permission</td>
+<td class="commands uneditable">TS</td>
+<td>size</td>
+<td class="commands uneditable" colspan="4">&nbsp;</td>
+</TR>
+{% for attachment in attachments %}
+<tr id="{{attachment.id}}">
+<TD id='name'>{{attachment.name}}</TD>
+<td id='desc'>{{attachment.desc}}</td>
+<td id='group'>{{attachment.group.name}}</td>
+<td id='permission'>{{attachment.permission}}</td>
+<td class="commands uneditable">{{attachment.updated|time_fmt:"%Y-%m-%d %H:%M:%S"}}</td>
+<td>{{filesize|keyval:attachment.id|filesizeformat}}</td>
+<td class="commands uneditable"><a href="#" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a></td>
+<td class="commands uneditable"><a href="#" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
+<td class="commands uneditable"><a href="{{settings.BASE_URL}}?action=streamfile&id={{attachment.id}}">view</a></td>
+<td class="commands uneditable"><a href="{{settings.BASE_URL}}?action=sendfile&id={{attachment.id}}">download</a></td>
+</tr>
+{% endfor %}
+</table>
+<br>
+<a href="{{settings.BASE_URL}}?action=show_uploadform">Upload new attachment </a>
+<script language="JavaScript">
+
+{% if note %}
+function do_add_attachment_to_note(obj) {
+  if (confirm("Are you sure to link this attachment to note?")) {
+  var url = "/?action=add_note_attachment&attachment_id="+obj.parentNode.id+"&note_id={{note.id}}";
+  AJAX.getText(url, function(response) {
+    alert(response);
+  }  )
+} } 
+{% endif %}
+
+function do_delete_attachment(obj) {
+  if (confirm("Are you sure remove this attachment?")) {
+  var url = "/?action=delete_attachment&id="+obj.parentNode.id;
+   AJAX.getText(url, function(response) {
+    alert(response);
+  }  )
+}}
+
+InlineEditor.elementChanged = function( theElement, oldVal, newVal )
+    {
+//      mySavingIndicator( theElement );
+        var url = "$config.get('app', 'APP_BASE_URL')?action=save_attachment&id="+theElement.parent.id.value+"&field="+theElement.id+"&value="+newVal;
+        AJAX.getText( url, function( response ){
+//             clearMySavingIndicator( theElement );
+            alert( 'Did the save work? ' + response );
+        }); // end ajax callback function
+    };  // end elementChanged
+</script>
+{% include "footer.html" %}
+</body></html>

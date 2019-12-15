@@ -1,0 +1,151 @@
+<html>
+<head>
+  <title></title>
+<style>
+
+/*
+ * Form fixes
+ */
+
+/* Only one input per row */
+select, input, button {
+   display: block;
+   margin-bottom: 1em;
+   max-width: 80%;
+   font-size: 120%;
+}
+
+/* Follow the size of input elements */
+label {
+   font-size: 120%;
+}
+
+/* Checkbox is still inline */
+input[type=checkbox] {
+    display: inline;
+}
+
+.bt{
+  background: #333;
+  color: #fdfdfd;
+  min-height: 45px;
+  min-width: 45px;
+  margin: 0;
+  border-radius: 3px;
+  border: 0;
+  line-height: 35px;
+  text-align: center;
+  margin: .5em 0 .5em 0;
+
+}
+
+a.bt{
+  display: inline;
+  padding: 7px 10px 7px 10px;
+}
+
+.bt:hover{
+  background: #000;
+}
+
+@media only screen and (max-width:480px) { 
+  .bt {
+    width: 100%;
+  }
+  
+  a.bt{
+    display: block;
+    padding: 0;
+  }
+}
+</style>
+  <script language="javascript">
+function castIchingTrigram() {
+
+  var output = ""; // orig
+  var output2 = ""; // change
+  var hao_dong = "";
+ 
+  for (c=1; c<=6; c++) {
+    response = alert('Click to cast ' + c + ' line');
+    res = cast_line();
+//alert(res);
+    if (res == 0) { // Jin move
+      output += "0";
+      output2 += "1";
+      hao_dong += c + "-" ;
+
+    } else if (res == 3) { // Yang move
+      output += "1";
+      output2 += "0"; // Move from jin to yang etc..
+      hao_dong += c + "-";
+      
+    } else {
+      var _temp = res % 2;
+      output += _temp;
+      output2 += _temp;
+      
+    }
+    
+  }
+  // remember count from bottom to top for the key
+  var hao_to_que = {
+    "111": "Kien",
+    "010": "Kham",
+    "001": "Can",
+    "100": "Chan",
+    "011": "Ton",
+    "101": "Ly",
+    "000": "Khon",
+    "110": "Doai"
+  };
+  
+  que_ha = hao_to_que[output.slice(0,3)];
+  que_thuong = hao_to_que[output.slice(3)];
+  que_ha_bien = hao_to_que[output2.slice(0,3)];
+  que_thuong_bien = hao_to_que[output2.slice(3)];
+
+  var date_casted = new Date().toLocaleString();  
+  var result_string = `
+
+Casted on ${date_casted} <br/>
+<hr>
+
+<table border=1>
+<tr><td>${que_thuong}</td><td> ==> </td><td>${que_thuong_bien}</td></tr>
+<tr><td>${que_ha}</td><td> ==> </td><td>${que_ha_bien}</td></tr>      
+          
+</table>
+<p>Hao dong: ${hao_dong}</p>
+
+`;
+  document.getElementById("display").innerHTML = result_string;
+
+}
+
+function cast_line() {
+  // return 0 or 1 randomly (jin or yang)
+
+  var array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  return array[0] % 4;
+  //return getRandomInt(0,999999999999) % 4;
+}
+
+function getRandomInt(min, max) {
+return "Not use it";
+/*  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+*/
+}
+
+</script>
+</head>
+<body style="font-size: 150%">
+<p align="center"><input name="cast_iching_trigram" onclick="castIchingTrigram();" type="button" class="bt" value="Cast Trigram" /></p>
+
+<div align="center" id="display">&nbsp;</div>
+</body>
+</html>
+

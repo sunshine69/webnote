@@ -1,0 +1,127 @@
+{% load set_var %}
+{% load myutils %}
+{% set title = 'Webnote - View' %}
+{% set page = 'noteview' %}
+{% include "header.html" %}
+{% include "head_menu.html" %}
+<br><br>
+<table rules="rows,cols" align='center' border="1" cellpadding="3" cellspacing="3"><TR><TD></TD><TD contenteditable="true" colspan="2" id="title" onChange="isModified=true;">{{note.title}}</TD></TR>
+<tr><TD></TD><td>{{note.datelog|time_fmt:"%Y/%m/%d %H:%M:%S"}}<td contenteditable="false" id="flags">{{note.flags}}</td></tr>
+{% autoescape off %}
+<tr><TD valign="top" onclick="enable_edit(this);" title="Click me or any left area below me and click the next content area to enable edit the note content. Click again to save and switch to view"><u><i>edit</i></u></TD><td colspan="2"><div id="content" contenteditable="false">{% if note.raw_editor|is_equal:0 %}{{ note.content }}{% else %}{{ note.content|md2html }}{% endif %}<div></td></tr>
+{% endautoescape %}
+<tr><TD><i>links:</i></TD><td colspan="2" contenteditable="true" id='url'>{{note.url}}</td></tr>
+<tr><TD>{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
+    <select id="ngroup" onChange="isModified=true;">
+    {% if note.group %}
+        {% set ngroup = note.group.name %}
+    {% else %}
+        {% set ngroup = 'default' %}
+    {% endif %}
+    {% for gr in groups %}
+    <option value="{{gr.name}}" {% ifequal ngroup gr.name %} selected="selected" {% endifequal %}>{{gr.name}}</option>
+    {% endfor %}
+    </select>
+{% endif %}
+</td>
+<td colspan=1>
+{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
+    <select id="permission" onChange="isModified=true;">
+    {% for perm in permission_list %}
+    {% set count = forloop.counter0 %}
+    <option value="{{count}}" {% ifequal count note.permission %} selected="selected" {% endifequal %}>{{perm}}</option>
+    {% endfor %}
+    </select>
+{% endif %}
+</td>
+<td>
+<form action="{{settings.BASE_URL}}" method="POST">{% csrf_token %}
+<input type="hidden" name="action" value="sendmail"/>
+<input type="hidden" name="id" value="{{note.id}}"/>
+<label>sendmail: </label>
+<input type="text" name="recipients" value=""/>
+<input type="submit" value="submit"/>
+</form>
+</td>
+</tr>
+</table>
+<br>     
+<a href="{{settings.BASE_URL}}?action=edit&id={{note.id}}">Edit</a>&nbsp;&nbsp;<a href="{{settings.BASE_URL}}?action=delete&id={{note.id}}" onClick="return ask_me('delete');">Delete</a>
+{% include "footer.html" %}
+<br><br>
+{% include "list_note_attachment.html" %}
+{% if not user_id|is_equal:0 %}
+<br><br>
+Update history
+<br><br>
+<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3"><TR><TD>user</TD><td>date</td><td>content</td><td>&nbsp;</td></TR>
+{% for comment in comments %}
+<form action="{{settings.BASE_URL}}" method="POST">{% csrf_token %}
+<input type="hidden" name="action" value="save_comment"/>
+<input type="hidden" name="id" value="{{comment.id}}"/>
+<tr id={{comment.id}}><TD>{{comment.user.email}}</TD><td>{{comment.datelog|time_fmt:"%Y/%m/%d %H:%M:%S"}}</td><td class="editable">{{comment.content|default:''}}</td><td><input type="submit" name="submit" value="delete"/></td></tr></form>
+{% endfor %}
+</table>
+{% endif %}
+{% if note.raw_editor|is_equal:0 %}
+<script>
+CKEDITOR.disableAutoInline = true;
+isModified = false;
+
+function enable_edit(o) {
+    m = document.getElementById( 'content' );
+    if (o.textContent == 'edit') {
+    	o.innerHTML = "<u>save</u>"; 
+    	o.setAttribute("onclick", "do_save(this);");
+    	m.setAttribute("contenteditable", "true");
+    	editor = CKEDITOR.inline( 'content' );
+            editor.on('key', function(e) {
+               var k = e.data.keyCode; 
+    	   var igk = [20,27,33,34,35,36,37,38,39,40,45,91,144,2228240,1114129,4456466,1114179];
+    	   if (igk.indexOf(k) > -1) return;
+    	   else isModified = true;
+    	} );
+    	document.getElementById("title").addEventListener("input", function() {
+    	   isModified=true;
+    	}, false);
+    
+    } 
+}
+
+function enable_view(o) {
+    if (o.textContent == 'save') {
+    	o.innerHTML = "<u><i>edit</i></u>"; 
+    	o.setAttribute("onclick", "enable_edit(this);");
+    	m.setAttribute("contenteditable", "false");
+    	for(k in CKEDITOR.instances){
+                var instance = CKEDITOR.instances[k];
+                instance.destroy();
+            }
+    }
+}
+
+function do_save(o) {
+    enable_view(o);
+    if (! isModified ) {return;}
+    isModified = false;
+    var data = editor.getData();
+    var _flags = document.getElementById("flags");
+    var flags= _flags.innerHTML.replace(/^Tags:[ ]*/,''); 
+    var _title = document.getElementById("title");
+    var title = _title.innerHTML;
+    var _url = document.getElementById("url");
+    var url = _url.innerHTML;// the replace below to trip tag <br> at the end
+    params = "is_ajax=1&action=save_note_content&note_id={{note.id}}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
+    var _ngroup = document.getElementById("ngroup");
+    if (_ngroup) params += "&ngroup=" + _ngroup.value;
+    var _perm = document.getElementById("permission");
+    if (_perm) params += "&perm=" + _perm.value;
+    AJAX.postText("{{settings.BASE_URL}}", params, function(response) {
+        // alert(response);
+        }
+    ); 
+} 
+</script>
+{% endif %}
+</body>
+</html>

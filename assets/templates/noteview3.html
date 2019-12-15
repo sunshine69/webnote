@@ -1,0 +1,6 @@
+{% load set_var %}
+{% load myutils %}
+{% set page = 'noteview3' %}
+{% autoescape off %}
+{{note.content}}
+{% endautoescape %}

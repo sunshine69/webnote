@@ -1,0 +1,21 @@
+{% load set_var %}
+{% set title = 'Webnote Login' %}
+{% include "header.html" %}
+<h1 align = "left"> Webnote Login </h1>
+{{ msg }}
+<form METHOD="POST" ACTION="/">{% csrf_token %}
+<input type="hidden" name="action" value="do_login"/>
+<input type="hidden" name="path" value="{{ path }}"/>
+<p>
+<font size="2"><strong> Your IP address is: {{ client_ip }} and logged. <br>This is private server and unauthorized access will be reported</strong></font><br/><br/>
+<font size="2"> <strong> Enter login name and password: </strong></font>
+<table border="1" cellpadding="3" cellspacing="3"><TR><TD>User:</TD><td><input type="text" size="20" name="username"/></td></TR>
+<tr><TD>Password:</TD><td><input type="password" size="20" name="password"/></td></tr>
+<tr><TD>Feeling lucky? :</TD><td><input type="text" size="20" name="totp_number"/></td></tr>
+</table>
+<font size="2">  <strong> Click here to login: </strong></font>
+<input type="submit" name="login" value="Login"/>
+</p>
+</FORM>
+</body>
+</html>

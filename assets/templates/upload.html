@@ -1,0 +1,22 @@
+{% load set_var %}
+{% load myutils %}
+{% set title = 'Webnote - FileUpload' %}
+{% include "header.html" %}
+{% include "head_menu.html" %}<br><br>
+<form action="{{ settings.BASE_URL }}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+<input type="hidden" name="action" value="show_uploadform"/>
+You are: {{user}} <br/>
+Select file to upload - type name and decription then click Submit<br/><br>
+<table>
+{{ form1.as_table }}
+</table>
+<br><hr>
+<table>
+{{ form2.as_table }}
+</table>
+<br><hr>
+<table>
+{{ form3.as_table }}
+</table>
+<input type="submit" value="Submit" />
+</form>
