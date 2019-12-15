@@ -1,6 +1,9 @@
 package models
 
 import (
+	"regexp"
+	"fmt"
+	"strings"
 	"log"
 	"time"
 
@@ -8,6 +11,7 @@ import (
 
 //Note
 type Note struct {
+	ID int64
 	Title string
 	Datelog int64
 	Content string
@@ -109,7 +113,7 @@ func NoteNew(in map[string]interface{}) (*Note) {
 	return &n
 }
 
-func (n *Note) Save() (int64) {
+func (n *Note) Save() {
 	var noteID int64
 	DB := GetDB("")
 	defer DB.Close()
@@ -139,20 +143,94 @@ func (n *Note) Save() (int64) {
 		}
 	}
 	tx.Commit()
-	return noteID
+	n.ID = noteID
 }
 
 func GetNote(title string) (*Note) {
 	DB := GetDB("")
 	defer DB.Close()
-	n := Note{}
+	n := Note{ Title: title }
 	// var flags, content, url string
 	// var datelog , reminder_ticks, timestamp, time_spent int64
 	// var author_id, group_id ,permission, raw_editor int8
-	if e := DB.QueryRow(`SELECT flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor FROM note WHERE title = $1`, title).Scan(&n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
+	if e := DB.QueryRow(`SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor FROM note WHERE title = $1`, title).Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
 		log.Printf("INFO - Can not find note title %s - %v\n", title, e)
 		return nil
 	}
-	n.Title = title
 	return &n
+}
+
+func (n *Note) String() string {return n.Title}
+
+//Delete - Delete note
+func (n *Note) Delete() {
+	DB := GetDB("")
+	defer DB.Close()
+	tx, _ := DB.Begin()
+	_, e := tx.Exec(`DELETE FROM note WHERE title = $1`, n.Title)
+	if e != nil {
+		tx.Rollback()
+		log.Printf("WARN Can not delete note %v - %v\n", n, e)
+	}
+	tx.Commit()
+}
+
+func SearchNote(keyword string) []Note {
+	keyword = strings.TrimSpace(keyword)
+	splitPtn := regexp.MustCompile(`[\s]+[\&\+][\s]+`)
+	var q string
+	searchFlags := false
+	tokens := splitPtn.Split(keyword, -1)
+
+	if strings.HasPrefix(keyword, "F:") || strings.HasPrefix(keyword, "f:") {
+		tokens = strings.Split(keyword[2:], ":")
+		searchFlags = true
+	} else if strings.HasPrefix(keyword, "FLAGS:") || strings.HasPrefix(keyword, "flags:") {
+		tokens = strings.Split(keyword[6:], ":")
+		searchFlags = true
+	}
+	if searchFlags {
+		_l := len(tokens)
+		for i, t := range(tokens) {
+			if i == _l - 1 {
+				q = fmt.Sprintf(`%s (flags LIKE "%s") ORDER BY datelog DESC LIMIT 200;`, q, t)
+			} else {
+				q = fmt.Sprintf(`%s (flags LIKE "%s") OR `, q, t)
+			}
+		}
+		q = fmt.Sprintf("SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+	} else {
+		_l := len(tokens)
+
+		for i, t := range(tokens) {
+			negate := ""
+			combind := "OR"
+			if strings.HasPrefix(t, "!") || strings.HasPrefix(t, "-") {
+				negate = " ! "
+				t = strings.Replace(t, "!", "", 1)
+				t = strings.Replace(t, "-", "", 1)
+				combind = "AND"
+			}
+			if i == _l - 1 {
+				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) ORDER BY timestamp DESC;`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+			} else {
+				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+			}
+		}
+		q = fmt.Sprintf("SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+	}
+	// fmt.Println(q)
+	DB := GetDB("")
+	defer DB.Close()
+	res, e := DB.Query(q)
+	if e != nil {
+		log.Fatalf("ERROR query - %v\n", e)
+	}
+	o := []Note{}
+	for res.Next() {
+		n := Note{}
+		res.Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
+		o = append(o, n)
+	}
+	return o
 }
