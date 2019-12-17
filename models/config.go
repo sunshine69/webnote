@@ -63,6 +63,8 @@ func SetupDefaultConfig() {
 		"config_created": "",
 		"list_flags" : "TODO<|>IMPORTANT<|>URGENT",
 		"date_layout": "02-01-2006 15:04:05 MST",
+		//note_revision to keep
+		"revision_to_keep": "1000",
 	}
 	for key, val := range(configSet) {
 		fmt.Printf("Inserting %s - %s\n", key, val)
@@ -130,7 +132,7 @@ func SetupAppDatabase() {
 	BEGIN TRANSACTION;
 
 	CREATE TABLE IF NOT EXISTS note (
-		title STRING ,
+		title STRING,
 		datelog int64,
 		flags STRING,
 		content STRING,
@@ -145,10 +147,22 @@ func SetupAppDatabase() {
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_title_idx ON note(title);
 
+	CREATE TABLE IF NOT EXISTS note_revision (
+		note_id int64,
+		timestamp int64,
+		flags STRING,
+		url STRING,
+		content STRING,
+		author_id int64,
+		group_id int64,
+		permission STRING
+	);
+	CREATE UNIQUE INDEX IF NOT EXISTS note_revision_idx ON note_revision(note_id, timestamp);
+
 	CREATE TABLE IF NOT EXISTS note_comment (
-		user_id int64 ,
-		note_id int64 ,
-		datelog int64 ,
+		user_id int64,
+		note_id int64,
+		datelog int64,
 		comment STRING
 	);
 
@@ -244,3 +258,29 @@ func SetupAppDatabase() {
 	}
 	tx.Commit()
 }
+
+// func CheckPerm(Obj interface{}, UserID int64, Action string) (bool) {
+// 		//obj must have fields :  permission, author_id, group_id
+// 		if obj.Permission.(string) == "5" {
+// 			if Action == "r" {
+// 				return true
+// 			} else {
+// 				if UserID {
+// 					return true
+// 				} else {return false}
+// 			}
+// 		}
+// 		if ! UserID {return false}
+
+		// user = User.objects.get(id=user_id)
+		// if (obj.author_id == user.id): return True
+		// if (action == u'd'): return False
+		// if (obj.permission == 4): return True
+		// if (obj.group_id not in [ug['id'] for ug in user.groups.values()]):
+		// 	if  ((action == u'r') and (obj.permission == 3)): return True
+		// 	else: return False
+		// if (obj.permission >= 2): return True
+		// if (obj.permission == 0): return False
+		// if (action == u'r'): return True
+		// else: return False
+	// }

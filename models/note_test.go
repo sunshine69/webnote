@@ -18,7 +18,12 @@ func TestNote(t *testing.T) {
 	})
 	aNote.Save()
 	mySavedNote := GetNote("New note 1")
+	mySavedNote.Content = `New content the new version`
+	mySavedNote.Save()
+	mySavedNote = GetNote("New note 1")
 	log.Printf("Saved note: %v\n", mySavedNote)
+	ov := GetNoteRevision(mySavedNote.ID)
+	fmt.Println(ov)
 }
 
 func TestSearchNote(t *testing.T) {

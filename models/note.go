@@ -6,7 +6,7 @@ import (
 	"strings"
 	"log"
 	"time"
-
+	"strconv"
 )
 
 //Note
@@ -113,14 +113,16 @@ func NoteNew(in map[string]interface{}) (*Note) {
 	return &n
 }
 
+//Save a note. If new note then create on. If existing note then create a revisions before update.
 func (n *Note) Save() {
 	var noteID int64
+	currentNote := GetNote(n.Title)//This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
 	DB := GetDB("")
 	defer DB.Close()
 	var sql string
-	currentNote := GetNote(n.Title)//This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
-	tx, _ := DB.Begin()
+
 	if currentNote == nil {//New note
+		tx, _ := DB.Begin()
 		sql = `INSERT INTO note(title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
 		res, e := tx.Exec(sql, n.Title, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor)
 		if e != nil {
@@ -128,21 +130,41 @@ func (n *Note) Save() {
 			log.Fatalf("ERROR can not insert note - %v\n", e)
 		}
 		noteID, _ = res.LastInsertId()
-	} else {//Update existing
-		sql = `UPDATE note SET flags = $1, content = $2, url = $3, datelog = $4, reminder_ticks = $5, timestamp = $6, time_spent = $7, author_id = $8, group_id = $9, permission = $10, raw_editor = $11 WHERE title = $12`
-		res, e := tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
+		tx.Commit()
+	} else {//Insert into revision and update current
+		sql = `INSERT INTO note_revision(note_id, timestamp, flags, content, url, author_id, group_id, permission) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
+		tx, _ := DB.Begin()
+		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert note %v\n", e)
 		}
-		if c, _ := res.RowsAffected(); c != 1 {
-			log.Fatalf("ERROR I expect only 1 note updated but got %d\n", c)
+		tx.Commit()
+		//Cleanup too old revision
+		var timestampMark int
+		revisionToKeep, _ := strconv.Atoi(GetConfig("revision_to_keep"))
+
+		if e := DB.QueryRow(`SELECT timestamp FROM note_revision WHERE note_id = $1 ORDER BY timestamp ASC LIMIT 1 OFFSET $2`, currentNote.ID, revisionToKeep).Scan(&timestampMark); e != nil {
+			tx, _ = DB.Begin()
+			res, e = tx.Exec(`DELETE FROM note_revision WHERE timestamp < $1`, timestampMark)
+			if e != nil {
+				tx.Rollback()
+				log.Fatalf("ERROR can not delete note_revision - %v\n", e)
+			}
+			af, _ := res.RowsAffected()
+			tx.Commit()
+			log.Printf("INFO Cleanup %d rows in note_revision\n", af)
 		}
-		if e := DB.QueryRow(`SELECT id() FROM note WHERE title = $1`, n.Title).Scan(&noteID); e != nil {
-			log.Fatalf("ERROR can not get back note row ID %v\n", e)
+		//Update the note
+		tx, _ = DB.Begin()
+		sql = `UPDATE note SET flags = $1, content = $2, url = $3, datelog = $4, reminder_ticks = $5, timestamp = $6, time_spent = $7, author_id = $8, group_id = $9, permission = $10, raw_editor = $11 WHERE title = $12`
+		res, e = tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
+		if e != nil {
+			tx.Rollback()
+			log.Fatalf("ERROR can not insert note %v\n", e)
 		}
+		tx.Commit()
 	}
-	tx.Commit()
 	n.ID = noteID
 }
 
@@ -158,6 +180,39 @@ func GetNote(title string) (*Note) {
 		return nil
 	}
 	return &n
+}
+
+func GetNoteRevision(noteIdentity interface{}) []Note {
+	o := []Note{}
+	DB := GetDB("")
+	defer DB.Close()
+	cNote := Note{Title: ""}
+	noteID, ok := noteIdentity.(int64)
+	if ok {
+		DB.QueryRow(`SELECT title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor FROM note WHERE id() = $1`, noteID).Scan(&cNote.Title, &cNote.Flags, &cNote.Content, &cNote.URL, &cNote.Datelog, &cNote.ReminderTicks, &cNote.Timestamp, &cNote.TimeSpent, &cNote.AuthorID, &cNote.GroupID, &cNote.Permission, &cNote.RawEditor)
+		cNote.ID = noteID
+	} else {
+		cNote.Title, ok = noteIdentity.(string)
+		if !ok {
+			log.Printf("WARN GetNoteRevision does not have correct type. It needs to be an noteID or note title - \n")
+			return o
+		}
+		DB.QueryRow(`SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor FROM note WHERE title = $1`, cNote.Title).Scan(&cNote.ID, &cNote.Flags, &cNote.Content, &cNote.URL, &cNote.Datelog, &cNote.ReminderTicks, &cNote.Timestamp, &cNote.TimeSpent, &cNote.AuthorID, &cNote.GroupID, &cNote.Permission, &cNote.RawEditor)
+	}
+	o = append(o, cNote)
+
+	res, e := DB.Query(`SELECT timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1`, noteID)
+	if e != nil {
+		log.Fatalf("ERROR can not get note revision - %v\n", e)
+	}
+	for res.Next() {
+		n := Note{}
+		res.Scan(&n.Timestamp, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission)
+		n.Title = cNote.Title
+		n.Datelog = cNote.Datelog
+		o = append(o, n)
+	}
+	return o
 }
 
 func (n *Note) String() string {return n.Title}
@@ -227,6 +282,7 @@ func SearchNote(keyword string) []Note {
 		log.Fatalf("ERROR query - %v\n", e)
 	}
 	o := []Note{}
+
 	for res.Next() {
 		n := Note{}
 		res.Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
