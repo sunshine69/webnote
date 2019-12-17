@@ -190,7 +190,7 @@ func SetupAppDatabase() {
 	CREATE TABLE IF NOT EXISTS user (
 		f_name STRING,
 		l_name STRING,
-		email STRING  ,
+		email STRING,
 		address STRING,
 		passwd STRING,
 		h_phone STRING,
@@ -200,9 +200,10 @@ func SetupAppDatabase() {
 		last_attempt int64,
 		attempt_count STRING,
 		last_login int64,
-		pref_id int64,
+		pref_id int64 default 0,
 		totp_passwd STRING
 		);
+	CREATE UNIQUE INDEX IF NOT EXISTS useremailidx ON user(email);
 
 	CREATE TABLE IF NOT EXISTS ngroup (
 		name STRING,

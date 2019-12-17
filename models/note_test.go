@@ -18,7 +18,7 @@ func TestNote(t *testing.T) {
 	})
 	aNote.Save()
 	mySavedNote := GetNote("New note 1")
-	mySavedNote.Content = `New content the new version`
+	mySavedNote.Content = `New content with new version`
 	mySavedNote.Save()
 	mySavedNote = GetNote("New note 1")
 	log.Printf("Saved note: %v\n", mySavedNote)
