@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"fmt"
 	"os"
 	"testing"
@@ -8,8 +9,8 @@ import (
 
 func TestUser(t *testing.T) {
 	os.Setenv("DBPATH", "testwebnote.db")
-	SetupDefaultConfig()
-	SetupAppDatabase()
+	// SetupDefaultConfig()
+	// SetupAppDatabase()
 	u := UserNew(map[string]interface{} {
 		"FirstName": "Steve",
 		"LastName": "Kieu",
@@ -19,5 +20,10 @@ func TestUser(t *testing.T) {
 	u.Save()
 	fmt.Println(u.Email)
 	u1 := GetUser("msh.computing@gmail.com")
-	fmt.Println(u1)
+	u1.SaltLength = 16
+	u1.SetUserPassword("1qa2ws")
+	if ! VerifyHash("1qa2ws", u1.PasswordHash, int(u1.SaltLength)) {
+		t.Fatalf("ERROR VerifyHash\n")
+	}
+	log.Println(VerifyLogin("msh.computing@gmail.com", "1qa2ws", ""))
 }

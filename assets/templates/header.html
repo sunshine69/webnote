@@ -1,39 +1,39 @@
-{% load set_var %}
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+{{ define "header" }}
+<!DOCTYPE html>
 <html>
 <!-- template name: header.html -->
 <head>
-  <title>{{ title|default:'Web note' }}</title>
-  <meta name="GENERATOR" content="Quanta Plus"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
- <style media="screen" type="text/css">
+  <title>{{ .title }}</title>
+  <meta charset="UTF-8">
+
+  <style media="screen" type="text/css">
 	pre {
-	white-space: pre-wrap;       /* css-3 */
-	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-	white-space: -pre-wrap;      /* Opera 4-6 */
-	white-space: -o-pre-wrap;    /* Opera 7 */
-	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
 	}
 
    #t1 {
-    -moz-tab-size: 2; /* Firefox */
-    -o-tab-size: 2; /* Opera 10.6-12.1 */
-    tab-size: 2;
+        -moz-tab-size: 2; /* Firefox */
+        -o-tab-size: 2; /* Opera 10.6-12.1 */
+        tab-size: 2;
 	}
 
 	#t2 {
-    -moz-tab-size: 4; /* Firefox */
-    -o-tab-size: 4; /* Opera 10.6-12.1 */
-    tab-size: 4;
- </style>
-  
+        -moz-tab-size: 4; /* Firefox */
+        -o-tab-size: 4; /* Opera 10.6-12.1 */
+        tab-size: 4;
+    }
+  </style>
+
 <!--  <script type="text/javascript" src='/media/js/tiny_mce/tiny_mce.js'></script> -->
-<script type="text/javascript" src="/media/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src='/media/js/ajax.js'></script>
-    {% ifequal page 'frontpage'  %}
-    {% autoescape off %}
+
+<script type="text/javascript" src="/assets/media/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src='/assets/media/js/ajax.js'></script>
+    {{ if (eq .page "frontpage") }}
     <!-- <script type="text/javascript">user.current_pref.tinymce_init</script> -->
-    {% endautoescape %}
-    {% endifequal %}
+    {{ end }}
 </head>
-<body  style="font-family : 'Sans Serif'; font-size : 1em; background-color: #f1f8fe">
+{{ end }}

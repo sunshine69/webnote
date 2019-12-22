@@ -1,6 +1,8 @@
 package models
 
 import (
+	"net/http"
+	"github.com/gorilla/sessions"
 	"modernc.org/ql"
 	"log"
 	"database/sql"
@@ -10,6 +12,7 @@ import (
 
 //DateLayout - global
 var DateLayout string
+
 //WebNotePassword
 var WebNotePassword string
 //WebNoteUser
@@ -17,6 +20,34 @@ var WebNoteUser string
 
 var SqlSetup, DBPATH string
 
+//SessionStore -
+var SessionStore *sessions.CookieStore
+
+//GetSessionVal -
+func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{} {
+	ses, e := SessionStore.Get(r, "auth-session")
+	if e != nil {
+		log.Printf("ERROR can not get session - %v\n", e)
+		return nil
+	}
+	o := ses.Values[k]
+	if o == nil && defaultVal != nil {
+		o = defaultVal
+	}
+	return o
+}
+
+//SaveSessionVal -
+func SaveSessionVal(r *http.Request, w *http.ResponseWriter, k string, defaultVal interface{}) {
+	ses, e := SessionStore.Get(r, "auth-session")
+	if e != nil {
+		log.Printf("ERROR can not get session - %v\n", e)
+	}
+	ses.Values[k] = defaultVal
+	ses.Save(r, *w)
+}
+
+//GetDB -
 func GetDB(dbPath string) (*sql.DB) {
 	if dbPath == "" {
 		if DBPATH == "" {
@@ -26,6 +57,10 @@ func GetDB(dbPath string) (*sql.DB) {
 	}
 	// fmt.Printf("Use dbpath %v\n", dbPath)
 	ql.RegisterDriver2()
+	// ql.Options {
+	// 	RemoveEmptyWAL: true,
+	// }
+
 	DB, err := sql.Open("ql2", dbPath)
 	if err != nil {
 	  panic("failed to connect database")
@@ -84,8 +119,9 @@ func GetConfig(key ...string) (string) {
 	defer DB.Close()
 	var val string
 	if err := DB.QueryRow(`SELECT val FROM appconfig WHERE key = $1;`, key[0]).Scan(&val); err != nil {
-		log.Printf("INFO key not found %v\n", err)
-		if len(key) == 2 {
+		// log.Printf("INFO key not found %v\n", err)
+		argLen := len(key)
+		if argLen > 1 {
 			return key[1]
 		} else {
 			return ""
@@ -94,13 +130,22 @@ func GetConfig(key ...string) (string) {
 	return val
 }
 
+//GetConfigSave -
+func GetConfigSave(key ...string) (string) {
+	v := GetConfig(key...)
+	if len(key) == 2 && v == key[1] {
+		SetConfig(key[0], key[1])
+	}
+	return v
+}
+
 //SetConfig - Set a config key with value
 func SetConfig(key, val string) {
-	curVal := GetConfig(key)
+	curVal := GetConfig(key, "NOTFOUND")
 	DB := GetDB("")
 	defer DB.Close()
 	tx, _ := DB.Begin()
-	if curVal != "" {//Key exists, need update?
+	if curVal != "NOTFOUND" {//Key exists, need update?
 		if curVal != val {
 			if _, e := tx.Exec(`UPDATE appconfig SET val = $1 WHERE key = $2`, val, key); e != nil {
 				tx.Rollback()
@@ -127,6 +172,7 @@ func DeleteConfig(key string) {
 	tx.Commit()
 }
 
+//SetupAppDatabase -
 func SetupAppDatabase() {
 	SqlSetup = `
 	BEGIN TRANSACTION;
@@ -185,7 +231,7 @@ func SetupAppDatabase() {
 		created int64,
 		updated int64
 	);
-	CREATE UNIQUE INDEX IF NOT EXISTS attachmentidx ON attachment(name, attached_file);
+	CREATE UNIQUE INDEX IF NOT EXISTS attachmentidx ON attachment(name);
 
 	CREATE TABLE IF NOT EXISTS user (
 		f_name STRING,
@@ -193,6 +239,7 @@ func SetupAppDatabase() {
 		email STRING,
 		address STRING,
 		passwd STRING,
+		salt_length int8,
 		h_phone STRING,
 		w_phone STRING,
 		m_phone STRING,
@@ -206,10 +253,16 @@ func SetupAppDatabase() {
 	CREATE UNIQUE INDEX IF NOT EXISTS useremailidx ON user(email);
 
 	CREATE TABLE IF NOT EXISTS ngroup (
+		group_id int64,
 		name STRING,
 		description STRING,
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS groupidx ON ngroup(name);
+	CREATE UNIQUE INDEX IF NOT EXISTS groupididx ON ngroup(group_id);
+	DELETE FROM ngroup;
+	INSERT INTO ngroup(group_id, name, description) VALUES(1, "default", "default group");
+	INSERT INTO ngroup(group_id, name, description) VALUES(2, "family", "family group");
+	INSERT INTO ngroup(group_id, name, description) VALUES(3, "friend", "friend group");
 
 	CREATE TABLE IF NOT EXISTS user_group (
 		user_id int64,

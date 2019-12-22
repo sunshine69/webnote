@@ -1,39 +1,73 @@
-{% load set_var %}
-{% load myutils %}
-{% set title = 'Webnote - user profile' %}
-{% include "header.html" %}
-{% include "head_menu.html" %}
-{% if msg %}
-{% autoescape off %}<br><br>
-{{ msg }} <br><br>{% endautoescape %}
-{% endif %}
-<form action="{{ settings.BASE_URL }}" method="POST">{% csrf_token %}
-<table rules="rows,cols" border="1" cellpadding="1" cellspacing="1">
-<td><input type="text" name="keyword"/></td><td><input type="submit" name="submit" value="search user"/></td>
-</table>
+{{ $title := "Webnote - user profile" }}
+{{ template "header" }}
+{{ template "head_menu" }}
+{{ if .msg }}
+{{ autoescape off }}<br><br>
+{{ .msg }} <br><br>{{ endautoescape }}
+{{ end }}
+<form action="{{ .settings.BASE_URL }}" method="POST">{{ .csrfField }}
 <input type="hidden" name="action" value="searchuser"/>
+<table rules="rows,cols" border="1" cellpadding="1" cellspacing="1">
+    <tr>
+        <td><input type="text" name="keyword"/></td>
+        <td><input type="submit" name="submit" value="search user"/></td>
+    </tr>
+</table>
 </form>
-<form action="{{ settings.BASE_URL }}" method="POST">{% csrf_token %}
+<form action="{{ .settings.BASE_URL }}" method="POST">{{ .csrfField }}
 <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
-<TR><TD>First Name</TD><td><input type="text" name='f_name' value="{{user.f_name}}"/></td></TR>
-<TR><TD>Last Name</TD><td><input type="text" name='l_name' value="{{user.l_name}}"/></td></TR>
-<TR><TD><font color=red><b>Email(required)</b></font></TD><td><input type="text" name='email' value="{{user.email}}"/></td></TR>
-<TR><TD>Current or admin Password</TD><td><input type="password" name='cur_passwd' value=""/></td></TR>
-<TR><TD>New Password</TD><td><input type="password" name='passwd' value=""/></td></TR>
-<TR><TD>New QR pass</TD><td><input type="password" name='qr_password' value=""/>&nbsp;<input type="submit" name="submit" value="generate_qr"/></td></TR>
-<TR><TD>Home phone</TD><td><input type="text" name='h_phone' value="{{user.h_phone}}"/></td></TR>
-<TR><TD>Address</TD><td><input type="text" name='address' value="{{user.address}}"/></td></TR>
-<TR><TD>Work phone</TD><td><input type="text" name='w_phone' value="{{user.w_phone}}"/></td></TR>
-<TR><TD>Cell phone</TD><td><input type="text" name='m_phone' value="{{user.m_phone}}"/></td></TR>
-<TR><TD>Extra Infomation</TD><td><input type="text" name='extra_info' value="{{user.extra_info}}"/></td></TR>
-<input type="hidden" name="action" value="{{ action }}"/>
-<TR><TD><input type="submit" name="submit" value="submit"/></TD><td><input type="reset" name="reset" value="reset"/>
-{% ifequal action 'adduser' %}
-<input type="submit" name="delete" value="delete"/>
-{% endifequal %}
-</td></TR>
+<TR>
+    <TD>First Name</TD><td><input type="text" name='f_name' value="{{ .user.f_name }}"/></td>
+</TR>
+<TR>
+    <TD>Last Name</TD><td><input type="text" name='l_name' value="{{ .user.l_name }}"/></td>
+</TR>
+<TR>
+    <TD><font color=red><b>Email(required)</b></font></TD>
+    <td><input type="text" name='email' value="{{ .user.email }}"/></td>
+</TR>
+<TR>
+    <TD>Current or admin Password</TD>
+    <td><input type="password" name='cur_passwd' value=""/></td>
+</TR>
+<TR>
+    <TD>New Password</TD>
+    <td><input type="password" name='passwd' value=""/></td>
+</TR>
+<TR>
+    <TD>New QR pass</TD>
+    <td><input type="password" name='qr_password' value=""/>&nbsp;<input type="submit" name="submit" value="generate_qr"/></td>
+</TR>
+<TR>
+    <TD>Home phone</TD>
+    <td><input type="text" name='h_phone' value="{{ .user.h_phone }}"/></td>
+</TR>
+<TR>
+    <TD>Address</TD>
+    <td><input type="text" name='address' value="{{ .user.address }}"/></td>
+</TR>
+<TR>
+    <TD>Work phone</TD>
+    <td><input type="text" name='w_phone' value="{{ .user.w_phone }}"/></td>
+</TR>
+<TR>
+    <TD>Cell phone</TD>
+    <td><input type="text" name='m_phone' value="{{ .user.m_phone }}"/></td>
+</TR>
+<TR>
+    <TD>Extra Infomation</TD>
+    <td><input type="text" name='extra_info' value="{{ .user.extra_info }}"/></td>
+</TR>
+<input type="hidden" name="action" value="{{ .action }}"/>
+<TR>
+    <TD><input type="submit" name="submit" value="submit"/></TD>
+    <td><input type="reset" name="reset" value="reset"/>
+    {{ if eq .action "adduser" }}
+    <input type="submit" name="delete" value="delete"/>
+    {{ end }}</td>
+</TR>
 </table>
 </form><br><br>
-<a href="{{ settings.BASE_URL }}?action=edit_userpref_list">Edit user preference</a>
-{% include "footer.html" %}
+<a href="{{ .settings.BASE_URL }}?action=edit_userpref_list">Edit user preference</a>
+{{ template "footer" }}
 </body></html>

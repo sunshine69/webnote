@@ -1,17 +1,20 @@
-{% load set_var %}
-{% set title = 'Webnote user preference' %}
-{% include "header.html" %}
-{% include "head_menu.html" %}
+{{ $title = "Webnote user preference" }}
+{{ template "header" }}
+{{ template "head_menu" }}
 <br><br>
-{{msg}} <br><br>
-<form action="/?action=edit_userpref" method="POST">{% csrf_token %}
-<input type="hidden" name="id" value="{{pref.id}}"/>
+{{ .msg }} <br><br>
+<form action="/?action=edit_userpref" method="POST">{{ .csrfField }}
+<input type="hidden" name="id" value="{{ .pref.id }}"/>
 <table border="1">
-<TR><TD>TinyMCE_init</TD><td><textaREA name="tinymce_init" cols="80" rows="30" >{{pref.tinymce_init}}</textaREA></td> </TR>
-<tr><td align="right" colspan="2"><input type="submit" name="submit" value="submit"/>&nbsp;&nbsp;<input type="reset" /></td> </tr>
+    <TR>
+        <TD>TinyMCE_init</TD>
+        <td><textaREA name="tinymce_init" cols="80" rows="30" >{{pref.tinymce_init}}</textaREA></td>
+    </TR>
+    <tr>
+        <td align="right" colspan="2"><input type="submit" name="submit" value="submit"/>&nbsp;&nbsp;<input type="reset" /></td>
+    </tr>
 </table>
-
 </form>
-<a href="{{ settings.BASE_URL }}?action=edit_userpref_list">Edit user preference</a>
-{% include "footer.html" %}
+<a href="{{ .settings.BASE_URL }}?action=edit_userpref_list">Edit user preference</a>
+{{ template "footer" }}
 </body></html>

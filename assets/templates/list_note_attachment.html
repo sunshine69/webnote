@@ -1,26 +1,33 @@
-{% load set_var %}
-{% load myutils %}
-{% if note.attachments.all.count %}
+{{ if gt .note.attachments.all.count 0 }}
 <p>Attachment list</p>
 <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
 <TR>
-<TD>Name</TD>
-<td>Description</td>
-<td>Download</td>
-<td>Time stamp</td>
-<td>Unlink</td>
+  <TD>Name</TD>
+  <td>Description</td>
+  <td>Download</td>
+  <td>Time stamp</td>
+  <td>Unlink</td>
 </TR>
-{% for a in note.attachments.all %}
-<tr>
-<TD title="Click to view or play"><a href="{{settings.BASE_URL}}?action=streamfile&id={{a.id}}">{{a.name}}</a></TD>
-<td>{{a.desc}}</td>
-<TD title="Click to download file"><a href="{{settings.BASE_URL}}?action=sendfile&id={{a.id}}">{{a.name}}</a></TD>
-<td>{{a.updated|time_fmt:"%Y/%m/%d %H:%M:%S"}}</td>
-<td title="Click to unlink this attachement with the note"><a href="#" id="{{a.id}}" onclick="do_delete_note_attachment(this);return false;" >Unlink</a></td>
-</tr>
-{% endfor %}
+{{ range $a = .note.attachments.all }}
+  <tr>
+    <TD title="Click to view or play"><a href="{{ .settings.BASE_URL }}?action=streamfile&id={{ $a.id }}">{{ $a.name }}</a>
+    </TD>
+    <td>
+      {{ $a.desc }}
+    </td>
+    <TD title="Click to download file">
+      <a href="{{ .settings.BASE_URL }}?action=sendfile&id={{ $a.id }}">{{ $a.name }}</a>
+    </TD>
+    <td>
+      {{ $a.updated|time_fmt:"%Y/%m/%d %H:%M:%S" }}
+    </td>
+    <td title="Click to unlink this attachement with the note">
+      <a href="#" id="{{ $a.id }}" onclick="do_delete_note_attachment(this);return false;" >Unlink</a>
+    </td>
+  </tr>
+{{ endfor }}
 </table>
-{% endif %}
+{{ endif }}
 <script language="JavaScript">
 function do_delete_note_attachment(obj) {
   if (confirm("Are you sure to delete link this attachment to this note?")) {
@@ -28,6 +35,6 @@ function do_delete_note_attachment(obj) {
       AJAX.getText(url, function(response) {
           alert(response);
 	    }  )
-	    } } 
+	    } }
 </script>
-<a href="{{settings.BASE_URL}}?action=list_attachment&note_id={{note.id}}">Add attachment</a>
+<a href="{{ .settings.BASE_URL }}?action=list_attachment&note_id={{ .note.id }}">Add attachment</a>

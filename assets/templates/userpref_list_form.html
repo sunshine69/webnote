@@ -1,21 +1,34 @@
-{% load set_var %}
-{% set title = 'Webnote user pref list' %}
-{% include "header.html" %}
-{% include "head_menu.html" %}
+{{ $title = "Webnote user pref list" }}
+{{ include "header" }}
+{{ include "head_menu" }}
 <br><br>
-{{msg}} <br><br>
+{{ .msg }} <br><br>
 
-<table><TR><TD>Name</TD><TD>Description</TD><td>Is current</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></TR>
-{% for userpref in userpref_list %}
-<form action="" method="POST">{% csrf_token %}
+<table>
+    <TR>
+        <TD>Name</TD>
+        <TD>Description</TD>
+        <td>Is current</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </TR>
+{{ range $idx, $userpref := .userpref_list }}
+<form action="" method="POST">{{ .csrfField }}
 <input type="hidden" name="action" value="edit_userpref_list" />
-<input type="hidden" name="userpref_id" value="{{userpref.id}}" />
-<tr><TD><input type="text" name="userpref_name" value="{{userpref.name}}"/></TD><td><input type="text" name="userpref_desc" value="{{userpref.desc}}"/></td>
-<td><input type="checkbox" name="is_current" {% ifequal user.current_pref userpref.pref %}checked="true" {% else %} {% endifequal %} value="{{userpref.pref_id}}" /> </td>
-<td><input type="submit" name="save" value="save"/></td><td><input type="submit" name="delete" value="delete"/></td> <td><A href="{{settings.BASE_URL}}?action=edit_userpref&id={{userpref.pref_id}}">Edit this profile</A>  </td> </tr>
+<input type="hidden" name="userpref_id" value="{{ .userpref.id }}" />
+    <tr>
+        <TD><input type="text" name="userpref_name" value="{{userpref.name}}"/></TD>
+        <td><input type="text" name="userpref_desc" value="{{userpref.desc}}"/></td>
+        <td><input type="checkbox" name="is_current" {{ if eq .user.current_pref .userpref.pref }}checked="true"
+        {{ else }}{{ end }} value="{{ .userpref.pref_id }}"/></td>
+        <td><input type="submit" name="save" value="save"/></td>
+        <td><input type="submit" name="delete" value="delete"/></td>
+        <td><A href="{{settings.BASE_URL}}?action=edit_userpref&id={{userpref.pref_id}}">Edit this profile</A></td>
+    </tr>
 </form>
-{% endfor %}
+{{ end }}
 </table>
-<br><br><a href="{{settings.BASE_URL}}?action=create_newprofile">Create new profile</a>
-{% include "footer.html" %}
+<br><br><a href="{{ .settings.BASE_URL }}?action=create_newprofile">Create new profile</a>
+{{ include "footer" }}
 </body></html>

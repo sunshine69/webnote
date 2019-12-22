@@ -1,7 +1,9 @@
 package models
 
 import (
+	"strconv"
 	"log"
+	"github.com/pquerna/otp/totp"
 )
 
 type User struct {
@@ -11,6 +13,7 @@ type User struct {
 	Email string
 	Address string
 	PasswordHash string
+	SaltLength int8
 	HomePhone string
 	WorkPhone string
 	MobilePhone string
@@ -26,65 +29,18 @@ type User struct {
 func UserNew(in map[string]interface{}) (*User) {
 	n := User{}
 
-	ct, ok := in["FirstName"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.FirstName = ct
-
-	ct, ok = in["LastName"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.LastName = ct
-
-	ct, ok = in["Email"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.Email = ct
-
-	ct, ok = in["Address"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.Address = ct
-
-	ct, ok = in["HomePhone"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.HomePhone = ct
-
-	ct, ok = in["WorkPhone"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.WorkPhone = ct
-
-	ct, ok = in["MobilePhone"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.MobilePhone = ct
-
-	ct, ok = in["ExtraInfo"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.ExtraInfo = ct
-
-	ct, ok = in["Address"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.Address = ct
-
-	ct, ok = in["TotpPassword"].(string)
-	if !ok {
-		ct = ""
-	}
-	n.TotpPassword = ct
+	n.FirstName = GetMapByKey(in, "FirstName", "").(string)
+	n.LastName = GetMapByKey(in, "LastName", "").(string)
+	n.Email = GetMapByKey(in, "Email", "").(string)
+	n.Address = GetMapByKey(in, "Address", "").(string)
+	n.HomePhone = GetMapByKey(in, "HomePhone", "").(string)
+	n.WorkPhone = GetMapByKey(in, "WorkPhone", "").(string)
+	n.MobilePhone = GetMapByKey(in, "MobilePhone", "").(string)
+	n.ExtraInfo = GetMapByKey(in, "ExtraInfo", "").(string)
+	n.Address = GetMapByKey(in, "Address", "").(string)
+	n.TotpPassword = GetMapByKey(in, "TotpPassword", "").(string)
+	defaultSaltLength, _ := strconv.Atoi(GetConfig("salt_length", "12"))
+	n.SaltLength = GetMapByKey(in, "SaltLength", int8(defaultSaltLength)).(int8)
 
 	return &n
 }
@@ -96,8 +52,6 @@ func (n *User) Save() {
 	DB := GetDB("")
 	defer DB.Close()
 	var sql string
-
-	log.Println(currentUser)
 
 	tx, _ := DB.Begin()
 	if currentUser == nil {//New User
@@ -115,8 +69,9 @@ func (n *User) Save() {
 			attempt_count ,
 			last_login,
 			pref_id,
-			totp_passwd) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);`
-		res, e := tx.Exec(sql, n.FirstName, n.LastName, n.Email, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword)
+			totp_passwd,
+			salt_length) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, int8($15));`
+		res, e := tx.Exec(sql, n.FirstName, n.LastName, n.Email, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword, n.SaltLength)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert user - %v\n", e)
@@ -137,9 +92,10 @@ func (n *User) Save() {
 			attempt_count  = $10,
 			last_login = $11,
 			pref_id = $12,
-			totp_passwd = $13
-			WHERE email = $14`
-		_, e := tx.Exec(sql, n.FirstName, n.LastName, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword, n.Email)
+			totp_passwd = $13,
+			salt_length = int8($14)
+			WHERE email = $15`
+		_, e := tx.Exec(sql, n.FirstName, n.LastName, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword, n.SaltLength, n.Email)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not update user %v\n", e)
@@ -167,8 +123,9 @@ func GetUser(email string) (*User) {
 		attempt_count,
 		last_login,
 		pref_id,
-		totp_passwd
-		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword); e != nil {
+		totp_passwd,
+		salt_length,
+		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
 		log.Printf("INFO - Can not find user email '%s' - %v\n", email, e)
 		return nil
 	}
@@ -176,3 +133,30 @@ func GetUser(email string) (*User) {
 }
 
 func (n *User) String() string {return n.FirstName + " " + n.LastName}
+
+//VerifyLogin -
+func VerifyLogin(username, password, otp string) (*User) {
+	user := GetUser(username)
+	if user != nil {
+		if user.SaltLength == 0 {
+			saltLengthStr := GetConfigSave("salt_length", "12")
+			saltLength, _ := strconv.Atoi(saltLengthStr)
+			user.SaltLength = int8(saltLength)
+		}
+		if ! VerifyHash(password, user.PasswordHash, int(user.SaltLength)) {
+			return nil
+		}
+		if otp != "" {
+			if ! totp.Validate(otp, user.TotpPassword) { return nil }
+		}
+	} else {
+		return nil
+	}
+	return user
+}
+
+func (u *User) SetUserPassword(p string) {
+	salt := MakeSalt(u.SaltLength)
+	u.PasswordHash = ComputeHash(p, *salt)
+	u.Save()
+}

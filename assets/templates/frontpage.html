@@ -1,20 +1,27 @@
-{% load set_var %}
-{% load myutils %}
-{% set BASE_URL = seetings.BASE_URL %}
-{% set action = request.REQUEST.action %}
-{% set page = 'frontpage' %}
-{% include "header.html" %}
-{% include "head_menu.html" %}
-<br>
-<form method="POST" action="{{BASE_URL}}" name="note" id="note">{% csrf_token %}
+{{ template "header" }}
+{{ template "head_menu" }}
+<br/>
+<form method="POST" action="{{ .BASE_URL }}" name="note" id="note">{{ .csrfField }}
 <input type="hidden" name="action" value="save_newnote"/>
-<input type="hidden" name="id" value="{{ note.id }}"/>
-<table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;"><tr><TD><i>Title</i></TD><td colspan="3"><input type="text" name="title" value="{{note.title}}" size="65"/> </td></TR>
-<tr><TD><i>Datelog</i></TD><td><input type="text" name="datelog" value="{{ note.datelog|time_fmt:'%Y/%m/%d %H:%M:%S' }}" size="25"/></td><td><i>Tags :A:B:C</i></td><td><input type="text" name="flags" value="{{note.flags}}" size="25"/></td></tr>
+<input type="hidden" name="id" value="{{ .note.id }}"/>
+<table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
+    <tr>
+        <TD><i>Title</i></TD>
+        <td colspan="3"><input type="text" name="title" value="{{ .note.title }}" size="65"/></td>
+    </tr>
+    <tr>
+        <TD><i>Datelog</i></TD>
+        <td><input type="text" name="datelog" value="{{ .note.datelog }}" size="25"/></td>
+        <td><i>Tags :A:B:C</i></td>
+        <td><input type="text" name="flags" value="{{ .note.flags }}" size="25"/></td>
+    </tr>
 <!-- <tr><TD>&nbsp;</TD><td colspan="2"><textareA class='ckeditor' id="content" name="content" -->
-<tr><TD>&nbsp;</TD><td colspan="3"><textarea id="content" name="content" wrap="soft" autocomplete="on"
-cols="150" rows="25">{{note.content}}</textarea> </td>  </tr>
-{% if note.raw_editor|is_equal:1 %}
+    <tr>
+        <TD>&nbsp;</TD>
+        <td colspan="3"><textarea id="content" name="content" wrap="soft" autocomplete="on"
+cols="150" rows="25">{{ .note.content }}</textarea></td>
+    </tr>
+{{ if eq .note.raw_editor 1 }}
 <!-- No HTML editor Handle TAB key -->
 <script language="javascript">
 var textareas = document.getElementsByName('content');
@@ -30,7 +37,7 @@ for(var i=0;i<count;i++){
     }
 }
 </script>
-{% else %}
+{{ else }}
 <script>CKEDITOR.replace( 'content', {
     allowedContent: true,
     dataIndentationChars: '  ',
@@ -39,41 +46,47 @@ for(var i=0;i<count;i++){
     extraPlugins: 'imagepaste'
 });
 </script>
-{% endif %}
-<tr><TD><i>Url</i></TD><td colspan="2"><input type="text" name="url" value="{{note.url}}" size="55" /> </td><td>raw editor<input type="checkbox" {% if note.raw_editor|is_equal:1 %}checked="checked"{% endif %} value="1" name="raw_editor"></td> </tr>
-<tr><TD>
-{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
-    <select name="ngroup">
-    {% if note.group %}
-        {% set ngroup = note.group.name %}
-    {% else %}
-        {% set ngroup = 'default' %}
-    {% endif %}
-    {% for gr in groups %}
-    <option value="{{gr.name}}" {% ifequal ngroup gr.name %} selected="selected" {% endifequal %}>{{gr.name}}</option>
-    {% endfor %}
-    </select>
-{% endif %}
-<td>
-{% if note.author_id|is_equal:user.id or note.author_id|is_equal:0 %}
-    <select name="permission">
-    {% for perm in permission_list %}
-    {% set count = forloop.counter0 %}
-    <option value="{{count}}" {% ifequal count note.permission %} selected="selected" {% endifequal %}>{{perm}}</option>
-    {% endfor %}
-    </select>
-{% endif %}
-
+{{ end }}
+    <tr>
+        <TD><i>Url</i></TD>
+        <td colspan="2"><input type="text" name="url" value="{{note.url}}" size="55" /> </td>
+        <td>raw editor<input type="checkbox" {% if note.raw_editor|is_equal:1 %}checked="checked"{% endif %} value="1" name="raw_editor"></td>
+    </tr>
+    <tr>
+        <TD>
+            {{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
+            {{ $ngroup := "" }}
+            <select name="ngroup">
+            {{ if .note.group }}
+                {{ $ngroup = .note.group.name }}
+            {{ else }}
+                {{ $ngroup = "default" }}
+            {{ endif }}
+            {{ range $idx, $gr := .groups }}
+                <option value="{{ $gr.name }}" {{ if eq $ngroup $gr.name }} selected="selected" {{ end }}>{{ $gr.name }}</option>
+            {{ end }}
+            </select>
+            {{ end }}
+        </td>
+        <td>
+            {{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
+                <select name="permission">
+                {{ range $count, $perm := .permission_list }}
+                <option value="{{ inc $count }}" {{ if eq $count .note.permission }} selected="selected" {{ end }}>{{ $perm }}</option>
+                {{ end }}
+                </select>
+            {{ end }}
 <!-- Reminder <input type="checkbox" name="reminder" {% if note.reminder_ticks and note.reminder_ticks|is_gt:0 %} checked="true" {% endif %} value=""/> -->
-</td>
-</TD><td align="center" colspan="2">
-<!-- <input type="submit" name="sendmail" value="Email note"/> -->
-<input type="submit" name="savenote" value="Save"/> </td>
-</tr>
+        </td>
+        <td align="center" colspan="2">
+            <!-- <input type="submit" name="sendmail" value="Email note"/> -->
+            <input type="submit" name="savenote" value="Save"/>
+        </td>
+    </tr>
 </table>
 </form><br>
-{% include "list_note_attachment.html" %}
+{{ template "list_note_attachment" }}
 <br><br>
-{% include "footer.html" %}
+{{ template "footer" }}
 </body>
 </html>

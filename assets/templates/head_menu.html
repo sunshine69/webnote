@@ -1,10 +1,10 @@
-{% load myutils %}
+{{ define "head_menu" }}
 <script language="javascript">
 function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </script>
 <form method="POST" action="{{ settings.BASE_URL }}" name="search" id="search">{% csrf_token %}
 <input type="hidden" name="action" value="search"/>
-<i>Keyword or :TAGS</i> <input type="text" name="keyword" value=""/> <input type="submit" name="search_submit" value="Search" /> 
+<i>Keyword or :TAGS</i> <input type="text" name="keyword" value=""/> <input type="submit" name="search_submit" value="Search" />
 {% ifequal page 'list_att' %}
 <input type="hidden" name="searchtype" value="attachment"/>
 {% endifequal %}

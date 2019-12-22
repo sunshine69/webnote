@@ -1,13 +1,11 @@
-{% load myutils %}
-{% load set_var %}
-{% set title = 'Webnote - search result' %}
-{% include "header.html" %}
-{% include "head_menu.html" %}
+{{ $title := "Webnote - search result" }}
+{{ template "header" }}
+{{ template "head_menu" }}
 <script language="javascript">
 function select_all(obj) {
 	var cval = "";
 	if (obj.checked) cval = "checked";
-	var cbs = document.getElementsByName('selected_notes');
+	var cbs = document.getElementsByName("selected_notes");
 	for(var i=0,cbLen=cbs.length;i<cbLen;i++){
 		cbs[i].checked = cval;
 	}
@@ -25,18 +23,18 @@ function on_selected_run_sql(sql='') {
 	for(var i=0,cbLen=cbs.length;i<cbLen;i++){
 	  if(cbs[i].checked){
 	      values.push(cbs[i].value);
-	  } 
+	  }
 	}
 	where_str += ' (' + values.join(',') + ')'
 	sql += where_str
-	AJAX.postText("{{ BASE_URL }}", "action=on_selected_run_sql&sql=" + sql, function (r) { alert(r);} )
+	AJAX.postText("{{ .settings.BASE_URL }}", "action=on_selected_run_sql&sql=" + sql, function (r) { alert(r);} )
 }
 
 function on_selected_set_permisions() {
 	var val = prompt("Enter permission value in number\n0:only owner, 1:group read, 2:group rw, 3:group w all read, 4:all rw, 5: World read, all rw\n", '3');
 	if (val != '') on_selected_run_sql("UPDATE webnote_note set permission=" + val);
-	
-} 
+
+}
 
 function on_selected_delete() {
 	if (confirm("Are you sure to delete these selected notes") ) on_selected_run_sql("DELETE from webnote_note ");
@@ -54,49 +52,67 @@ function process_selected(o) {
 	case 'Set permision': on_selected_set_permisions(); break;
 	case 'Set flags': on_selected_set_flags(); break;
 	case 'Delete': on_selected_delete(); break;
-	
+
 	};
 	o.selectedIndex = 0;
 }
 </script>
 <br>
-{% if notes|length|is_gt:0 %}
-<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3"
-><TR bgcolor="blue"><b><TD>title</TD><TD>datelog</TD><td>author</td><td>&nbsp;</td><td colspan=2><select name="selected_menu" onchange="if (this.selectedIndex) process_selected(this);">
-<option value="">With selected:</option>
-<option value="Set flags">Set flags</option>
-<option value="Set permision">Set permission</option>
-<option value="Delete">Delete</option>
-<option value="Run sql">Run SQL</option>
-</select></td><td><input name="select_all" type="checkbox" onclick="select_all(this);"/></td></b></TR>
-{% for note in notes %}
-<tr bgcolor="{% cycle '#FFFFFF'  '#F8F8F8' %}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{% cycle '#FFFFFF'  '#F8F8F8' %}';"><TD title="{{note.title}}"><i>{{note.title|truncatechars:50}}</i></TD><td>{{ note.datelog|time_fmt:"%Y/%m/%d %H:%M:%S" }}</td><td>{{note.author.f_name}} {{note.author.l_name}}</td><td><a href="/?action=view&id={{note.id}}&keyword={{keyword}}">view</a> </td><td><a href="/?action=view&id={{note.id}}&keyword={{keyword}}&t=2">view2</a></td><td><a href="/?action=edit&id={{note.id}}&keyword={{keyword}}" >edit</a></td><td><a href="/?action=delete&id={{note.id}}&keyword={{keyword}}" onClick="return ask_me('delete');">delete</a> </td><td><input type="checkbox" value="{{note.id}}" name="selected_notes"/></td></tr>
-{% endfor %}
+{{ if gt (len notes) 0 }}
+<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
+	<TR bgcolor="blue">
+		<b>
+		<TD>title</TD>
+		<TD>datelog</TD>
+		<td>author</td>
+		<td>&nbsp;</td>
+		<td colspan=2><select name="selected_menu" onchange="if (this.selectedIndex) process_selected(this);">
+			<option value="">With selected:</option>
+			<option value="Set flags">Set flags</option>
+			<option value="Set permision">Set permission</option>
+			<option value="Delete">Delete</option>
+			<option value="Run sql">Run SQL</option>
+			</select></td>
+		<td><input name="select_all" type="checkbox" onclick="select_all(this);"/></td>
+		</b>
+	</TR>
+	{{ range $idx, $note := .notes }}
+	<tr bgcolor="{{ cycle '#FFFFFF'  '#F8F8F8' }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle '#FFFFFF'  '#F8F8F8' }}';">
+		<TD title="{{note.title}}"><i>{{note.title|truncatechars:50}}</i></TD>
+		<td>{{ note.datelog|time_fmt:"%Y/%m/%d %H:%M:%S" }}</td>
+		<td>{{note.author.f_name}} {{note.author.l_name}}</td>
+		<td><a href="/?action=view&id={{ .note.id }}&keyword={{ .keyword }}">view</a> </td>
+		<td><a href="/?action=view&id={{ .note.id }}&keyword={{ .keyword }}&t=2">view2</a></td>
+		<td><a href="/?action=edit&id={{ .note.id }}&keyword={{ .keyword }}">edit</a></td>
+		<td><a href="/?action=delete&id={{ .note.id }}&keyword={{ .keyword }}" onClick="return ask_me('delete');">delete</a> </td>
+		<td><input type="checkbox" value="{{ .note.id }}" name="selected_notes"/></td>
+	</tr>
+{{ end }}
 </table>
-{% else %}
+{{ else }}
 <hr/>
 No notes found
 <hr/>
-{% endif %}
-{% if attachments|length|is_gt:0 %} 
+{{ end }}
+{{ if gt (len .attachments) 0 }}
 <hr>
 <table class="editable" border="1" cellpadding="3" cellspacing="3">
 <TR bgcolor="blue">
 <TD class="commands uneditable">name</TD><td class="commands uneditable">description</td><td class="commands uneditable">group</td><td class="commands uneditable">permission</td><td class="commands uneditable">TS</td><td class="commands uneditable">delete</td><td class="commands uneditable">link/download</td>
 </TR>
-{% for att in attachments %}
-<tr id="{{att.id}}">
-<TD id='name' title="{{att.name}}"><i>{{att.name|truncatechars:50}}</i></TD>
-<td id='desc'>{{att.desc}}</td>
-<td id='group'>{{att.group.name}}</td>
-<td id='permission'>{{att.permission}}</td>
-<td class="commands uneditable">{{att.updated|time_fmt:"%Y-%m-%d %H:%M:%S"}}</td>
+{{ range $idx, $att := .attachments }}
+<tr id="{{ $att.id }}">
+<TD id='name' title="{{ $att.name }}"><i>{{ truncatechars $att.name 50 }}</i></TD>
+<td id='desc'>{{ $att.desc }}</td>
+<td id='group'>{{ $att.group.name }}</td>
+<td id='permission'>{{ $att.permission }}</td>
+<td class="commands uneditable">{{ $att.updated|time_fmt:"%Y-%m-%d %H:%M:%S" }}</td>
 <td class="commands uneditable"><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
-<td class="commands uneditable"><a href="{{settings.BASE_URL}}?action=sendfile&id={{att.id}}">view/download</a></td>
+<td class="commands uneditable"><a href="{{ .settings.BASE_URL }}?action=sendfile&id={{ $att.id }}">view/download</a></td>
 </tr>
-{% endfor %}
+{{ end }}
 </table>
-{% endif %}
+{{ end }}
 <br>
 <script language="javascript">
 function do_delete_attachment(obj) {
@@ -107,6 +123,6 @@ function do_delete_attachment(obj) {
   }  )
 }}
 </script>
-{% include "footer.html" %}
+{{ template "footer" }}
 </body>
 </html>
