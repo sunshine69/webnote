@@ -7,10 +7,10 @@ import (
 )
 func TestMisc(t *testing.T) {
 	os.Setenv("DBPATH", "testwebnote.db")
-	SetupDefaultConfig()
-	SetupAppDatabase()
+	// SetupDefaultConfig()
+	// SetupAppDatabase()
 	g := Group{
-		Group_id: 4,
+		Group_id: int8(4),
 		Name: "newgroup",
 	}
 	g.Save()

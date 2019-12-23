@@ -187,9 +187,9 @@ func SetupAppDatabase() {
 		timestamp int64 default 0,
 		time_spent int64 default 0,
 		author_id int64 default 0,
-		group_id int64 default 0,
-		permission STRING,
-		raw_editor STRING
+		group_id int8 default 0,
+		permission int8,
+		raw_editor int8
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_title_idx ON note(title);
 
@@ -200,8 +200,8 @@ func SetupAppDatabase() {
 		url STRING,
 		content STRING,
 		author_id int64,
-		group_id int64,
-		permission STRING
+		group_id int8,
+		permission int8
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_revision_idx ON note_revision(note_id, timestamp);
 
@@ -224,8 +224,8 @@ func SetupAppDatabase() {
 		name STRING,
 		description STRING,
 		author_id int64 ,
-		group_id int64 ,
-		permission STRING,
+		group_id int8 ,
+		permission int8,
 		attached_file STRING,
 		mimetype STRING,
 		created int64,
@@ -245,15 +245,15 @@ func SetupAppDatabase() {
 		m_phone STRING,
 		extra_info STRING,
 		last_attempt int64,
-		attempt_count STRING,
+		attempt_count int8,
 		last_login int64,
-		pref_id int64 default 0,
+		pref_id int8 default 0,
 		totp_passwd STRING
 		);
 	CREATE UNIQUE INDEX IF NOT EXISTS useremailidx ON user(email);
 
 	CREATE TABLE IF NOT EXISTS ngroup (
-		group_id int64,
+		group_id int8,
 		name STRING,
 		description STRING,
 	);
@@ -266,7 +266,7 @@ func SetupAppDatabase() {
 
 	CREATE TABLE IF NOT EXISTS user_group (
 		user_id int64,
-		group_id int64,
+		group_id int8,
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS user_groupidx ON user_group(user_id, group_id);
 

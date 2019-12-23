@@ -14,6 +14,7 @@ import (
 
 //GetMapByKey -
 func GetMapByKey(in map[string]interface{}, key string, defaultValue interface{}) interface{} {
+	// log.Printf("%v - %v - %v\n", in, key, defaultValue )
 	var o interface{}
 	v, ok := in[key]
 	if !ok {
@@ -21,6 +22,7 @@ func GetMapByKey(in map[string]interface{}, key string, defaultValue interface{}
 	} else {
 		o = v
 	}
+	// log.Printf("RETURN: %v\n", o)
 	return o
 }
 

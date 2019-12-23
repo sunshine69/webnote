@@ -19,9 +19,9 @@ type User struct {
 	MobilePhone string
 	ExtraInfo string
 	LastAttempt int64
-	AttemptCount string
+	AttemptCount int8
 	LastLogin int64
-	PrefID int64
+	PrefID int8
 	TotpPassword string
 }
 
@@ -70,7 +70,7 @@ func (n *User) Save() {
 			last_login,
 			pref_id,
 			totp_passwd,
-			salt_length) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, int8($15));`
+			salt_length) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, int8($11), $12, int8($13), $14, int8($15));`
 		res, e := tx.Exec(sql, n.FirstName, n.LastName, n.Email, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword, n.SaltLength)
 		if e != nil {
 			tx.Rollback()
@@ -89,9 +89,9 @@ func (n *User) Save() {
 			m_phone = $7,
 			extra_info = $8,
 			last_attempt = $9,
-			attempt_count  = $10,
+			attempt_count  = int8($10),
 			last_login = $11,
-			pref_id = $12,
+			pref_id = int8($12),
 			totp_passwd = $13,
 			salt_length = int8($14)
 			WHERE email = $15`
@@ -103,6 +103,34 @@ func (n *User) Save() {
 	}
 	tx.Commit()
 	n.ID = UserID
+}
+
+//GetUserByID -
+func GetUserByID(id int64) (*User) {
+	DB := GetDB("")
+	defer DB.Close()
+	u := User{ ID: id }
+	if e := DB.QueryRow(`SELECT
+		id() as user_id,
+		f_name,
+		l_name,
+		address,
+		passwd,
+		h_phone,
+		w_phone,
+		m_phone,
+		extra_info,
+		last_attempt,
+		attempt_count,
+		last_login,
+		pref_id,
+		totp_passwd,
+		salt_length,
+		FROM user WHERE id() = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
+		log.Printf("INFO - Can not find user ID '%d' - %v\n", id, e)
+		return nil
+	}
+	return &u
 }
 
 func GetUser(email string) (*User) {

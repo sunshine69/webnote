@@ -1,9 +1,9 @@
 {{ template "header" }}
 {{ template "head_menu" }}
 <br/>
-<form method="POST" action="{{ .BASE_URL }}" name="note" id="note">{{ .csrfField }}
+<form method="POST" action="{{ .settings.BASE_URL }}" name="note" id="note">{{ .csrfField }}
 <input type="hidden" name="action" value="save_newnote"/>
-<input type="hidden" name="id" value="{{ .note.id }}"/>
+<input type="hidden" name="id" value="{{ .note_id }}"/>
 <table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
     <tr>
         <TD><i>Title</i></TD>
@@ -49,8 +49,8 @@ for(var i=0;i<count;i++){
 {{ end }}
     <tr>
         <TD><i>Url</i></TD>
-        <td colspan="2"><input type="text" name="url" value="{{note.url}}" size="55" /> </td>
-        <td>raw editor<input type="checkbox" {% if note.raw_editor|is_equal:1 %}checked="checked"{% endif %} value="1" name="raw_editor"></td>
+        <td colspan="2"><input type="text" name="url" value="{{ .note.url }}" size="55" /> </td>
+        <td>raw editor<input type="checkbox" {{ if eq .note.raw_editor 1 }}checked="checked"{{ end }} value="1" name="raw_editor"></td>
     </tr>
     <tr>
         <TD>

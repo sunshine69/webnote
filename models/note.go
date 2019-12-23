@@ -21,33 +21,41 @@ type Note struct {
 	Timestamp int64
 	TimeSpent int64
 	AuthorID int64
-	GroupID int64
-	Permission string
-	RawEditor string
+	Author *User
+	GroupID int8
+	Group *Group
+	Permission int8
+	RawEditor int8
+}
+
+//Update - Populate dynamic fields such as Author, Group, etc.
+func (n *Note) Update() {
+	if n.AuthorID != 0 {
+		n.Author = GetUserByID(n.AuthorID)
+	}
+	if n.GroupID != 0 {
+		n.Group = GetGroupByID(n.GroupID)
+	}
 }
 
 //NoteNew
 func NoteNew(in map[string]interface{}) (*Note) {
 	n := Note{}
 
-	ct, ok := in["content"].(string)
-	if !ok {
-		// fmt.Printf("INFO. content is empty\n")
-		ct = ""
-	}
-	titleText, ok := in["title"].(string)
-	if !ok {
-		// fmt.Printf("INFO No title provided, parse from content\n")
-		if ct != ""{
+	ct := GetMapByKey(in, "content", "").(string)
+	titleText := GetMapByKey(in, "title", "").(string)
+
+	if titleText == "" {
+		if ct != "" {
 			_l := len(ct)
 			if _l >= 64 {_l = 64}
-			titleText = ct[0:_l]
-			n.Content = ct
+			titleText = strings.ReplaceAll(ct[0:_l], "\n", " ")
 		} else {
 			// fmt.Printf("INFO No content and title provided. Not creating note\n")
 			return &n
 		}
 	}
+
 	n.Content = ct
 	n.Title = titleText
 
@@ -69,47 +77,17 @@ func NoteNew(in map[string]interface{}) (*Note) {
 	}
 
 	n.Timestamp = time.Now().UnixNano()
+	n.Flags = GetMapByKey(in, "flags", "").(string)
+	n.URL = GetMapByKey(in, "url", "").(string)
 
-	if flags, ok := in["flags"]; ok {
-		n.Flags = flags.(string)
-	} else{
-		n.Flags = ""
-	}
+	n.AuthorID = GetMapByKey(in, "author_id", int64(0)).(int64)
 
-	if url, ok := in["url"]; ok {
-		n.URL = url.(string)
-	} else{
-		n.URL = ""
-	}
+	n.GroupID = GetMapByKey(in, "group_id", int8(0)).(int8)
 
-	if flags, ok := in["flags"]; ok {
-		n.Flags = flags.(string)
-	} else{
-		n.URL = ""
-	}
+	n.Permission = GetMapByKey(in, "permission", int8(3)).(int8)
+	n.RawEditor = GetMapByKey(in, "raw_editor", int8(0)).(int8)
 
-	if authorid, ok := in["author_id"]; ok {
-		n.AuthorID = authorid.(int64)
-	} else{
-		n.AuthorID = 0
-	}
-
-	if groupid, ok := in["group_id"]; ok {
-		n.GroupID = groupid.(int64)
-	} else{
-		n.GroupID = 0
-	}
-
-	if perm, ok := in["permission"]; ok {
-		n.Permission = perm.(string)
-	} else{
-		n.Permission = "3"
-	}
-	if raweditor, ok := in["raw_editor"]; ok {
-		n.RawEditor = raweditor.(string)
-	} else{
-		n.RawEditor = "0"
-	}
+	n.Update()
 	return &n
 }
 
@@ -135,7 +113,7 @@ func (n *Note) Save() {
 			author_id,
 			group_id,
 			permission,
-			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
+			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, int8($10), int8($11), int8($12));`
 		res, e := tx.Exec(sql, n.Title, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor)
 		if e != nil {
 			tx.Rollback()
@@ -152,7 +130,7 @@ func (n *Note) Save() {
 			url,
 			author_id,
 			group_id,
-			permission) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
+			permission) VALUES($1, $2, $3, $4, $5, $6, int8($7), int8($8))`
 		tx, _ := DB.Begin()
 		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission)
 		if e != nil {
@@ -186,9 +164,9 @@ func (n *Note) Save() {
 			timestamp = $6,
 			time_spent = $7,
 			author_id = $8,
-			group_id = $9,
-			permission = $10,
-			raw_editor = $11 WHERE title = $12`
+			group_id = int8($9),
+			permission = int8($10),
+			raw_editor = int8($11) WHERE title = $12`
 		res, e = tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
 		if e != nil {
 			tx.Rollback()
@@ -197,6 +175,31 @@ func (n *Note) Save() {
 		tx.Commit()
 	}
 	n.ID = noteID
+}
+
+func GetNoteByID(id int64) (*Note) {
+	DB := GetDB("")
+	defer DB.Close()
+	n := Note{ ID: id }
+	if e := DB.QueryRow(`SELECT
+		id() as note_id,
+		flags,
+		content,
+		url,
+		datelog,
+		reminder_ticks,
+		timestamp,
+		time_spent,
+		author_id,
+		group_id,
+		permission,
+		raw_editor
+		FROM note WHERE id() = $1`, id).Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
+		log.Printf("INFO - Can not find note ID %d - %v\n", id, e)
+		return nil
+	}
+	n.Update()
+	return &n
 }
 
 func GetNote(title string) (*Note) {
@@ -220,6 +223,7 @@ func GetNote(title string) (*Note) {
 		log.Printf("INFO - Can not find note title %s - %v\n", title, e)
 		return nil
 	}
+	n.Update()
 	return &n
 }
 
@@ -353,6 +357,7 @@ func SearchNote(keyword string) []Note {
 	for res.Next() {
 		n := Note{}
 		res.Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
+		n.Update()
 		o = append(o, n)
 	}
 	return o

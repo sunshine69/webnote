@@ -38,8 +38,11 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello. If you see this message, the auth works")
-    fmt.Println("Endpoint Hit: HomePage.")
+	t, err := template.New("home", Asset).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func LoadTemplate(tFilePath ...string) (string) {
