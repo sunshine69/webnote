@@ -26,6 +26,7 @@ type Note struct {
 	Group *Group
 	Permission int8
 	RawEditor int8
+	Attachments []*Attachment
 }
 
 //Update - Populate dynamic fields such as Author, Group, etc.
@@ -36,6 +37,42 @@ func (n *Note) Update() {
 	if n.GroupID != 0 {
 		n.Group = GetGroupByID(n.GroupID)
 	}
+	n.GetNoteAttachments()
+}
+
+func (n *Note) GetNoteAttachments() []*Attachment {
+	DB := GetDB(""); defer DB.Close()
+	rows, e := DB.Query(`SELECT
+		a.name,
+		a.description,
+		a.author_id,
+		a.group_id,
+		a.permission,
+		a.attached_file,
+		a.mimetype,
+		a.created,
+		a.updated
+		FROM note_attachment AS na, attachment AS a
+		WHERE na.attachment_id = id(attachment)
+		AND na.note_id = $1
+	`, n.ID)
+	if e != nil {
+		log.Fatalf("ERROR GetNoteAttachments - %v\n", e)
+	}
+
+	defer rows.Close()
+
+	var o []*Attachment
+
+	for rows.Next() {
+		a := Attachment{}
+		if e := rows.Scan(&a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+			log.Fatalf("ERROR GetNoteAttachments can not fetch attachments - %v\n", e)
+		}
+		a.Update()
+		o = append(o, &a)
+	}
+	return o
 }
 
 //NoteNew
@@ -50,9 +87,6 @@ func NoteNew(in map[string]interface{}) (*Note) {
 			_l := len(ct)
 			if _l >= 64 {_l = 64}
 			titleText = strings.ReplaceAll(ct[0:_l], "\n", " ")
-		} else {
-			// fmt.Printf("INFO No content and title provided. Not creating note\n")
-			return &n
 		}
 	}
 
@@ -100,6 +134,13 @@ func (n *Note) Save() {
 	var sql string
 
 	if currentNote == nil {//New note
+		if n.Title == "" {
+			if n.Content != "" {
+				_l := len(n.Content)
+				if _l >= 64 {_l = 64}
+				n.Title = strings.ReplaceAll(n.Content[0:_l], "\n", " ")
+			}
+		}
 		tx, _ := DB.Begin()
 		sql = `INSERT INTO note(
 			title,
@@ -227,52 +268,28 @@ func GetNote(title string) (*Note) {
 	return &n
 }
 
+//GetNoteRevision - Get all revision of a note. Pass in identity whihc can bye note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
 func GetNoteRevision(noteIdentity interface{}) []Note {
 	o := []Note{}
-	DB := GetDB("")
-	defer DB.Close()
-	cNote := Note{Title: ""}
+	var cNote *Note
 	noteID, ok := noteIdentity.(int64)
 	if ok {
-		DB.QueryRow(`SELECT
-			title,
-			flags,
-			content,
-			url,
-			datelog,
-			reminder_ticks,
-			timestamp,
-			time_spent,
-			author_id,
-			group_id,
-			permission,
-			raw_editor
-			FROM note WHERE id() = $1`, noteID).Scan(&cNote.Title, &cNote.Flags, &cNote.Content, &cNote.URL, &cNote.Datelog, &cNote.ReminderTicks, &cNote.Timestamp, &cNote.TimeSpent, &cNote.AuthorID, &cNote.GroupID, &cNote.Permission, &cNote.RawEditor)
-		cNote.ID = noteID
+		cNote = GetNoteByID(noteID)
 	} else {
-		cNote.Title, ok = noteIdentity.(string)
+		title, ok := noteIdentity.(string)
 		if !ok {
 			log.Printf("WARN GetNoteRevision does not have correct type. It needs to be an noteID or note title - \n")
 			return o
 		}
-		DB.QueryRow(`SELECT
-			id() as note_id,
-			flags,
-			content,
-			url,
-			datelog,
-			reminder_ticks,
-			timestamp,
-			time_spent,
-			author_id,
-			group_id,
-			permission,
-			raw_editor
-			FROM note WHERE title = $1`, cNote.Title).Scan(&cNote.ID, &cNote.Flags, &cNote.Content, &cNote.URL, &cNote.Datelog, &cNote.ReminderTicks, &cNote.Timestamp, &cNote.TimeSpent, &cNote.AuthorID, &cNote.GroupID, &cNote.Permission, &cNote.RawEditor)
+		cNote = GetNote(title)
 	}
-	o = append(o, cNote)
+	o = append(o, *cNote)
 
-	res, e := DB.Query(`SELECT timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1`, noteID)
+	noteID = cNote.ID
+	DB := GetDB("")
+	defer DB.Close()
+
+	res, e := DB.Query(`SELECT timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1 ORDER BY timestamp DESC`, noteID)
 	if e != nil {
 		log.Fatalf("ERROR can not get note revision - %v\n", e)
 	}

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strings"
 	"strconv"
 	"log"
 	"github.com/pquerna/otp/totp"
@@ -8,6 +9,8 @@ import (
 
 type User struct {
 	ID int64
+	GroupNames string //coma sep group names
+	Groups []*Group
 	FirstName string
 	LastName string
 	Email string
@@ -24,11 +27,54 @@ type User struct {
 	PrefID int8
 	TotpPassword string
 }
+//Update -
+func (u *User) Update() {
+	for _, group := range( strings.Split(u.GroupNames, ",") ) {
+		if group == "" { continue }
+		u.SetGroup(group)
+	}
+	DB := GetDB(""); defer DB.Close()
+	rows, e := DB.Query(`SELECT
+		g.group_id,
+		g.name,
+		g.description
+	FROM user_group AS ug, ngroup AS g
+	WHERE ug.group_id = g.group_id
+	AND ug.user_id = $1`, u.ID)
+	if e != nil {
+		log.Fatalf("ERROR %v\n", e)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		gr := Group{}
+		rows.Scan(&gr.ID, &gr.Group_id, &gr.Name, &gr.Description)
+		u.Groups = append(u.Groups, &gr)
+	}
+}
+
+//SetGroup -
+func (u *User) SetGroup(gname string) {
+	g := GetGroup(gname)
+	DB := GetDB(""); defer DB.Close()
+	if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, u.ID, g.Group_id).Scan(&g.Group_id); e != nil {
+		log.Printf("INFO can not get the group. Going to insert new one - %v\n", e)
+		tx, _ := DB.Begin()
+		res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, int8($2))`, u.ID, g.Group_id)
+		if e != nil {
+			tx.Rollback()
+			log.Fatalf("ERROR can not set group to user - %v\n", e)
+		}
+		tx.Commit()
+		id, _ := res.LastInsertId()
+		log.Printf("INFO Insert one row to user_group - ID %d\n", id)
+	}
+}
 
 //UserNew -
 func UserNew(in map[string]interface{}) (*User) {
 	n := User{}
-
 	n.FirstName = GetMapByKey(in, "FirstName", "").(string)
 	n.LastName = GetMapByKey(in, "LastName", "").(string)
 	n.Email = GetMapByKey(in, "Email", "").(string)
@@ -41,6 +87,7 @@ func UserNew(in map[string]interface{}) (*User) {
 	n.TotpPassword = GetMapByKey(in, "TotpPassword", "").(string)
 	defaultSaltLength, _ := strconv.Atoi(GetConfig("salt_length", "12"))
 	n.SaltLength = GetMapByKey(in, "SaltLength", int8(defaultSaltLength)).(int8)
+	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
 
 	return &n
 }
@@ -103,6 +150,7 @@ func (n *User) Save() {
 	}
 	tx.Commit()
 	n.ID = UserID
+	n.Update()
 }
 
 //GetUserByID -
@@ -130,6 +178,7 @@ func GetUserByID(id int64) (*User) {
 		log.Printf("INFO - Can not find user ID '%d' - %v\n", id, e)
 		return nil
 	}
+	u.Update()
 	return &u
 }
 
@@ -157,6 +206,7 @@ func GetUser(email string) (*User) {
 		log.Printf("INFO - Can not find user email '%s' - %v\n", email, e)
 		return nil
 	}
+	u.Update()
 	return &u
 }
 

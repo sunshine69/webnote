@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{ $title }}</title>
+  <title>{{ .title }}</title>
   <meta charset="UTF-8">
 
   <style media="screen" type="text/css">
@@ -31,7 +31,7 @@
 
 <script type="text/javascript" src="/assets/media/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src='/assets/media/js/ajax.js'></script>
-    {{ if (eq $page "frontpage") }}
+    {{ if (eq .page "frontpage") }}
     <!-- <script type="text/javascript">user.current_pref.tinymce_init</script> -->
     {{ end }}
 </head>

@@ -19,7 +19,7 @@
   <td id='desc'>{{ $attachment.desc }}</td>
   <td id='group'>{{ $attachment.group.name }}</td>
   <td id='permission'>{{ $attachment.permission }}</td>
-  <td class="commands uneditable">{{ $attachment.updated|time_fmt:"%Y-%m-%d %H:%M:%S" }}</td>
+  <td class="commands uneditable">{{ $attachment.updated|time_fmt "2006 01-02 15:04:05" }}</td>
   <td>{{ filesize|keyval:attachment.id|filesizeformat }}</td>
   <td class="commands uneditable"><a href="#" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a></td>
   <td class="commands uneditable"><a href="#" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>

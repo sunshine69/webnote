@@ -41,7 +41,7 @@ func GetGroup(name string) *Group {
 	name,
 	description
 	FROM ngroup where name = $1`, name).Scan(&g.ID, &g.Group_id,  &g.Name,  &g.Description); e != nil {
-		log.Printf("WARN group %s not found - %v\n", name, e)
+		log.Printf("WARN group '%s' not found - %v\n", name, e)
 		return nil
 	}
 	return &g
@@ -60,4 +60,23 @@ func GetGroupByID(id int8) *Group {
 		return nil
 	}
 	return &g
+}
+
+func GetAllGroups() []*Group {
+	DB := GetDB(""); defer DB.Close()
+	rows, _ := DB.Query(`SELECT
+		ID,
+		group_id,
+		name,
+		description
+	FROM ngroup g`)
+	defer rows.Close()
+	var o []*Group
+
+	for rows.Next() {
+		gr := Group{}
+		rows.Scan(&gr.ID, &gr.Group_id, &gr.Name, &gr.Description)
+		o = append(o, &gr)
+	}
+	return o
 }

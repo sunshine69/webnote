@@ -38,11 +38,35 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	t, err := template.New("home", Asset).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
+	// t, err := template.New("home", Asset).Funcs(*TemplateFuncMap).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
+
+	t, err := template.New("home", Asset).Funcs(*TemplateFuncMap).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
+
 	if err != nil {
 		panic(err)
 	}
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := m.GetUser(useremail)
+	uGroups := user.Groups
 
+	aNote := m.NoteNew(map[string]interface{}{
+		"author_id": user.ID,
+		"group_id": uGroups[0].Group_id,
+	})
+
+	if err := t.Execute(w, map[string]interface{}{
+		csrf.TemplateTag: csrf.TemplateField(r),
+		"title": "Webnote",
+		"page": "FrontPage",
+		"msg":  "",
+		"settings": m.Settings,
+		"note": &aNote,
+		"user": user,
+		"groups": uGroups,
+
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func LoadTemplate(tFilePath ...string) (string) {
@@ -78,7 +102,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if isAuthenticated == nil || ! isAuthenticated.(bool) {
-			t, err := template.New("login", Asset).ParseFiles("assets/templates/header.html", "assets/templates/login.html")
+			t, err := template.New("login", Asset).Funcs(*TemplateFuncMap).ParseFiles("assets/templates/header.html", "assets/templates/login.html")
 			if err != nil {
 				panic(err)
 			}
@@ -196,7 +220,10 @@ func main() {
 	if *setup {
 		m.SetupDefaultConfig()
 		m.SetupAppDatabase()
+		m.CreateAdminUser()
 	}
+
+	m.InitConfig()
 
 	SSLKey = m.GetConfigSave("ssl_key", *sslKey)
 	SSLCert = m.GetConfigSave("ssl_cert", *sslCert)
@@ -214,6 +241,7 @@ func main() {
 		MaxAge:   3600 * 4,
 		HttpOnly: true,
 	}
+	log.Println(*sessionKey)
 	//Template custom functions
 	_TemplateFuncMap := template.FuncMap{
 		// The name "inc" is what the function will be called in the template text.
@@ -222,6 +250,18 @@ func main() {
 		},
 		"add": func(x, y int) int {
 			return x + y
+		},
+		"time_fmt": func(timelayout string, timeticks int64) string {
+			return m.NsToTime(timeticks).Format(timelayout)
+		},
+		"template_html": func(html string) template.HTML {
+			return template.HTML(html)
+		},
+		"if_ie": func() template.HTML {
+			return template.HTML("<!--[if IE]>")
+		},
+		"end_if_ie": func() template.HTML {
+			return template.HTML("<![endif]-->")
 		},
 	}
 	TemplateFuncMap = &_TemplateFuncMap

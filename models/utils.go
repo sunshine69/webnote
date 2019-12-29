@@ -1,6 +1,7 @@
 package models
 
 import (
+	"time"
 	"regexp"
 	"net"
 	"strings"
@@ -59,7 +60,7 @@ func MakePassword(length int) string {
 	  b[i] = charset[MakeRandNum(len(charset))]
 	}
 	return string(b)
- }
+}
 
 func ComputeHash(plainText string , salt []byte) (string) {
 	plainTextWithSalt := []byte(plainText)
@@ -96,4 +97,18 @@ func CheckUserIPInWhiteList(ip, whitelist string) (bool) {
 		if netB.Contains(ipA) { return true }
 	}
 	return false
+}
+
+//Time handling
+const (
+	millisPerSecond     = int64(time.Second / time.Millisecond)
+	nanosPerMillisecond = int64(time.Millisecond / time.Nanosecond)
+	nanosPerSecond      = int64(time.Second / time.Nanosecond)
+)
+
+//NsToTime -
+func NsToTime(ns int64) time.Time  {
+	secs := ns/nanosPerSecond
+	nanos := ns - secs * nanosPerSecond
+	return time.Unix(secs, nanos)
 }

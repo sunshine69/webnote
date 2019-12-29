@@ -1,27 +1,27 @@
-{{ template "header" }}
-{{ template "head_menu" }}
+{{ template "header" . }}
+{{ template "head_menu" . }}
 <br/>
 <form method="POST" action="{{ .settings.BASE_URL }}" name="note" id="note">{{ .csrfField }}
 <input type="hidden" name="action" value="save_newnote"/>
-<input type="hidden" name="id" value="{{ .note_id }}"/>
+<input type="hidden" name="id" value="{{ .note.ID }}"/>
 <table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
     <tr>
         <TD><i>Title</i></TD>
-        <td colspan="3"><input type="text" name="title" value="{{ .note.title }}" size="65"/></td>
+        <td colspan="3"><input type="text" name="title" value="{{ .note.Title }}" size="65"/></td>
     </tr>
     <tr>
         <TD><i>Datelog</i></TD>
-        <td><input type="text" name="datelog" value="{{ .note.datelog }}" size="25"/></td>
+        <td><input type="text" name="datelog" value='{{ .note.Datelog | time_fmt "2006/01/02 15:04:05" }}' size="25"/></td>
         <td><i>Tags :A:B:C</i></td>
-        <td><input type="text" name="flags" value="{{ .note.flags }}" size="25"/></td>
+        <td><input type="text" name="flags" value="{{ .note.Flags }}" size="25"/></td>
     </tr>
 <!-- <tr><TD>&nbsp;</TD><td colspan="2"><textareA class='ckeditor' id="content" name="content" -->
     <tr>
         <TD>&nbsp;</TD>
         <td colspan="3"><textarea id="content" name="content" wrap="soft" autocomplete="on"
-cols="150" rows="25">{{ .note.content }}</textarea></td>
+cols="150" rows="25">{{ .note.Content }}</textarea></td>
     </tr>
-{{ if eq .note.raw_editor 1 }}
+{{ if eq .note.RawEditor 1 }}
 <!-- No HTML editor Handle TAB key -->
 <script language="javascript">
 var textareas = document.getElementsByName('content');
@@ -49,30 +49,30 @@ for(var i=0;i<count;i++){
 {{ end }}
     <tr>
         <TD><i>Url</i></TD>
-        <td colspan="2"><input type="text" name="url" value="{{ .note.url }}" size="55" /> </td>
-        <td>raw editor<input type="checkbox" {{ if eq .note.raw_editor 1 }}checked="checked"{{ end }} value="1" name="raw_editor"></td>
+        <td colspan="2"><input type="text" name="url" value="{{ .note.URL }}" size="55" /> </td>
+        <td>raw editor<input type="checkbox" {{ if eq .note.RawEditor 1 }}checked="checked"{{ end }} value="1" name="raw_editor"></td>
     </tr>
     <tr>
         <TD>
-            {{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
+            {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
             {{ $ngroup := "" }}
             <select name="ngroup">
-            {{ if .note.group }}
-                {{ $ngroup = .note.group.name }}
+            {{ if .note.Group }}
+                {{ $ngroup = .note.Group.Name }}
             {{ else }}
                 {{ $ngroup = "default" }}
-            {{ endif }}
+            {{ end }}
             {{ range $idx, $gr := .groups }}
-                <option value="{{ $gr.name }}" {{ if eq $ngroup $gr.name }} selected="selected" {{ end }}>{{ $gr.name }}</option>
+                <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
             {{ end }}
             </select>
             {{ end }}
         </td>
         <td>
-            {{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
+            {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
                 <select name="permission">
                 {{ range $count, $perm := .permission_list }}
-                <option value="{{ inc $count }}" {{ if eq $count .note.permission }} selected="selected" {{ end }}>{{ $perm }}</option>
+                <option value="{{ inc $count }}" {{ if eq $count .note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
                 {{ end }}
                 </select>
             {{ end }}
@@ -85,8 +85,8 @@ for(var i=0;i<count;i++){
     </tr>
 </table>
 </form><br>
-{{ template "list_note_attachment" }}
+{{ template "list_note_attachment" . }}
 <br><br>
-{{ template "footer" }}
+{{ template "footer" . }}
 </body>
 </html>

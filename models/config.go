@@ -23,6 +23,14 @@ var SqlSetup, DBPATH string
 //SessionStore -
 var SessionStore *sessions.CookieStore
 
+//AppSettings -
+type AppSettings struct {
+	BASE_URL string
+	ADMIN_EMAIL string
+}
+//Settings -
+var Settings *AppSettings
+
 //GetSessionVal -
 func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{} {
 	ses, e := SessionStore.Get(r, "auth-session")
@@ -71,9 +79,24 @@ func GetDB(dbPath string) (*sql.DB) {
 //InitConfig - SetupDB. This is the initial point of config setup. Note init() does not work if it relies
 //on DbConn as at the time the DBPATH is not yet available
 func InitConfig() {
-	_ = GetDB("")
 	DateLayout = GetConfig("date_layout")
 	WebNoteUser = GetConfig("webnote_user")
+	Settings = &AppSettings{
+		BASE_URL: "https://note.xvt.technology",
+		ADMIN_EMAIL: "msh.computing@gmail.com",
+	}
+}
+
+//CreateAdminUser -
+func CreateAdminUser() {
+	u := UserNew(map[string]interface{} {
+		"FirstName": "Admin",
+		"LastName": "Admin",
+		"Email": "msh.computing@gmail.com",
+	})
+	u.Save()
+	u.SaltLength = 16
+	u.SetUserPassword("1qa2ws")
 }
 
 //SetupDefaultConfig - Setup/reset default configuration set
