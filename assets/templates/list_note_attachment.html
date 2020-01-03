@@ -1,4 +1,4 @@
-{{ define "list_note_attachment"}}
+{{ define "list_note_attachment" }}
 {{ if gt (len .note.Attachments) 0 }}
 <p>Attachment list</p>
 <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
@@ -9,18 +9,19 @@
   <td>Time stamp</td>
   <td>Unlink</td>
 </TR>
+{{ $date_layout := .date_layout }}
 {{ range $a := .note.Attachments }}
   <tr>
-    <TD title="Click to view or play"><a href="{{ .settings.BASE_URL }}?action=streamfile&id={{ $a.ID }}">{{ $a.name }}</a>
+    <TD title="Click to view or play"><a href="{{ .settings.BASE_URL }}/streamfile?id={{ $a.ID }}">{{ $a.name }}</a>
     </TD>
     <td>
       {{ $a.Description }}
     </td>
     <TD title="Click to download file">
-      <a href="{{ .settings.BASE_URL }}?action=sendfile&id={{ $a.ID }}">{{ $a.Name }}</a>
+      <a href="{{ .settings.BASE_URL }}/sendfile?id={{ $a.ID }}">{{ $a.Name }}</a>
     </TD>
     <td>
-      {{ $a.Updated|time_fmt "2006/01/02 15:04:05" }}
+      {{ $a.Updated | time_fmt $date_layout }}
     </td>
     <td title="Click to unlink this attachement with the note">
       <a href="#" id="{{ $a.ID }}" onclick="do_delete_note_attachment(this);return false;" >Unlink</a>
@@ -32,11 +33,11 @@
 <script language="JavaScript">
 function do_delete_note_attachment(obj) {
   if (confirm("Are you sure to delete link this attachment to this note?")) {
-    var url = "/?action=delete_note_attachment&note_id={{ .note.ID }}&attachment_id="+ obj.id ;
+    var url = "/delete_note_attachment?id={{ .note.ID }}&attachment_id="+ obj.id ;
       AJAX.getText(url, function(response) {
           alert(response);
 	    }  )
 	    } }
 </script>
-<a href="{{ .settings.BASE_URL }}?action=list_attachment&note_id={{ .note.ID }}">Add attachment</a>
+<a href="{{ .settings.BASE_URL }}/list_attachment?id={{ .note.ID }}">Add attachment</a>
 {{ end }}

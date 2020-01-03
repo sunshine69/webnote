@@ -35,7 +35,7 @@ type Note struct {
 	Attachments []*Attachment
 }
 
-//Update - Populate dynamic fields such as Author, Group, etc.
+//Update - Populate dynamic fields such as Author, Group, etc. Not allowed saving data into DB
 func (n *Note) Update() {
 	if n.AuthorID != 0 {
 		n.Author = GetUserByID(n.AuthorID)
@@ -309,6 +309,22 @@ func GetNoteRevision(noteIdentity interface{}) []Note {
 
 func (n *Note) String() string {return n.Title}
 
+func NoteDeleteByID(id int64) bool {
+	var o bool
+	DB := GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	_, e := tx.Exec(`DELETE FROM note WHERE id() = $1`, id)
+	if e != nil {
+		tx.Rollback()
+		log.Printf("WARN Can not delete note ID %d\n", id)
+		o = false
+	} else{
+		tx.Commit()
+		o = true
+	}
+	return o
+}
+
 //Delete - Delete note
 func (n *Note) Delete() {
 	DB := GetDB("")
@@ -318,8 +334,9 @@ func (n *Note) Delete() {
 	if e != nil {
 		tx.Rollback()
 		log.Printf("WARN Can not delete note %v - %v\n", n, e)
+	} else {
+		tx.Commit()
 	}
-	tx.Commit()
 }
 
 func SearchNote(keyword string) []Note {
@@ -345,7 +362,7 @@ func SearchNote(keyword string) []Note {
 				q = fmt.Sprintf(`%s (flags LIKE "%s") OR `, q, t)
 			}
 		}
-		q = fmt.Sprintf("SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+		q = fmt.Sprintf("SELECT id() as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	} else {
 		_l := len(tokens)
 
@@ -364,7 +381,7 @@ func SearchNote(keyword string) []Note {
 				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			}
 		}
-		q = fmt.Sprintf("SELECT id() as note_id, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+		q = fmt.Sprintf("SELECT id() as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
 	// fmt.Println(q)
 	DB := GetDB("")
@@ -377,7 +394,7 @@ func SearchNote(keyword string) []Note {
 
 	for res.Next() {
 		n := Note{}
-		res.Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
+		res.Scan(&n.ID, &n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
 		n.Update()
 		o = append(o, n)
 	}

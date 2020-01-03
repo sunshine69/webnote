@@ -1,92 +1,83 @@
-{{ $title := "Webnote - View" }}
-{{ $page := "noteview" }}
-{{ template "header" }}
-{{ template "head_menu" }}
+{{ template "header" . }}
+{{ template "head_menu" . }}
 <br><br>
 <table rules="rows,cols" align='center' border="1" cellpadding="3" cellspacing="3">
     <TR>
         <TD></TD>
-        <TD contenteditable="true" colspan="2" id="title" onChange="isModified=true;">{{ .note.title }}</TD>
+        <TD contenteditable="true" colspan="2" id="title" onChange="isModified=true;">{{ .note.Title }}</TD>
     </TR>
     <tr>
         <TD></TD>
-        <td>{{ .note.datelog|time_fmt:"%Y/%m/%d %H:%M:%S" }}<td contenteditable="false" id="flags">{{ .note.flags }}</td>
+        <td>{{ .note.Datelog | time_fmt .date_layout }}<td contenteditable="false" id="flags">{{ .note.Flags }}</td>
     </tr>
     <tr>
         <TD valign="top" onclick="enable_edit(this);" title="Click me or any left area below me and click the next content area to enable edit the note content. Click again to save and switch to view"><u><i>edit</i></u></TD>
-        <td colspan="2"><div id="content" contenteditable="false">{{ if eq .note.raw_editor 0 }}{{ .note.content }}{{ else }}{{ .note.content|md2html }}{{ end }}<div></td>
+        <td colspan="2"><div id="content" contenteditable="false">{{ if eq .note.RawEditor 0 }}{{ .note.Content | raw_html }}{{ else }}{{ .note.Content | md2html }}{{ end }}<div></td>
     </tr>
-{{ endautoescape }}
     <tr>
         <TD><i>links:</i></TD>
-        <td colspan="2" contenteditable="true" id='url'>{{note.url}}</td>
+        <td colspan="2" contenteditable="true" id='url'>{{ .note.URL }}</td>
     </tr>
     <tr>
-        <TD>{{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
-        <select id="ngroup" onChange="isModified=true;">
-        {{ $ngroup := "" }}
-        {{ if .note.group }}
-            {{ $ngroup = .note.group.name }}
-        {{ else }}
-            {{ $ngroup = "default" }}
-        {{ end }}
-        {{ range $idx, $gr := .groups }}
-        <option value="{{ $gr.name }}" {{ if eq $ngroup $gr.name }} selected="selected" {{ end }}>{{ $gr.name }}</option>
-        {{ end }}
-        </select>
+        <TD>
+        {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
+            <select id="ngroup" onChange="isModified=true;">
+            {{ $ngroup := "" }}
+            {{ if .note.Group }}
+                {{ $ngroup = .note.Group.Name }}
+            {{ else }}
+                {{ $ngroup = "default" }}
+            {{ end }}
+            {{ range $idx, $gr := .groups }}
+                <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
+            {{ end }}
+            </select>
         {{ end }}
         </td>
         <td colspan=1>
-            {{ if or (eq .note.author_id .user.id) (eq .note.author_id 0) }}
-            <select id="permission" onChange="isModified=true;">
-            {{ range $count, $perm := .permission_list }}
-            <option value="{{ $count }}" {{ if eq $count .note.permission }} selected="selected" {{ end }}>{{ $perm }}</option>
+            {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
+            <select name="permission">
+            {{ $note := .note }}
+            {{ range $permVal, $perm := .permission_list }}
+            <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
             {{ end }}
             </select>
-            {{ end }}
+        {{ end }}
         </td>
-<td>
-<form action="{{ .settings.BASE_URL }}" method="POST">{{ .csrfField }}
-<input type="hidden" name="action" value="sendmail"/>
-<input type="hidden" name="id" value="{{ .note.id }}"/>
-<label>sendmail: </label>
-<input type="text" name="recipients" value=""/>
-<input type="submit" value="submit"/>
-</form>
-</td>
-</tr>
+    </tr>
 </table>
 <br>
-<a href="{{ .settings.BASE_URL }}?action=edit&id={{ .note.id }}">Edit</a>&nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}?action=delete&id={{ .note.id }}" onClick="return ask_me('delete');">Delete</a>
-{{ template "footer" }}
+<a href="{{ .settings.BASE_URL }}/?id={{ .note.ID }}">Edit</a>&nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/delete?id={{ .note.ID }}" onClick="return ask_me('delete');">Delete</a>
+{{ template "footer" . }}
 <br><br>
-{{ template "list_note_attachment" }}
-{{ if not eq .user_id 0 }}
-<br><br>
-Update history
-<br><br>
-<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
-    <TR>
-        <TD>user</TD>
-        <td>date</td>
-        <td>content</td>
-        <td>&nbsp;</td>
-    </TR>
-{{ range $idx, $comment := .comments }}
-<form action="{{ .settings.BASE_URL }}" method="POST">{{ .csrfField }}
-<input type="hidden" name="action" value="save_comment"/>
-<input type="hidden" name="id" value="{{ .comment.id }}"/>
-<tr id={{ $comment.id }}>
-    <TD>{{ $comment.user.email }}</TD>
-    <td>{{ $comment.datelog|time_fmt:"%Y/%m/%d %H:%M:%S" }}</td>
-    <td class="editable">{{comment.content|default:''}}</td>
-    <td><input type="submit" name="submit" value="delete"/></td>
-</tr>
-</form>
+
+{{ template "list_note_attachment" . }}
+{{ if not (eq .user.ID 0) }}
+    <br><br>
+    Update history
+    <br><br>
+    <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
+        <TR>
+            <TD>user</TD>
+            <td>date</td>
+            <td>content</td>
+            <td>&nbsp;</td>
+        </TR>
+    {{ $date_layout := .date_layout }}
+    {{ range $idx, $comment := .comments }}
+        <form action="{{ .settings.BASE_URL }}/save_comment" method="POST">{{ .csrfField }}
+        <input type="hidden" name="id" value="{{ .comment.ID }}"/>
+        <tr id={{ $comment.ID }}>
+            <TD>{{ $comment.User.Email }}</TD>
+            <td>{{ $comment.Datelog | time_fmt $date_layout }}</td>
+            <td class="editable">{{ $comment.Content }}</td>
+            <td><input type="submit" name="submit" value="delete"/></td>
+        </tr>
+        </form>
+    {{ end }}
+    </table>
 {{ end }}
-</table>
-{{ end }}
-{{ if eq .note.raw_editor 0 }}
+{{ if eq .note.RawEditor 0 }}
 <script>
 CKEDITOR.disableAutoInline = true;
 isModified = false;
@@ -134,12 +125,12 @@ function do_save(o) {
     var title = _title.innerHTML;
     var _url = document.getElementById("url");
     var url = _url.innerHTML;// the replace below to trip tag <br> at the end
-    params = "is_ajax=1&action=save_note_content&note_id={{ .note.id }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
+    params = "is_ajax=1&id={{ .note.ID }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
     var _ngroup = document.getElementById("ngroup");
     if (_ngroup) params += "&ngroup=" + _ngroup.value;
     var _perm = document.getElementById("permission");
     if (_perm) params += "&perm=" + _perm.value;
-    AJAX.postText("{{ .settings.BASE_URL }}", params, function(response) {
+    AJAX.postText("{{ .settings.BASE_URL }}/savenote", params, function(response) {
         // alert(response);
         }
     );

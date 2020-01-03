@@ -1,6 +1,8 @@
-{{ $title := "Webnote - search result" }}
-{{ template "header" }}
-{{ template "head_menu" }}
+{{ template "header" . }}
+{{ template "head_menu" . }}
+{{ $date_layout := .date_layout }}
+{{ $keyword := .keyword }}
+{{ $page := .page }}
 <script language="javascript">
 function select_all(obj) {
 	var cval = "";
@@ -27,7 +29,7 @@ function on_selected_run_sql(sql='') {
 	}
 	where_str += ' (' + values.join(',') + ')'
 	sql += where_str
-	AJAX.postText("{{ .settings.BASE_URL }}", "action=on_selected_run_sql&sql=" + sql, function (r) { alert(r);} )
+	AJAX.postText("{{ .settings.BASE_URL }}/on_selected_run_sql", "sql=" + sql, function (r) { alert(r);} )
 }
 
 function on_selected_set_permisions() {
@@ -52,13 +54,12 @@ function process_selected(o) {
 	case 'Set permision': on_selected_set_permisions(); break;
 	case 'Set flags': on_selected_set_flags(); break;
 	case 'Delete': on_selected_delete(); break;
-
 	};
 	o.selectedIndex = 0;
 }
 </script>
 <br>
-{{ if gt (len notes) 0 }}
+{{ if gt (len .notes) 0 }}
 <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
 	<TR bgcolor="blue">
 		<b>
@@ -77,52 +78,57 @@ function process_selected(o) {
 		</b>
 	</TR>
 	{{ range $idx, $note := .notes }}
-	<tr bgcolor="{{ cycle '#FFFFFF'  '#F8F8F8' }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle '#FFFFFF'  '#F8F8F8' }}';">
-		<TD title="{{note.title}}"><i>{{note.title|truncatechars:50}}</i></TD>
-		<td>{{ note.datelog|time_fmt:"%Y/%m/%d %H:%M:%S" }}</td>
-		<td>{{note.author.f_name}} {{note.author.l_name}}</td>
-		<td><a href="/?action=view&id={{ .note.id }}&keyword={{ .keyword }}">view</a> </td>
-		<td><a href="/?action=view&id={{ .note.id }}&keyword={{ .keyword }}&t=2">view2</a></td>
-		<td><a href="/?action=edit&id={{ .note.id }}&keyword={{ .keyword }}">edit</a></td>
-		<td><a href="/?action=delete&id={{ .note.id }}&keyword={{ .keyword }}" onClick="return ask_me('delete');">delete</a> </td>
-		<td><input type="checkbox" value="{{ .note.id }}" name="selected_notes"/></td>
+	<tr bgcolor="{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}';">
+		<TD title="{{ $note.Title }}"><i>{{ $note.Title | truncatechars 50 }}</i></TD>
+		<td>{{ $note.Datelog | time_fmt $date_layout }}</td>
+		<td>{{ $note.Author.FirstName }} {{ $note.Author.LastName}}</td>
+		<td><a href="/view?id={{ $note.ID }}&keyword={{ $keyword }}">view</a></td>
+		<td><a href="/view?id={{ $note.ID }}&keyword={{ $keyword }}&t=2">view2</a></td>
+		<td><a href="/?id={{ $note.ID }}&keyword={{ $keyword }}">edit</a></td>
+		<td><a href="/delete?id={{ $note.ID }}&page={{ $page }}&keyword={{ $keyword }}" onClick="return ask_me('delete');">delete</a> </td>
+		<td><input type="checkbox" value="{{ $note.ID }}" name="selected_notes"/></td>
 	</tr>
-{{ end }}
+	{{ end }}
 </table>
 {{ else }}
 <hr/>
 No notes found
 <hr/>
 {{ end }}
-{{ if gt (len .attachments) 0 }}
-<hr>
-<table class="editable" border="1" cellpadding="3" cellspacing="3">
-<TR bgcolor="blue">
-<TD class="commands uneditable">name</TD><td class="commands uneditable">description</td><td class="commands uneditable">group</td><td class="commands uneditable">permission</td><td class="commands uneditable">TS</td><td class="commands uneditable">delete</td><td class="commands uneditable">link/download</td>
-</TR>
-{{ range $idx, $att := .attachments }}
-<tr id="{{ $att.id }}">
-<TD id='name' title="{{ $att.name }}"><i>{{ truncatechars $att.name 50 }}</i></TD>
-<td id='desc'>{{ $att.desc }}</td>
-<td id='group'>{{ $att.group.name }}</td>
-<td id='permission'>{{ $att.permission }}</td>
-<td class="commands uneditable">{{ $att.updated|time_fmt:"%Y-%m-%d %H:%M:%S" }}</td>
-<td class="commands uneditable"><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
-<td class="commands uneditable"><a href="{{ .settings.BASE_URL }}?action=sendfile&id={{ $att.id }}">view/download</a></td>
-</tr>
+{{ if .attachments }}
+	{{ if gt (len .attachments) 0 }}
+		<hr>
+		<table class="editable" border="1" cellpadding="3" cellspacing="3">
+		<TR bgcolor="blue">
+		<TD class="commands uneditable">name</TD><td class="commands uneditable">description</td><td class="commands uneditable">group</td><td class="commands uneditable">permission</td><td class="commands uneditable">TS</td><td class="commands uneditable">delete</td><td class="commands uneditable">link/download</td>
+		</TR>
+		{{ range $idx, $att := .attachments }}
+			<tr id="{{ $att.ID }}">
+			<TD id='name' title="{{ $att.Name }}"><i>{{ truncatechars $att.Name 50 }}</i></TD>
+			<td id='desc'>{{ $att.Description }}</td>
+			<td id='group'>{{ $att.Group.Name }}</td>
+			<td id='permission'>{{ $att.Permission }}</td>
+			<td class="commands uneditable">{{ $att.Updated | time_fmt $date_layout }}</td>
+			<td class="commands uneditable"><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
+			<td class="commands uneditable"><a href="{{ .settings.BASE_URL }}/sendfile?id={{ $att.ID }}">view/download</a></td>
+			</tr>
+			<!-- end range attachements -->
+		{{ end }}
+		</table>
+		<!-- end if gt len .attachement -->
+	{{ end }}
+	<br>
+	<script language="javascript">
+	function do_delete_attachment(obj) {
+	if (confirm("Are you sure remove this attachment?")) {
+	var url = "/delete_attachment?id="+obj.parentNode.id;
+	AJAX.getText(url, function(response) {
+		alert(response);
+	}  )
+	}}
+	</script>
+<!-- end if .attachments section -->
 {{ end }}
-</table>
-{{ end }}
-<br>
-<script language="javascript">
-function do_delete_attachment(obj) {
-  if (confirm("Are you sure remove this attachment?")) {
-  var url = "/?action=delete_attachment&id="+obj.parentNode.id;
-   AJAX.getText(url, function(response) {
-    alert(response);
-  }  )
-}}
-</script>
-{{ template "footer" }}
+{{ template "footer" . }}
 </body>
 </html>

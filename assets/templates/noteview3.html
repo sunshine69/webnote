@@ -1,4 +1,1 @@
-{{ $page = "noteview3" }}
-{{ autoescape off }}
-{{ .note.content }}
-{{ endautoescape }}
+{{ .note.Content|raw_html }}

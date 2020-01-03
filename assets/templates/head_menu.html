@@ -2,9 +2,10 @@
 <script language="javascript">
 function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </script>
-<form method="POST" action="{{ .settings.BASE_URL }}" name="search" id="search">{{ .csrfField }}
-<input type="hidden" name="action" value="search"/>
-<i>Keyword or :TAGS</i> <input type="text" name="keyword" value=""/> <input type="submit" name="search_submit" value="Search" />
+<form method="POST" action="{{ .settings.BASE_URL }}/search" name="search" id="search">{{ .csrfField }}
+<i>Keyword or :TAGS</i>
+<input type="text" name="keyword" value=""/>
+<input type="submit" name="search_submit" value="Search" />
 {{ if eq .page "list_att" }}
 <input type="hidden" name="searchtype" value="attachment"/>
 {{ end }}
@@ -13,30 +14,30 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 {{ end }}
 </form><br>
 
-<A href="{{ .settings.BASE_URL }}?action=show_frontpage">New</A> &nbsp;
-<A href="{{ .settings.BASE_URL }}?action=show_frontpage&raw_editor=0">New HTML</A> &nbsp;
+<A href="{{ .settings.BASE_URL }}">New</A> &nbsp;
+<A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A> &nbsp;
 {{ if .note }}
     {{ if eq .page "noteview" }}
-        <a href="{{ .settings.BASE_URL }}?action=edit&id={{ .note.ID }}">Edit</a>
+        <a href="{{ .settings.BASE_URL }}/?id={{ .note.ID }}">Edit</a>
     {{ else }}
         {{ if gt .note.ID 0 }}
-        <a href="{{ .settings.BASE_URL }}?action=view&id={{ .note.ID }}">View</a>
-        <a href="{{ .settings.BASE_URL }}?action=view&id={{ .note.ID }}&t=2">View2</a>
+        <a href="{{ .settings.BASE_URL }}/view?id={{ .note.ID }}">View</a>
+        <a href="{{ .settings.BASE_URL }}/view?id={{ .note.ID }}&t=2">View2</a>
         {{ end }}
     {{ end }}
     {{ if ne .note.ID 0 }}
-        <a href="{{ .settings.BASE_URL }}?action=delete&id={{ .note.ID }}" onClick="return ask_me('delete');">Delete</a>
+        <a href="{{ .settings.BASE_URL }}/delete?id={{ .note.ID }}" onClick="return ask_me('delete');">Delete</a>
     {{ end }}
 {{ end }}
-<a href="{{ .settings.BASE_URL }}?action=edituser">My account</a>
+<a href="{{ .settings.BASE_URL }}/edituser">My account</a>
 
-&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}?action=show_uploadform">Upload files</A>
-&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}?action=list_attachment">List files</A>
-&nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}?action=search&keyword={{ .keyword }}">Back to search result</a> &nbsp;&nbsp;
+&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/show_uploadform">Upload files</A>
+&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/list_attachment">List files</A>
+&nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/search?keyword={{ .keyword }}">Back to search result</a> &nbsp;&nbsp;
 {{ if .user }}
-<DIV align="right" style="color : #b4bfff; display : inline;">Hi <span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
+<DIV align="right" style="color : #b4bfff; display : inline;">Hi {{ .user }}<span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
 {{ if eq .user.Email .settings.ADMIN_EMAIL }}
-<A href="{{ .settings.BASE_URL }}?action=adduser">Add</a><a href="{{ .settings.BASE_URL }}?action=edituser">/ Edit user</A>
+<A href="{{ .settings.BASE_URL }}/adduser">Add</a><a href="{{ .settings.BASE_URL }}/edituser">/ Edit user</A>
 {{ end }}
 </DIV>
 {{ end }}
