@@ -51,7 +51,7 @@ func GetGroupByID(id int8) *Group {
 	DB := GetDB(""); defer DB.Close()
 	g := Group{}
 	if e := DB.QueryRow(`SELECT
-	id() as id,
+	id(),
 	group_id,
 	name,
 	description

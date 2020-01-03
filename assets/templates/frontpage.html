@@ -71,8 +71,9 @@ for(var i=0;i<count;i++){
         <td>
             {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
                 <select name="permission">
-                {{ range $count, $perm := .permission_list }}
-                <option value="{{ inc $count }}" {{ if eq $count .note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
+                {{ $note := .note }}
+                {{ range $permVal, $perm := .permission_list }}
+                <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
                 {{ end }}
                 </select>
             {{ end }}

@@ -44,31 +44,39 @@ func (u *User) Update() {
 	if e != nil {
 		log.Fatalf("ERROR %v\n", e)
 	}
-
 	defer rows.Close()
 
 	for rows.Next() {
 		gr := Group{}
-		rows.Scan(&gr.ID, &gr.Group_id, &gr.Name, &gr.Description)
+		if e := rows.Scan(&gr.Group_id, &gr.Name, &gr.Description); e != nil {
+			log.Fatalf("ERROR user Update. Can not query group - %v\n", e)
+		}
 		u.Groups = append(u.Groups, &gr)
 	}
 }
 
 //SetGroup -
-func (u *User) SetGroup(gname string) {
-	g := GetGroup(gname)
+func (u *User) SetGroup(gnames ...string) {
 	DB := GetDB(""); defer DB.Close()
-	if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, u.ID, g.Group_id).Scan(&g.Group_id); e != nil {
-		log.Printf("INFO can not get the group. Going to insert new one - %v\n", e)
-		tx, _ := DB.Begin()
-		res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, int8($2))`, u.ID, g.Group_id)
-		if e != nil {
-			tx.Rollback()
-			log.Fatalf("ERROR can not set group to user - %v\n", e)
+	userID := u.ID
+
+	for _, gname := range(gnames) {
+		g := GetGroup(gname)
+
+		if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = int8($2)`, userID, g.Group_id).Scan(&g.Group_id); e != nil {
+			log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
+
+			tx, _ := DB.Begin()
+			res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, int8($2))`, userID, g.Group_id)
+			if e != nil {
+				tx.Rollback()
+				log.Fatalf("ERROR SetGroup can not set group to user - %v\n", e)
+			}
+			tx.Commit()
+
+			id, _ := res.LastInsertId()
+			log.Printf("INFO Insert one row to user_group - ID %d - , user ID %d\n", id, userID)
 		}
-		tx.Commit()
-		id, _ := res.LastInsertId()
-		log.Printf("INFO Insert one row to user_group - ID %d\n", id)
 	}
 }
 
@@ -94,14 +102,14 @@ func UserNew(in map[string]interface{}) (*User) {
 
 //Save a User. If new User then create on. If existing User then create a revisions before update.
 func (n *User) Save() {
-	var UserID int64
 	currentUser := GetUser(n.Email)
 	DB := GetDB("")
 	defer DB.Close()
 	var sql string
 
 	tx, _ := DB.Begin()
-	if currentUser == nil {//New User
+	if currentUser == nil {
+		log.Printf("INFO New User %s\n", n.Email)
 		sql = `INSERT INTO user(
 			f_name,
 			l_name,
@@ -123,9 +131,9 @@ func (n *User) Save() {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert user - %v\n", e)
 		}
-		UserID, _ = res.LastInsertId()
+		n.ID, _ = res.LastInsertId()
 	} else {
-		//Update the User
+		log.Printf("INFO Update the User %s\n", n.Email)
 		sql = `UPDATE user SET
 			f_name = $1,
 			l_name = $2,
@@ -149,7 +157,6 @@ func (n *User) Save() {
 		}
 	}
 	tx.Commit()
-	n.ID = UserID
 	n.Update()
 }
 

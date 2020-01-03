@@ -3,14 +3,455 @@
 // assets/media/ckeditor/CHANGES.md
 // assets/media/ckeditor/LICENSE.md
 // assets/media/ckeditor/README.md
+// assets/media/ckeditor/adapters/jquery.js
 // assets/media/ckeditor/build-config.js
 // assets/media/ckeditor/ckeditor.js
 // assets/media/ckeditor/config.js
 // assets/media/ckeditor/contents.css
+// assets/media/ckeditor/lang/af.js
+// assets/media/ckeditor/lang/ar.js
+// assets/media/ckeditor/lang/bg.js
+// assets/media/ckeditor/lang/bn.js
+// assets/media/ckeditor/lang/bs.js
+// assets/media/ckeditor/lang/ca.js
+// assets/media/ckeditor/lang/cs.js
+// assets/media/ckeditor/lang/cy.js
+// assets/media/ckeditor/lang/da.js
+// assets/media/ckeditor/lang/de.js
+// assets/media/ckeditor/lang/el.js
+// assets/media/ckeditor/lang/en-au.js
+// assets/media/ckeditor/lang/en-ca.js
+// assets/media/ckeditor/lang/en-gb.js
+// assets/media/ckeditor/lang/en.js
+// assets/media/ckeditor/lang/eo.js
+// assets/media/ckeditor/lang/es.js
+// assets/media/ckeditor/lang/et.js
+// assets/media/ckeditor/lang/eu.js
+// assets/media/ckeditor/lang/fa.js
+// assets/media/ckeditor/lang/fi.js
+// assets/media/ckeditor/lang/fo.js
+// assets/media/ckeditor/lang/fr-ca.js
+// assets/media/ckeditor/lang/fr.js
+// assets/media/ckeditor/lang/gl.js
+// assets/media/ckeditor/lang/gu.js
+// assets/media/ckeditor/lang/he.js
+// assets/media/ckeditor/lang/hi.js
+// assets/media/ckeditor/lang/hr.js
+// assets/media/ckeditor/lang/hu.js
+// assets/media/ckeditor/lang/id.js
+// assets/media/ckeditor/lang/is.js
+// assets/media/ckeditor/lang/it.js
+// assets/media/ckeditor/lang/ja.js
+// assets/media/ckeditor/lang/ka.js
+// assets/media/ckeditor/lang/km.js
+// assets/media/ckeditor/lang/ko.js
+// assets/media/ckeditor/lang/ku.js
+// assets/media/ckeditor/lang/lt.js
+// assets/media/ckeditor/lang/lv.js
+// assets/media/ckeditor/lang/mk.js
+// assets/media/ckeditor/lang/mn.js
+// assets/media/ckeditor/lang/ms.js
+// assets/media/ckeditor/lang/nb.js
+// assets/media/ckeditor/lang/nl.js
+// assets/media/ckeditor/lang/no.js
+// assets/media/ckeditor/lang/pl.js
+// assets/media/ckeditor/lang/pt-br.js
+// assets/media/ckeditor/lang/pt.js
+// assets/media/ckeditor/lang/ro.js
+// assets/media/ckeditor/lang/ru.js
+// assets/media/ckeditor/lang/si.js
+// assets/media/ckeditor/lang/sk.js
+// assets/media/ckeditor/lang/sl.js
+// assets/media/ckeditor/lang/sq.js
+// assets/media/ckeditor/lang/sr-latn.js
+// assets/media/ckeditor/lang/sr.js
+// assets/media/ckeditor/lang/sv.js
+// assets/media/ckeditor/lang/th.js
+// assets/media/ckeditor/lang/tr.js
+// assets/media/ckeditor/lang/tt.js
+// assets/media/ckeditor/lang/ug.js
+// assets/media/ckeditor/lang/uk.js
+// assets/media/ckeditor/lang/vi.js
+// assets/media/ckeditor/lang/zh-cn.js
+// assets/media/ckeditor/lang/zh.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/a11yhelp.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/_translationstatus.txt
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/af.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ar.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/bg.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ca.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cs.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cy.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/da.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/de.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/el.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en-gb.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/eo.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/es.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/et.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fa.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fi.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr-ca.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gl.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gu.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/he.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hi.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hr.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hu.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/id.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/it.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ja.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/km.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ko.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ku.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lt.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lv.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mk.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mn.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nb.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nl.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/no.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pl.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt-br.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ro.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ru.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/si.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sk.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sl.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sq.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr-latn.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sv.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/th.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tr.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tt.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ug.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/uk.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/vi.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh-cn.js
+// assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh.js
+// assets/media/ckeditor/plugins/about/dialogs/about.js
+// assets/media/ckeditor/plugins/about/dialogs/hidpi/logo_ckeditor.png
+// assets/media/ckeditor/plugins/about/dialogs/logo_ckeditor.png
+// assets/media/ckeditor/plugins/clipboard/dialogs/paste.js
+// assets/media/ckeditor/plugins/colordialog/dialogs/colordialog.js
+// assets/media/ckeditor/plugins/dialog/dialogDefinition.js
+// assets/media/ckeditor/plugins/div/dialogs/div.js
+// assets/media/ckeditor/plugins/find/dialogs/find.js
+// assets/media/ckeditor/plugins/flash/dialogs/flash.js
+// assets/media/ckeditor/plugins/flash/images/placeholder.png
+// assets/media/ckeditor/plugins/forms/dialogs/button.js
+// assets/media/ckeditor/plugins/forms/dialogs/checkbox.js
+// assets/media/ckeditor/plugins/forms/dialogs/form.js
+// assets/media/ckeditor/plugins/forms/dialogs/hiddenfield.js
+// assets/media/ckeditor/plugins/forms/dialogs/radio.js
+// assets/media/ckeditor/plugins/forms/dialogs/select.js
+// assets/media/ckeditor/plugins/forms/dialogs/textarea.js
+// assets/media/ckeditor/plugins/forms/dialogs/textfield.js
+// assets/media/ckeditor/plugins/forms/images/hiddenfield.gif
+// assets/media/ckeditor/plugins/icons.png
+// assets/media/ckeditor/plugins/icons_hidpi.png
+// assets/media/ckeditor/plugins/iframe/dialogs/iframe.js
+// assets/media/ckeditor/plugins/iframe/images/placeholder.png
+// assets/media/ckeditor/plugins/image/dialogs/image.js
+// assets/media/ckeditor/plugins/image/images/noimage.png
+// assets/media/ckeditor/plugins/imagepaste/docs/install.html
+// assets/media/ckeditor/plugins/imagepaste/docs/styles.css
+// assets/media/ckeditor/plugins/imagepaste/plugin.js
+// assets/media/ckeditor/plugins/link/dialogs/anchor.js
+// assets/media/ckeditor/plugins/link/dialogs/link.js
+// assets/media/ckeditor/plugins/link/images/anchor.png
+// assets/media/ckeditor/plugins/link/images/hidpi/anchor.png
+// assets/media/ckeditor/plugins/liststyle/dialogs/liststyle.js
+// assets/media/ckeditor/plugins/magicline/images/hidpi/icon-rtl.png
+// assets/media/ckeditor/plugins/magicline/images/hidpi/icon.png
+// assets/media/ckeditor/plugins/magicline/images/icon-rtl.png
+// assets/media/ckeditor/plugins/magicline/images/icon.png
+// assets/media/ckeditor/plugins/pagebreak/images/pagebreak.gif
+// assets/media/ckeditor/plugins/pastefromword/filter/default.js
+// assets/media/ckeditor/plugins/preview/preview.html
+// assets/media/ckeditor/plugins/scayt/LICENSE.md
+// assets/media/ckeditor/plugins/scayt/README.md
+// assets/media/ckeditor/plugins/scayt/dialogs/options.js
+// assets/media/ckeditor/plugins/scayt/dialogs/toolbar.css
+// assets/media/ckeditor/plugins/showblocks/images/block_address.png
+// assets/media/ckeditor/plugins/showblocks/images/block_blockquote.png
+// assets/media/ckeditor/plugins/showblocks/images/block_div.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h1.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h2.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h3.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h4.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h5.png
+// assets/media/ckeditor/plugins/showblocks/images/block_h6.png
+// assets/media/ckeditor/plugins/showblocks/images/block_p.png
+// assets/media/ckeditor/plugins/showblocks/images/block_pre.png
+// assets/media/ckeditor/plugins/smiley/dialogs/smiley.js
+// assets/media/ckeditor/plugins/smiley/images/angel_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/angel_smile.png
+// assets/media/ckeditor/plugins/smiley/images/angry_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/angry_smile.png
+// assets/media/ckeditor/plugins/smiley/images/broken_heart.gif
+// assets/media/ckeditor/plugins/smiley/images/broken_heart.png
+// assets/media/ckeditor/plugins/smiley/images/confused_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/confused_smile.png
+// assets/media/ckeditor/plugins/smiley/images/cry_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/cry_smile.png
+// assets/media/ckeditor/plugins/smiley/images/devil_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/devil_smile.png
+// assets/media/ckeditor/plugins/smiley/images/embaressed_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.png
+// assets/media/ckeditor/plugins/smiley/images/envelope.gif
+// assets/media/ckeditor/plugins/smiley/images/envelope.png
+// assets/media/ckeditor/plugins/smiley/images/heart.gif
+// assets/media/ckeditor/plugins/smiley/images/heart.png
+// assets/media/ckeditor/plugins/smiley/images/kiss.gif
+// assets/media/ckeditor/plugins/smiley/images/kiss.png
+// assets/media/ckeditor/plugins/smiley/images/lightbulb.gif
+// assets/media/ckeditor/plugins/smiley/images/lightbulb.png
+// assets/media/ckeditor/plugins/smiley/images/omg_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/omg_smile.png
+// assets/media/ckeditor/plugins/smiley/images/regular_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/regular_smile.png
+// assets/media/ckeditor/plugins/smiley/images/sad_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/sad_smile.png
+// assets/media/ckeditor/plugins/smiley/images/shades_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/shades_smile.png
+// assets/media/ckeditor/plugins/smiley/images/teeth_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/teeth_smile.png
+// assets/media/ckeditor/plugins/smiley/images/thumbs_down.gif
+// assets/media/ckeditor/plugins/smiley/images/thumbs_down.png
+// assets/media/ckeditor/plugins/smiley/images/thumbs_up.gif
+// assets/media/ckeditor/plugins/smiley/images/thumbs_up.png
+// assets/media/ckeditor/plugins/smiley/images/tongue_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/tongue_smile.png
+// assets/media/ckeditor/plugins/smiley/images/tounge_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.png
+// assets/media/ckeditor/plugins/smiley/images/wink_smile.gif
+// assets/media/ckeditor/plugins/smiley/images/wink_smile.png
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/af.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ar.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/bg.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ca.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/cs.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/cy.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/da.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/de.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/el.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/en-gb.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/en.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/eo.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/es.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/et.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/fa.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/fi.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/gl.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/he.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/hr.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/hu.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/id.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/it.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ja.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/km.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ku.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/lt.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/lv.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/nb.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/nl.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/no.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/pl.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt-br.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ru.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/si.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/sk.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/sl.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/sq.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/sv.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/th.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/tr.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/tt.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/ug.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/uk.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/vi.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh-cn.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh.js
+// assets/media/ckeditor/plugins/specialchar/dialogs/specialchar.js
+// assets/media/ckeditor/plugins/table/dialogs/table.js
+// assets/media/ckeditor/plugins/tabletools/dialogs/tableCell.js
+// assets/media/ckeditor/plugins/templates/dialogs/templates.css
+// assets/media/ckeditor/plugins/templates/dialogs/templates.js
+// assets/media/ckeditor/plugins/templates/templates/default.js
+// assets/media/ckeditor/plugins/templates/templates/images/template1.gif
+// assets/media/ckeditor/plugins/templates/templates/images/template2.gif
+// assets/media/ckeditor/plugins/templates/templates/images/template3.gif
+// assets/media/ckeditor/plugins/wsc/LICENSE.md
+// assets/media/ckeditor/plugins/wsc/README.md
+// assets/media/ckeditor/plugins/wsc/dialogs/ciframe.html
+// assets/media/ckeditor/plugins/wsc/dialogs/tmpFrameset.html
+// assets/media/ckeditor/plugins/wsc/dialogs/wsc.css
+// assets/media/ckeditor/plugins/wsc/dialogs/wsc.js
+// assets/media/ckeditor/plugins/wsc/dialogs/wsc_ie.js
+// assets/media/ckeditor/samples/ajax.html
+// assets/media/ckeditor/samples/api.html
+// assets/media/ckeditor/samples/appendto.html
+// assets/media/ckeditor/samples/assets/inlineall/logo.png
+// assets/media/ckeditor/samples/assets/outputxhtml/outputxhtml.css
+// assets/media/ckeditor/samples/assets/posteddata.php
+// assets/media/ckeditor/samples/assets/sample.jpg
+// assets/media/ckeditor/samples/assets/uilanguages/languages.js
+// assets/media/ckeditor/samples/datafiltering.html
+// assets/media/ckeditor/samples/divreplace.html
+// assets/media/ckeditor/samples/index.html
+// assets/media/ckeditor/samples/inlineall.html
+// assets/media/ckeditor/samples/inlinebycode.html
+// assets/media/ckeditor/samples/inlinetextarea.html
+// assets/media/ckeditor/samples/jquery.html
+// assets/media/ckeditor/samples/plugins/dialog/assets/my_dialog.js
+// assets/media/ckeditor/samples/plugins/dialog/dialog.html
+// assets/media/ckeditor/samples/plugins/enterkey/enterkey.html
+// assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.fla
+// assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.swf
+// assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/swfobject.js
+// assets/media/ckeditor/samples/plugins/htmlwriter/outputforflash.html
+// assets/media/ckeditor/samples/plugins/htmlwriter/outputhtml.html
+// assets/media/ckeditor/samples/plugins/magicline/magicline.html
+// assets/media/ckeditor/samples/plugins/toolbar/toolbar.html
+// assets/media/ckeditor/samples/plugins/wysiwygarea/fullpage.html
+// assets/media/ckeditor/samples/readonly.html
+// assets/media/ckeditor/samples/replacebyclass.html
+// assets/media/ckeditor/samples/replacebycode.html
+// assets/media/ckeditor/samples/sample.css
+// assets/media/ckeditor/samples/sample.js
+// assets/media/ckeditor/samples/sample_posteddata.php
+// assets/media/ckeditor/samples/tabindex.html
+// assets/media/ckeditor/samples/uicolor.html
+// assets/media/ckeditor/samples/uilanguages.html
+// assets/media/ckeditor/samples/xhtmlstyle.html
+// assets/media/ckeditor/skins/moono/dialog.css
+// assets/media/ckeditor/skins/moono/dialog_ie.css
+// assets/media/ckeditor/skins/moono/dialog_ie7.css
+// assets/media/ckeditor/skins/moono/dialog_ie8.css
+// assets/media/ckeditor/skins/moono/dialog_iequirks.css
+// assets/media/ckeditor/skins/moono/editor.css
+// assets/media/ckeditor/skins/moono/editor_gecko.css
+// assets/media/ckeditor/skins/moono/editor_ie.css
+// assets/media/ckeditor/skins/moono/editor_ie7.css
+// assets/media/ckeditor/skins/moono/editor_ie8.css
+// assets/media/ckeditor/skins/moono/editor_iequirks.css
+// assets/media/ckeditor/skins/moono/icons.png
+// assets/media/ckeditor/skins/moono/icons_hidpi.png
+// assets/media/ckeditor/skins/moono/images/arrow.png
+// assets/media/ckeditor/skins/moono/images/close.png
+// assets/media/ckeditor/skins/moono/images/hidpi/close.png
+// assets/media/ckeditor/skins/moono/images/hidpi/lock-open.png
+// assets/media/ckeditor/skins/moono/images/hidpi/lock.png
+// assets/media/ckeditor/skins/moono/images/hidpi/refresh.png
+// assets/media/ckeditor/skins/moono/images/lock-open.png
+// assets/media/ckeditor/skins/moono/images/lock.png
+// assets/media/ckeditor/skins/moono/images/refresh.png
+// assets/media/ckeditor/skins/moono/readme.md
 // assets/media/ckeditor/styles.js
+// assets/media/html/iching.html
+// assets/media/html/t.html
 // assets/media/js/ajax.js
+// assets/media/js/inlineeditor/InlineEditor.Combo.js
+// assets/media/js/inlineeditor/InlineEditor.Textarea.js
+// assets/media/js/inlineeditor/InlineEditor.css
+// assets/media/js/inlineeditor/InlineEditor.js
 // assets/media/js/inlineeditor-source.js
 // assets/media/js/inlineeditor.js
+// assets/media/tinymce/LICENSE.TXT
+// assets/media/tinymce/changelog.txt
+// assets/media/tinymce/js/tinymce/jquery.tinymce.min.js
+// assets/media/tinymce/js/tinymce/langs/readme.md
+// assets/media/tinymce/js/tinymce/license.txt
+// assets/media/tinymce/js/tinymce/plugins/advlist/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/anchor/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/autolink/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/autoresize/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/autosave/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/bbcode/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/charmap/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/code/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/colorpicker/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/contextmenu/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/directionality/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cool.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cry.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-embarassed.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-frown.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-innocent.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-kiss.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-laughing.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-money-mouth.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-sealed.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-smile.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-surprised.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-tongue-out.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-undecided.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-wink.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-yell.gif
+// assets/media/tinymce/js/tinymce/plugins/emoticons/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/example/dialog.html
+// assets/media/tinymce/js/tinymce/plugins/example/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/example_dependency/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/fullpage/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/fullscreen/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/hr/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/image/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/importcss/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/insertdatetime/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/layer/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/legacyoutput/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/link/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/lists/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/media/moxieplayer.swf
+// assets/media/tinymce/js/tinymce/plugins/media/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/nonbreaking/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/noneditable/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/pagebreak/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/paste/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/preview/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/print/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/save/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/searchreplace/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/spellchecker/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/tabfocus/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/table/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/template/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/textcolor/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/textpattern/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/visualblocks/css/visualblocks.css
+// assets/media/tinymce/js/tinymce/plugins/visualblocks/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/visualchars/plugin.min.js
+// assets/media/tinymce/js/tinymce/plugins/wordcount/plugin.min.js
+// assets/media/tinymce/js/tinymce/skins/lightgray/content.inline.min.css
+// assets/media/tinymce/js/tinymce/skins/lightgray/content.min.css
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.eot
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.svg
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.ttf
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.woff
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.eot
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.svg
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.ttf
+// assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.woff
+// assets/media/tinymce/js/tinymce/skins/lightgray/img/anchor.gif
+// assets/media/tinymce/js/tinymce/skins/lightgray/img/loader.gif
+// assets/media/tinymce/js/tinymce/skins/lightgray/img/object.gif
+// assets/media/tinymce/js/tinymce/skins/lightgray/img/trans.gif
+// assets/media/tinymce/js/tinymce/skins/lightgray/skin.ie7.min.css
+// assets/media/tinymce/js/tinymce/skins/lightgray/skin.min.css
+// assets/media/tinymce/js/tinymce/themes/modern/theme.min.js
+// assets/media/tinymce/js/tinymce/tinymce.min.js
 // assets/templates/cred_search_results.html
 // assets/templates/footer.html
 // assets/templates/frontpage.html
@@ -233,6 +674,24 @@ func assetsMediaCkeditorReadmeMd() (*asset, error) {
 	return a, err
 }
 
+// assetsMediaCkeditorAdaptersJqueryJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorAdaptersJqueryJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/adapters/jquery.js"
+	name := "assets/media/ckeditor/adapters/jquery.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // assetsMediaCkeditorBuildConfigJs reads file data from disk. It returns an error on failure.
 func assetsMediaCkeditorBuildConfigJs() (*asset, error) {
 	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/build-config.js"
@@ -305,6 +764,6306 @@ func assetsMediaCkeditorContentsCss() (*asset, error) {
 	return a, err
 }
 
+// assetsMediaCkeditorLangAfJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangAfJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/af.js"
+	name := "assets/media/ckeditor/lang/af.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangArJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangArJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ar.js"
+	name := "assets/media/ckeditor/lang/ar.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangBgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangBgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/bg.js"
+	name := "assets/media/ckeditor/lang/bg.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangBnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangBnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/bn.js"
+	name := "assets/media/ckeditor/lang/bn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangBsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangBsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/bs.js"
+	name := "assets/media/ckeditor/lang/bs.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ca.js"
+	name := "assets/media/ckeditor/lang/ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangCsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangCsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/cs.js"
+	name := "assets/media/ckeditor/lang/cs.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangCyJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangCyJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/cy.js"
+	name := "assets/media/ckeditor/lang/cy.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangDaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangDaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/da.js"
+	name := "assets/media/ckeditor/lang/da.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangDeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangDeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/de.js"
+	name := "assets/media/ckeditor/lang/de.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangElJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangElJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/el.js"
+	name := "assets/media/ckeditor/lang/el.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEnAuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEnAuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/en-au.js"
+	name := "assets/media/ckeditor/lang/en-au.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEnCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEnCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/en-ca.js"
+	name := "assets/media/ckeditor/lang/en-ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEnGbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEnGbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/en-gb.js"
+	name := "assets/media/ckeditor/lang/en-gb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/en.js"
+	name := "assets/media/ckeditor/lang/en.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/eo.js"
+	name := "assets/media/ckeditor/lang/eo.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/es.js"
+	name := "assets/media/ckeditor/lang/es.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/et.js"
+	name := "assets/media/ckeditor/lang/et.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangEuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangEuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/eu.js"
+	name := "assets/media/ckeditor/lang/eu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangFaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangFaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/fa.js"
+	name := "assets/media/ckeditor/lang/fa.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangFiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangFiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/fi.js"
+	name := "assets/media/ckeditor/lang/fi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangFoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangFoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/fo.js"
+	name := "assets/media/ckeditor/lang/fo.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangFrCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangFrCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/fr-ca.js"
+	name := "assets/media/ckeditor/lang/fr-ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangFrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangFrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/fr.js"
+	name := "assets/media/ckeditor/lang/fr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangGlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangGlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/gl.js"
+	name := "assets/media/ckeditor/lang/gl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangGuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangGuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/gu.js"
+	name := "assets/media/ckeditor/lang/gu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangHeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangHeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/he.js"
+	name := "assets/media/ckeditor/lang/he.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangHiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangHiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/hi.js"
+	name := "assets/media/ckeditor/lang/hi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangHrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangHrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/hr.js"
+	name := "assets/media/ckeditor/lang/hr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangHuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangHuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/hu.js"
+	name := "assets/media/ckeditor/lang/hu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangIdJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangIdJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/id.js"
+	name := "assets/media/ckeditor/lang/id.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangIsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangIsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/is.js"
+	name := "assets/media/ckeditor/lang/is.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangItJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangItJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/it.js"
+	name := "assets/media/ckeditor/lang/it.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangJaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangJaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ja.js"
+	name := "assets/media/ckeditor/lang/ja.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangKaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangKaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ka.js"
+	name := "assets/media/ckeditor/lang/ka.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangKmJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangKmJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/km.js"
+	name := "assets/media/ckeditor/lang/km.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangKoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangKoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ko.js"
+	name := "assets/media/ckeditor/lang/ko.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangKuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangKuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ku.js"
+	name := "assets/media/ckeditor/lang/ku.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangLtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangLtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/lt.js"
+	name := "assets/media/ckeditor/lang/lt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangLvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangLvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/lv.js"
+	name := "assets/media/ckeditor/lang/lv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangMkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangMkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/mk.js"
+	name := "assets/media/ckeditor/lang/mk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangMnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangMnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/mn.js"
+	name := "assets/media/ckeditor/lang/mn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangMsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangMsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ms.js"
+	name := "assets/media/ckeditor/lang/ms.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangNbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangNbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/nb.js"
+	name := "assets/media/ckeditor/lang/nb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangNlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangNlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/nl.js"
+	name := "assets/media/ckeditor/lang/nl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangNoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangNoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/no.js"
+	name := "assets/media/ckeditor/lang/no.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangPlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangPlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/pl.js"
+	name := "assets/media/ckeditor/lang/pl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangPtBrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangPtBrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/pt-br.js"
+	name := "assets/media/ckeditor/lang/pt-br.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangPtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangPtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/pt.js"
+	name := "assets/media/ckeditor/lang/pt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangRoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangRoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ro.js"
+	name := "assets/media/ckeditor/lang/ro.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangRuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangRuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ru.js"
+	name := "assets/media/ckeditor/lang/ru.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/si.js"
+	name := "assets/media/ckeditor/lang/si.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sk.js"
+	name := "assets/media/ckeditor/lang/sk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sl.js"
+	name := "assets/media/ckeditor/lang/sl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSqJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSqJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sq.js"
+	name := "assets/media/ckeditor/lang/sq.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSrLatnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSrLatnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sr-latn.js"
+	name := "assets/media/ckeditor/lang/sr-latn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sr.js"
+	name := "assets/media/ckeditor/lang/sr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangSvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangSvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/sv.js"
+	name := "assets/media/ckeditor/lang/sv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangThJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangThJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/th.js"
+	name := "assets/media/ckeditor/lang/th.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangTrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangTrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/tr.js"
+	name := "assets/media/ckeditor/lang/tr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangTtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangTtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/tt.js"
+	name := "assets/media/ckeditor/lang/tt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangUgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangUgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/ug.js"
+	name := "assets/media/ckeditor/lang/ug.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangUkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangUkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/uk.js"
+	name := "assets/media/ckeditor/lang/uk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangViJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangViJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/vi.js"
+	name := "assets/media/ckeditor/lang/vi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangZhCnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangZhCnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/zh-cn.js"
+	name := "assets/media/ckeditor/lang/zh-cn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorLangZhJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorLangZhJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/lang/zh.js"
+	name := "assets/media/ckeditor/lang/zh.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsA11yhelpJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsA11yhelpJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/a11yhelp.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/a11yhelp.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLang_translationstatusTxt reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLang_translationstatusTxt() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/_translationstatus.txt"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/_translationstatus.txt"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangAfJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangAfJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/af.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/af.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangArJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangArJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ar.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ar.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangBgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangBgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/bg.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/bg.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ca.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangCsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangCsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cs.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cs.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangCyJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangCyJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cy.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cy.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangDaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangDaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/da.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/da.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangDeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangDeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/de.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/de.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangElJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangElJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/el.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/el.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangEnGbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangEnGbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en-gb.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en-gb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangEnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangEnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangEoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangEoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/eo.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/eo.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangEsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangEsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/es.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/es.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangEtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangEtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/et.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/et.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangFaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangFaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fa.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fa.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangFiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangFiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fi.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangFrCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangFrCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr-ca.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr-ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangFrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangFrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangGlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangGlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gl.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangGuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangGuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gu.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangHeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangHeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/he.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/he.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangHiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangHiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hi.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangHrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangHrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hr.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangHuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangHuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hu.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangIdJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangIdJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/id.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/id.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangItJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangItJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/it.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/it.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangJaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangJaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ja.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ja.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangKmJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangKmJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/km.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/km.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangKoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangKoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ko.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ko.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangKuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangKuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ku.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ku.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangLtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangLtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lt.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangLvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangLvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lv.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangMkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangMkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mk.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangMnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangMnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mn.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangNbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangNbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nb.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangNlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangNlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nl.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangNoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangNoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/no.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/no.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangPlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangPlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pl.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangPtBrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangPtBrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt-br.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt-br.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangPtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangPtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangRoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangRoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ro.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ro.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangRuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangRuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ru.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ru.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/si.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/si.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sk.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sl.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSqJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSqJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sq.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sq.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSrLatnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSrLatnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr-latn.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr-latn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangSvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangSvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sv.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangThJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangThJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/th.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/th.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangTrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangTrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tr.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangTtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangTtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tt.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangUgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangUgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ug.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ug.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangUkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangUkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/uk.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/uk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangViJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangViJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/vi.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/vi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangZhCnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangZhCnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh-cn.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh-cn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsA11yhelpDialogsLangZhJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsA11yhelpDialogsLangZhJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh.js"
+	name := "assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsAboutDialogsAboutJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsAboutDialogsAboutJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/about/dialogs/about.js"
+	name := "assets/media/ckeditor/plugins/about/dialogs/about.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsAboutDialogsHidpiLogo_ckeditorPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsAboutDialogsHidpiLogo_ckeditorPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/about/dialogs/hidpi/logo_ckeditor.png"
+	name := "assets/media/ckeditor/plugins/about/dialogs/hidpi/logo_ckeditor.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsAboutDialogsLogo_ckeditorPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsAboutDialogsLogo_ckeditorPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/about/dialogs/logo_ckeditor.png"
+	name := "assets/media/ckeditor/plugins/about/dialogs/logo_ckeditor.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsClipboardDialogsPasteJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsClipboardDialogsPasteJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/clipboard/dialogs/paste.js"
+	name := "assets/media/ckeditor/plugins/clipboard/dialogs/paste.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsColordialogDialogsColordialogJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsColordialogDialogsColordialogJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/colordialog/dialogs/colordialog.js"
+	name := "assets/media/ckeditor/plugins/colordialog/dialogs/colordialog.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsDialogDialogdefinitionJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsDialogDialogdefinitionJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/dialog/dialogDefinition.js"
+	name := "assets/media/ckeditor/plugins/dialog/dialogDefinition.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsDivDialogsDivJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsDivDialogsDivJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/div/dialogs/div.js"
+	name := "assets/media/ckeditor/plugins/div/dialogs/div.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFindDialogsFindJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFindDialogsFindJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/find/dialogs/find.js"
+	name := "assets/media/ckeditor/plugins/find/dialogs/find.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFlashDialogsFlashJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFlashDialogsFlashJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/flash/dialogs/flash.js"
+	name := "assets/media/ckeditor/plugins/flash/dialogs/flash.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFlashImagesPlaceholderPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFlashImagesPlaceholderPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/flash/images/placeholder.png"
+	name := "assets/media/ckeditor/plugins/flash/images/placeholder.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsButtonJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsButtonJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/button.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/button.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsCheckboxJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsCheckboxJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/checkbox.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/checkbox.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsFormJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsFormJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/form.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/form.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsHiddenfieldJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsHiddenfieldJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/hiddenfield.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/hiddenfield.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsRadioJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsRadioJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/radio.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/radio.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsSelectJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsSelectJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/select.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/select.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsTextareaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsTextareaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/textarea.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/textarea.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsDialogsTextfieldJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsDialogsTextfieldJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/dialogs/textfield.js"
+	name := "assets/media/ckeditor/plugins/forms/dialogs/textfield.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsFormsImagesHiddenfieldGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsFormsImagesHiddenfieldGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/forms/images/hiddenfield.gif"
+	name := "assets/media/ckeditor/plugins/forms/images/hiddenfield.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsIconsPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsIconsPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/icons.png"
+	name := "assets/media/ckeditor/plugins/icons.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsIcons_hidpiPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsIcons_hidpiPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/icons_hidpi.png"
+	name := "assets/media/ckeditor/plugins/icons_hidpi.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsIframeDialogsIframeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsIframeDialogsIframeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/iframe/dialogs/iframe.js"
+	name := "assets/media/ckeditor/plugins/iframe/dialogs/iframe.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsIframeImagesPlaceholderPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsIframeImagesPlaceholderPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/iframe/images/placeholder.png"
+	name := "assets/media/ckeditor/plugins/iframe/images/placeholder.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsImageDialogsImageJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsImageDialogsImageJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/image/dialogs/image.js"
+	name := "assets/media/ckeditor/plugins/image/dialogs/image.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsImageImagesNoimagePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsImageImagesNoimagePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/image/images/noimage.png"
+	name := "assets/media/ckeditor/plugins/image/images/noimage.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsImagepasteDocsInstallHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsImagepasteDocsInstallHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/imagepaste/docs/install.html"
+	name := "assets/media/ckeditor/plugins/imagepaste/docs/install.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsImagepasteDocsStylesCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsImagepasteDocsStylesCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/imagepaste/docs/styles.css"
+	name := "assets/media/ckeditor/plugins/imagepaste/docs/styles.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsImagepastePluginJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsImagepastePluginJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/imagepaste/plugin.js"
+	name := "assets/media/ckeditor/plugins/imagepaste/plugin.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsLinkDialogsAnchorJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsLinkDialogsAnchorJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/link/dialogs/anchor.js"
+	name := "assets/media/ckeditor/plugins/link/dialogs/anchor.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsLinkDialogsLinkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsLinkDialogsLinkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/link/dialogs/link.js"
+	name := "assets/media/ckeditor/plugins/link/dialogs/link.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsLinkImagesAnchorPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsLinkImagesAnchorPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/link/images/anchor.png"
+	name := "assets/media/ckeditor/plugins/link/images/anchor.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsLinkImagesHidpiAnchorPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsLinkImagesHidpiAnchorPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/link/images/hidpi/anchor.png"
+	name := "assets/media/ckeditor/plugins/link/images/hidpi/anchor.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsListstyleDialogsListstyleJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsListstyleDialogsListstyleJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/liststyle/dialogs/liststyle.js"
+	name := "assets/media/ckeditor/plugins/liststyle/dialogs/liststyle.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsMagiclineImagesHidpiIconRtlPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsMagiclineImagesHidpiIconRtlPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/magicline/images/hidpi/icon-rtl.png"
+	name := "assets/media/ckeditor/plugins/magicline/images/hidpi/icon-rtl.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsMagiclineImagesHidpiIconPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsMagiclineImagesHidpiIconPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/magicline/images/hidpi/icon.png"
+	name := "assets/media/ckeditor/plugins/magicline/images/hidpi/icon.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsMagiclineImagesIconRtlPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsMagiclineImagesIconRtlPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/magicline/images/icon-rtl.png"
+	name := "assets/media/ckeditor/plugins/magicline/images/icon-rtl.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsMagiclineImagesIconPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsMagiclineImagesIconPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/magicline/images/icon.png"
+	name := "assets/media/ckeditor/plugins/magicline/images/icon.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsPagebreakImagesPagebreakGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsPagebreakImagesPagebreakGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/pagebreak/images/pagebreak.gif"
+	name := "assets/media/ckeditor/plugins/pagebreak/images/pagebreak.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsPastefromwordFilterDefaultJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsPastefromwordFilterDefaultJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/pastefromword/filter/default.js"
+	name := "assets/media/ckeditor/plugins/pastefromword/filter/default.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsPreviewPreviewHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsPreviewPreviewHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/preview/preview.html"
+	name := "assets/media/ckeditor/plugins/preview/preview.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsScaytLicenseMd reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsScaytLicenseMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/scayt/LICENSE.md"
+	name := "assets/media/ckeditor/plugins/scayt/LICENSE.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsScaytReadmeMd reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsScaytReadmeMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/scayt/README.md"
+	name := "assets/media/ckeditor/plugins/scayt/README.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsScaytDialogsOptionsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsScaytDialogsOptionsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/scayt/dialogs/options.js"
+	name := "assets/media/ckeditor/plugins/scayt/dialogs/options.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsScaytDialogsToolbarCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsScaytDialogsToolbarCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/scayt/dialogs/toolbar.css"
+	name := "assets/media/ckeditor/plugins/scayt/dialogs/toolbar.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_addressPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_addressPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_address.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_address.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_blockquotePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_blockquotePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_blockquote.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_blockquote.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_divPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_divPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_div.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_div.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h1Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h1Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h1.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h1.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h2Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h2Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h2.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h2.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h3Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h3Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h3.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h3.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h4Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h4Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h4.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h4.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h5Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h5Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h5.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h5.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_h6Png reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_h6Png() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_h6.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_h6.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_pPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_pPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_p.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_p.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsShowblocksImagesBlock_prePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsShowblocksImagesBlock_prePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/showblocks/images/block_pre.png"
+	name := "assets/media/ckeditor/plugins/showblocks/images/block_pre.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyDialogsSmileyJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyDialogsSmileyJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/dialogs/smiley.js"
+	name := "assets/media/ckeditor/plugins/smiley/dialogs/smiley.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesAngel_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesAngel_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/angel_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/angel_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesAngel_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesAngel_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/angel_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/angel_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesAngry_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesAngry_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/angry_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/angry_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesAngry_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesAngry_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/angry_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/angry_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesBroken_heartGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesBroken_heartGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/broken_heart.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/broken_heart.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesBroken_heartPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesBroken_heartPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/broken_heart.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/broken_heart.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesConfused_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesConfused_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/confused_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/confused_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesConfused_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesConfused_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/confused_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/confused_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesCry_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesCry_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/cry_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/cry_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesCry_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesCry_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/cry_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/cry_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesDevil_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesDevil_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/devil_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/devil_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesDevil_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesDevil_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/devil_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/devil_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesEmbaressed_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesEmbaressed_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/embaressed_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/embaressed_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesEnvelopeGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesEnvelopeGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/envelope.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/envelope.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesEnvelopePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesEnvelopePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/envelope.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/envelope.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesHeartGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesHeartGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/heart.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/heart.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesHeartPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesHeartPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/heart.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/heart.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesKissGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesKissGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/kiss.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/kiss.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesKissPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesKissPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/kiss.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/kiss.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesLightbulbGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesLightbulbGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/lightbulb.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/lightbulb.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesLightbulbPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesLightbulbPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/lightbulb.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/lightbulb.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesOmg_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesOmg_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/omg_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/omg_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesOmg_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesOmg_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/omg_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/omg_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesRegular_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesRegular_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/regular_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/regular_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesRegular_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesRegular_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/regular_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/regular_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesSad_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesSad_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/sad_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/sad_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesSad_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesSad_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/sad_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/sad_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesShades_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesShades_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/shades_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/shades_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesShades_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesShades_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/shades_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/shades_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesTeeth_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesTeeth_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/teeth_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/teeth_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesTeeth_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesTeeth_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/teeth_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/teeth_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesThumbs_downGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesThumbs_downGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/thumbs_down.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/thumbs_down.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesThumbs_downPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesThumbs_downPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/thumbs_down.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/thumbs_down.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesThumbs_upGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesThumbs_upGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/thumbs_up.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/thumbs_up.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesThumbs_upPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesThumbs_upPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/thumbs_up.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/thumbs_up.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesTongue_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesTongue_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/tongue_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/tongue_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesTongue_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesTongue_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/tongue_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/tongue_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesTounge_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesTounge_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/tounge_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/tounge_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesWink_smileGif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesWink_smileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/wink_smile.gif"
+	name := "assets/media/ckeditor/plugins/smiley/images/wink_smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSmileyImagesWink_smilePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSmileyImagesWink_smilePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/smiley/images/wink_smile.png"
+	name := "assets/media/ckeditor/plugins/smiley/images/wink_smile.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLang_translationstatusTxt reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLang_translationstatusTxt() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangAfJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangAfJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/af.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/af.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangArJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangArJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ar.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ar.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangBgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangBgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/bg.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/bg.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ca.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangCsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangCsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/cs.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/cs.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangCyJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangCyJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/cy.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/cy.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangDaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangDaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/da.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/da.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangDeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangDeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/de.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/de.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangElJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangElJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/el.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/el.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangEnGbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangEnGbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/en-gb.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/en-gb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangEnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangEnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/en.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/en.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangEoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangEoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/eo.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/eo.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangEsJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangEsJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/es.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/es.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangEtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangEtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/et.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/et.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangFaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangFaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/fa.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/fa.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangFiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangFiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/fi.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/fi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangFrCaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangFrCaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangFrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangFrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangGlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangGlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/gl.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/gl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangHeJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangHeJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/he.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/he.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangHrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangHrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/hr.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/hr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangHuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangHuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/hu.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/hu.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangIdJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangIdJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/id.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/id.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangItJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangItJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/it.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/it.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangJaJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangJaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ja.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ja.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangKmJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangKmJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/km.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/km.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangKuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangKuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ku.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ku.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangLtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangLtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/lt.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/lt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangLvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangLvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/lv.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/lv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangNbJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangNbJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/nb.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/nb.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangNlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangNlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/nl.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/nl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangNoJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangNoJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/no.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/no.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangPlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangPlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/pl.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/pl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangPtBrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangPtBrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt-br.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt-br.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangPtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangPtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangRuJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangRuJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ru.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ru.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangSiJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangSiJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/si.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/si.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangSkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangSkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/sk.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/sk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangSlJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangSlJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/sl.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/sl.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangSqJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangSqJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/sq.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/sq.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangSvJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangSvJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/sv.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/sv.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangThJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangThJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/th.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/th.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangTrJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangTrJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/tr.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/tr.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangTtJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangTtJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/tt.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/tt.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangUgJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangUgJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/ug.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/ug.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangUkJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangUkJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/uk.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/uk.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangViJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangViJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/vi.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/vi.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangZhCnJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangZhCnJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh-cn.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh-cn.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsLangZhJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsLangZhJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsSpecialcharDialogsSpecialcharJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsSpecialcharDialogsSpecialcharJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/specialchar/dialogs/specialchar.js"
+	name := "assets/media/ckeditor/plugins/specialchar/dialogs/specialchar.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTableDialogsTableJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTableDialogsTableJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/table/dialogs/table.js"
+	name := "assets/media/ckeditor/plugins/table/dialogs/table.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTabletoolsDialogsTablecellJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTabletoolsDialogsTablecellJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/tabletools/dialogs/tableCell.js"
+	name := "assets/media/ckeditor/plugins/tabletools/dialogs/tableCell.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesDialogsTemplatesCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesDialogsTemplatesCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/dialogs/templates.css"
+	name := "assets/media/ckeditor/plugins/templates/dialogs/templates.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesDialogsTemplatesJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesDialogsTemplatesJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/dialogs/templates.js"
+	name := "assets/media/ckeditor/plugins/templates/dialogs/templates.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesTemplatesDefaultJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesTemplatesDefaultJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/templates/default.js"
+	name := "assets/media/ckeditor/plugins/templates/templates/default.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate1Gif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate1Gif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/templates/images/template1.gif"
+	name := "assets/media/ckeditor/plugins/templates/templates/images/template1.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate2Gif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate2Gif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/templates/images/template2.gif"
+	name := "assets/media/ckeditor/plugins/templates/templates/images/template2.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate3Gif reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate3Gif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/templates/templates/images/template3.gif"
+	name := "assets/media/ckeditor/plugins/templates/templates/images/template3.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscLicenseMd reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscLicenseMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/LICENSE.md"
+	name := "assets/media/ckeditor/plugins/wsc/LICENSE.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscReadmeMd reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscReadmeMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/README.md"
+	name := "assets/media/ckeditor/plugins/wsc/README.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscDialogsCiframeHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscDialogsCiframeHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/dialogs/ciframe.html"
+	name := "assets/media/ckeditor/plugins/wsc/dialogs/ciframe.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscDialogsTmpframesetHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscDialogsTmpframesetHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/dialogs/tmpFrameset.html"
+	name := "assets/media/ckeditor/plugins/wsc/dialogs/tmpFrameset.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscDialogsWscCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscDialogsWscCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/dialogs/wsc.css"
+	name := "assets/media/ckeditor/plugins/wsc/dialogs/wsc.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscDialogsWscJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscDialogsWscJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/dialogs/wsc.js"
+	name := "assets/media/ckeditor/plugins/wsc/dialogs/wsc.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorPluginsWscDialogsWsc_ieJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorPluginsWscDialogsWsc_ieJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/plugins/wsc/dialogs/wsc_ie.js"
+	name := "assets/media/ckeditor/plugins/wsc/dialogs/wsc_ie.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAjaxHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAjaxHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/ajax.html"
+	name := "assets/media/ckeditor/samples/ajax.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesApiHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesApiHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/api.html"
+	name := "assets/media/ckeditor/samples/api.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAppendtoHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAppendtoHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/appendto.html"
+	name := "assets/media/ckeditor/samples/appendto.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAssetsInlineallLogoPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAssetsInlineallLogoPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/assets/inlineall/logo.png"
+	name := "assets/media/ckeditor/samples/assets/inlineall/logo.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAssetsOutputxhtmlOutputxhtmlCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAssetsOutputxhtmlOutputxhtmlCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/assets/outputxhtml/outputxhtml.css"
+	name := "assets/media/ckeditor/samples/assets/outputxhtml/outputxhtml.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAssetsPosteddataPhp reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAssetsPosteddataPhp() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/assets/posteddata.php"
+	name := "assets/media/ckeditor/samples/assets/posteddata.php"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAssetsSampleJpg reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAssetsSampleJpg() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/assets/sample.jpg"
+	name := "assets/media/ckeditor/samples/assets/sample.jpg"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesAssetsUilanguagesLanguagesJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesAssetsUilanguagesLanguagesJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/assets/uilanguages/languages.js"
+	name := "assets/media/ckeditor/samples/assets/uilanguages/languages.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesDatafilteringHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesDatafilteringHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/datafiltering.html"
+	name := "assets/media/ckeditor/samples/datafiltering.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesDivreplaceHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesDivreplaceHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/divreplace.html"
+	name := "assets/media/ckeditor/samples/divreplace.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesIndexHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesIndexHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/index.html"
+	name := "assets/media/ckeditor/samples/index.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesInlineallHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesInlineallHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/inlineall.html"
+	name := "assets/media/ckeditor/samples/inlineall.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesInlinebycodeHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesInlinebycodeHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/inlinebycode.html"
+	name := "assets/media/ckeditor/samples/inlinebycode.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesInlinetextareaHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesInlinetextareaHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/inlinetextarea.html"
+	name := "assets/media/ckeditor/samples/inlinetextarea.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesJqueryHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesJqueryHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/jquery.html"
+	name := "assets/media/ckeditor/samples/jquery.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsDialogAssetsMy_dialogJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsDialogAssetsMy_dialogJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/dialog/assets/my_dialog.js"
+	name := "assets/media/ckeditor/samples/plugins/dialog/assets/my_dialog.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsDialogDialogHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsDialogDialogHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/dialog/dialog.html"
+	name := "assets/media/ckeditor/samples/plugins/dialog/dialog.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsEnterkeyEnterkeyHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsEnterkeyEnterkeyHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/enterkey/enterkey.html"
+	name := "assets/media/ckeditor/samples/plugins/enterkey/enterkey.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashFla reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashFla() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.fla"
+	name := "assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.fla"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashSwf reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashSwf() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.swf"
+	name := "assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.swf"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashSwfobjectJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashSwfobjectJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/swfobject.js"
+	name := "assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/swfobject.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsHtmlwriterOutputforflashHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsHtmlwriterOutputforflashHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/htmlwriter/outputforflash.html"
+	name := "assets/media/ckeditor/samples/plugins/htmlwriter/outputforflash.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsHtmlwriterOutputhtmlHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsHtmlwriterOutputhtmlHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/htmlwriter/outputhtml.html"
+	name := "assets/media/ckeditor/samples/plugins/htmlwriter/outputhtml.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsMagiclineMagiclineHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsMagiclineMagiclineHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/magicline/magicline.html"
+	name := "assets/media/ckeditor/samples/plugins/magicline/magicline.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsToolbarToolbarHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsToolbarToolbarHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/toolbar/toolbar.html"
+	name := "assets/media/ckeditor/samples/plugins/toolbar/toolbar.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesPluginsWysiwygareaFullpageHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesPluginsWysiwygareaFullpageHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/plugins/wysiwygarea/fullpage.html"
+	name := "assets/media/ckeditor/samples/plugins/wysiwygarea/fullpage.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesReadonlyHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesReadonlyHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/readonly.html"
+	name := "assets/media/ckeditor/samples/readonly.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesReplacebyclassHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesReplacebyclassHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/replacebyclass.html"
+	name := "assets/media/ckeditor/samples/replacebyclass.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesReplacebycodeHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesReplacebycodeHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/replacebycode.html"
+	name := "assets/media/ckeditor/samples/replacebycode.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesSampleCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesSampleCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/sample.css"
+	name := "assets/media/ckeditor/samples/sample.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesSampleJs reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesSampleJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/sample.js"
+	name := "assets/media/ckeditor/samples/sample.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesSample_posteddataPhp reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesSample_posteddataPhp() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/sample_posteddata.php"
+	name := "assets/media/ckeditor/samples/sample_posteddata.php"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesTabindexHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesTabindexHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/tabindex.html"
+	name := "assets/media/ckeditor/samples/tabindex.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesUicolorHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesUicolorHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/uicolor.html"
+	name := "assets/media/ckeditor/samples/uicolor.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesUilanguagesHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesUilanguagesHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/uilanguages.html"
+	name := "assets/media/ckeditor/samples/uilanguages.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSamplesXhtmlstyleHtml reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSamplesXhtmlstyleHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/samples/xhtmlstyle.html"
+	name := "assets/media/ckeditor/samples/xhtmlstyle.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoDialogCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoDialogCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/dialog.css"
+	name := "assets/media/ckeditor/skins/moono/dialog.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoDialog_ieCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoDialog_ieCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/dialog_ie.css"
+	name := "assets/media/ckeditor/skins/moono/dialog_ie.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoDialog_ie7Css reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoDialog_ie7Css() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/dialog_ie7.css"
+	name := "assets/media/ckeditor/skins/moono/dialog_ie7.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoDialog_ie8Css reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoDialog_ie8Css() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/dialog_ie8.css"
+	name := "assets/media/ckeditor/skins/moono/dialog_ie8.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoDialog_iequirksCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoDialog_iequirksCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/dialog_iequirks.css"
+	name := "assets/media/ckeditor/skins/moono/dialog_iequirks.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditorCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditorCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor.css"
+	name := "assets/media/ckeditor/skins/moono/editor.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditor_geckoCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditor_geckoCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor_gecko.css"
+	name := "assets/media/ckeditor/skins/moono/editor_gecko.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditor_ieCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditor_ieCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor_ie.css"
+	name := "assets/media/ckeditor/skins/moono/editor_ie.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditor_ie7Css reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditor_ie7Css() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor_ie7.css"
+	name := "assets/media/ckeditor/skins/moono/editor_ie7.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditor_ie8Css reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditor_ie8Css() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor_ie8.css"
+	name := "assets/media/ckeditor/skins/moono/editor_ie8.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoEditor_iequirksCss reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoEditor_iequirksCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/editor_iequirks.css"
+	name := "assets/media/ckeditor/skins/moono/editor_iequirks.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoIconsPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoIconsPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/icons.png"
+	name := "assets/media/ckeditor/skins/moono/icons.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoIcons_hidpiPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoIcons_hidpiPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/icons_hidpi.png"
+	name := "assets/media/ckeditor/skins/moono/icons_hidpi.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesArrowPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesArrowPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/arrow.png"
+	name := "assets/media/ckeditor/skins/moono/images/arrow.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesClosePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesClosePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/close.png"
+	name := "assets/media/ckeditor/skins/moono/images/close.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesHidpiClosePng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesHidpiClosePng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/hidpi/close.png"
+	name := "assets/media/ckeditor/skins/moono/images/hidpi/close.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesHidpiLockOpenPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesHidpiLockOpenPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/hidpi/lock-open.png"
+	name := "assets/media/ckeditor/skins/moono/images/hidpi/lock-open.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesHidpiLockPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesHidpiLockPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/hidpi/lock.png"
+	name := "assets/media/ckeditor/skins/moono/images/hidpi/lock.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesHidpiRefreshPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesHidpiRefreshPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/hidpi/refresh.png"
+	name := "assets/media/ckeditor/skins/moono/images/hidpi/refresh.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesLockOpenPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesLockOpenPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/lock-open.png"
+	name := "assets/media/ckeditor/skins/moono/images/lock-open.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesLockPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesLockPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/lock.png"
+	name := "assets/media/ckeditor/skins/moono/images/lock.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoImagesRefreshPng reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoImagesRefreshPng() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/images/refresh.png"
+	name := "assets/media/ckeditor/skins/moono/images/refresh.png"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaCkeditorSkinsMoonoReadmeMd reads file data from disk. It returns an error on failure.
+func assetsMediaCkeditorSkinsMoonoReadmeMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/skins/moono/readme.md"
+	name := "assets/media/ckeditor/skins/moono/readme.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // assetsMediaCkeditorStylesJs reads file data from disk. It returns an error on failure.
 func assetsMediaCkeditorStylesJs() (*asset, error) {
 	path := "/home/stevek/src/webnote-go/assets/media/ckeditor/styles.js"
@@ -323,10 +7082,118 @@ func assetsMediaCkeditorStylesJs() (*asset, error) {
 	return a, err
 }
 
+// assetsMediaHtmlIchingHtml reads file data from disk. It returns an error on failure.
+func assetsMediaHtmlIchingHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/html/iching.html"
+	name := "assets/media/html/iching.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaHtmlTHtml reads file data from disk. It returns an error on failure.
+func assetsMediaHtmlTHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/html/t.html"
+	name := "assets/media/html/t.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // assetsMediaJsAjaxJs reads file data from disk. It returns an error on failure.
 func assetsMediaJsAjaxJs() (*asset, error) {
 	path := "/home/stevek/src/webnote-go/assets/media/js/ajax.js"
 	name := "assets/media/js/ajax.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaJsInlineeditorInlineeditorComboJs reads file data from disk. It returns an error on failure.
+func assetsMediaJsInlineeditorInlineeditorComboJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/js/inlineeditor/InlineEditor.Combo.js"
+	name := "assets/media/js/inlineeditor/InlineEditor.Combo.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaJsInlineeditorInlineeditorTextareaJs reads file data from disk. It returns an error on failure.
+func assetsMediaJsInlineeditorInlineeditorTextareaJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/js/inlineeditor/InlineEditor.Textarea.js"
+	name := "assets/media/js/inlineeditor/InlineEditor.Textarea.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaJsInlineeditorInlineeditorCss reads file data from disk. It returns an error on failure.
+func assetsMediaJsInlineeditorInlineeditorCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/js/inlineeditor/InlineEditor.css"
+	name := "assets/media/js/inlineeditor/InlineEditor.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaJsInlineeditorInlineeditorJs reads file data from disk. It returns an error on failure.
+func assetsMediaJsInlineeditorInlineeditorJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/js/inlineeditor/InlineEditor.js"
+	name := "assets/media/js/inlineeditor/InlineEditor.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -363,6 +7230,1518 @@ func assetsMediaJsInlineeditorSourceJs() (*asset, error) {
 func assetsMediaJsInlineeditorJs() (*asset, error) {
 	path := "/home/stevek/src/webnote-go/assets/media/js/inlineeditor.js"
 	name := "assets/media/js/inlineeditor.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceLicenseTxt reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceLicenseTxt() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/LICENSE.TXT"
+	name := "assets/media/tinymce/LICENSE.TXT"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceChangelogTxt reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceChangelogTxt() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/changelog.txt"
+	name := "assets/media/tinymce/changelog.txt"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceJqueryTinymceMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceJqueryTinymceMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/jquery.tinymce.min.js"
+	name := "assets/media/tinymce/js/tinymce/jquery.tinymce.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceLangsReadmeMd reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceLangsReadmeMd() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/langs/readme.md"
+	name := "assets/media/tinymce/js/tinymce/langs/readme.md"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceLicenseTxt reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceLicenseTxt() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/license.txt"
+	name := "assets/media/tinymce/js/tinymce/license.txt"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsAdvlistPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsAdvlistPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/advlist/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/advlist/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsAnchorPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsAnchorPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/anchor/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/anchor/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsAutolinkPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsAutolinkPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/autolink/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/autolink/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsAutoresizePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsAutoresizePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/autoresize/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/autoresize/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsAutosavePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsAutosavePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/autosave/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/autosave/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsBbcodePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsBbcodePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/bbcode/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/bbcode/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsCharmapPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsCharmapPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/charmap/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/charmap/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsCodePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsCodePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/code/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/code/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsColorpickerPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsColorpickerPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/colorpicker/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/colorpicker/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsContextmenuPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsContextmenuPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/contextmenu/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/contextmenu/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsDirectionalityPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsDirectionalityPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/directionality/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/directionality/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCoolGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCoolGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cool.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cool.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCryGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCryGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cry.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cry.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyEmbarassedGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyEmbarassedGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-embarassed.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-embarassed.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFootInMouthGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFootInMouthGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFrownGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFrownGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-frown.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-frown.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyInnocentGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyInnocentGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-innocent.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-innocent.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyKissGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyKissGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-kiss.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-kiss.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyLaughingGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyLaughingGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-laughing.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-laughing.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyMoneyMouthGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyMoneyMouthGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-money-mouth.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-money-mouth.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySealedGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySealedGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-sealed.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-sealed.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySmileGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySmileGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-smile.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-smile.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySurprisedGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySurprisedGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-surprised.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-surprised.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyTongueOutGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyTongueOutGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-tongue-out.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-tongue-out.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyUndecidedGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyUndecidedGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-undecided.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-undecided.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyWinkGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyWinkGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-wink.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-wink.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyYellGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyYellGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-yell.gif"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-yell.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsEmoticonsPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsEmoticonsPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/emoticons/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/emoticons/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsExampleDialogHtml reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsExampleDialogHtml() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/example/dialog.html"
+	name := "assets/media/tinymce/js/tinymce/plugins/example/dialog.html"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsExamplePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsExamplePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/example/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/example/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsExample_dependencyPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsExample_dependencyPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/example_dependency/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/example_dependency/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsFullpagePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsFullpagePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/fullpage/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/fullpage/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsFullscreenPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsFullscreenPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/fullscreen/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/fullscreen/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsHrPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsHrPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/hr/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/hr/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsImagePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsImagePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/image/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/image/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsImportcssPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsImportcssPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/importcss/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/importcss/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsInsertdatetimePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsInsertdatetimePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/insertdatetime/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/insertdatetime/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsLayerPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsLayerPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/layer/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/layer/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsLegacyoutputPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsLegacyoutputPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/legacyoutput/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/legacyoutput/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsLinkPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsLinkPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/link/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/link/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsListsPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsListsPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/lists/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/lists/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsMediaMoxieplayerSwf reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsMediaMoxieplayerSwf() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/media/moxieplayer.swf"
+	name := "assets/media/tinymce/js/tinymce/plugins/media/moxieplayer.swf"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsMediaPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsMediaPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/media/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/media/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsNonbreakingPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsNonbreakingPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/nonbreaking/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/nonbreaking/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsNoneditablePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsNoneditablePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/noneditable/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/noneditable/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsPagebreakPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsPagebreakPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/pagebreak/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/pagebreak/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsPastePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsPastePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/paste/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/paste/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsPreviewPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsPreviewPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/preview/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/preview/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsPrintPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsPrintPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/print/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/print/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsSavePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsSavePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/save/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/save/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsSearchreplacePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsSearchreplacePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/searchreplace/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/searchreplace/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsSpellcheckerPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsSpellcheckerPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/spellchecker/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/spellchecker/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsTabfocusPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsTabfocusPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/tabfocus/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/tabfocus/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsTablePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsTablePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/table/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/table/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsTemplatePluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsTemplatePluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/template/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/template/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsTextcolorPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsTextcolorPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/textcolor/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/textcolor/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsTextpatternPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsTextpatternPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/textpattern/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/textpattern/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsVisualblocksCssVisualblocksCss reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsVisualblocksCssVisualblocksCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/visualblocks/css/visualblocks.css"
+	name := "assets/media/tinymce/js/tinymce/plugins/visualblocks/css/visualblocks.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsVisualblocksPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsVisualblocksPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/visualblocks/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/visualblocks/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsVisualcharsPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsVisualcharsPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/visualchars/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/visualchars/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymcePluginsWordcountPluginMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymcePluginsWordcountPluginMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/plugins/wordcount/plugin.min.js"
+	name := "assets/media/tinymce/js/tinymce/plugins/wordcount/plugin.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayContentInlineMinCss reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayContentInlineMinCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/content.inline.min.css"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/content.inline.min.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayContentMinCss reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayContentMinCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/content.min.css"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/content.min.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallEot reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallEot() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.eot"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.eot"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallSvg reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallSvg() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.svg"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.svg"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallTtf reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallTtf() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.ttf"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.ttf"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallWoff reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallWoff() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.woff"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.woff"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceEot reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceEot() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.eot"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.eot"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSvg reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSvg() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.svg"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.svg"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceTtf reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceTtf() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.ttf"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.ttf"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceWoff reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceWoff() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.woff"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.woff"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayImgAnchorGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayImgAnchorGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/img/anchor.gif"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/img/anchor.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayImgLoaderGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayImgLoaderGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/img/loader.gif"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/img/loader.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayImgObjectGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayImgObjectGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/img/object.gif"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/img/object.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgrayImgTransGif reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgrayImgTransGif() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/img/trans.gif"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/img/trans.gif"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgraySkinIe7MinCss reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgraySkinIe7MinCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/skin.ie7.min.css"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/skin.ie7.min.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceSkinsLightgraySkinMinCss reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceSkinsLightgraySkinMinCss() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/skins/lightgray/skin.min.css"
+	name := "assets/media/tinymce/js/tinymce/skins/lightgray/skin.min.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceThemesModernThemeMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceThemesModernThemeMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/themes/modern/theme.min.js"
+	name := "assets/media/tinymce/js/tinymce/themes/modern/theme.min.js"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// assetsMediaTinymceJsTinymceTinymceMinJs reads file data from disk. It returns an error on failure.
+func assetsMediaTinymceJsTinymceTinymceMinJs() (*asset, error) {
+	path := "/home/stevek/src/webnote-go/assets/media/tinymce/js/tinymce/tinymce.min.js"
+	name := "assets/media/tinymce/js/tinymce/tinymce.min.js"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -735,34 +9114,475 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/media/ckeditor/CHANGES.md":           assetsMediaCkeditorChangesMd,
-	"assets/media/ckeditor/LICENSE.md":           assetsMediaCkeditorLicenseMd,
-	"assets/media/ckeditor/README.md":            assetsMediaCkeditorReadmeMd,
-	"assets/media/ckeditor/build-config.js":      assetsMediaCkeditorBuildConfigJs,
-	"assets/media/ckeditor/ckeditor.js":          assetsMediaCkeditorCkeditorJs,
-	"assets/media/ckeditor/config.js":            assetsMediaCkeditorConfigJs,
-	"assets/media/ckeditor/contents.css":         assetsMediaCkeditorContentsCss,
-	"assets/media/ckeditor/styles.js":            assetsMediaCkeditorStylesJs,
-	"assets/media/js/ajax.js":                    assetsMediaJsAjaxJs,
-	"assets/media/js/inlineeditor-source.js":     assetsMediaJsInlineeditorSourceJs,
-	"assets/media/js/inlineeditor.js":            assetsMediaJsInlineeditorJs,
-	"assets/templates/cred_search_results.html":  assetsTemplatesCred_search_resultsHtml,
-	"assets/templates/footer.html":               assetsTemplatesFooterHtml,
-	"assets/templates/frontpage.html":            assetsTemplatesFrontpageHtml,
-	"assets/templates/head_menu.html":            assetsTemplatesHead_menuHtml,
-	"assets/templates/header.html":               assetsTemplatesHeaderHtml,
-	"assets/templates/list_attachment.html":      assetsTemplatesList_attachmentHtml,
-	"assets/templates/list_note_attachment.html": assetsTemplatesList_note_attachmentHtml,
-	"assets/templates/login.html":                assetsTemplatesLoginHtml,
-	"assets/templates/noteview1.html":            assetsTemplatesNoteview1Html,
-	"assets/templates/noteview2.html":            assetsTemplatesNoteview2Html,
-	"assets/templates/noteview3.html":            assetsTemplatesNoteview3Html,
-	"assets/templates/search_result.html":        assetsTemplatesSearch_resultHtml,
-	"assets/templates/searchuser.html":           assetsTemplatesSearchuserHtml,
-	"assets/templates/upload.html":               assetsTemplatesUploadHtml,
-	"assets/templates/userform.html":             assetsTemplatesUserformHtml,
-	"assets/templates/userpref_form.html":        assetsTemplatesUserpref_formHtml,
-	"assets/templates/userpref_list_form.html":   assetsTemplatesUserpref_list_formHtml,
+	"assets/media/ckeditor/CHANGES.md":                                                          assetsMediaCkeditorChangesMd,
+	"assets/media/ckeditor/LICENSE.md":                                                          assetsMediaCkeditorLicenseMd,
+	"assets/media/ckeditor/README.md":                                                           assetsMediaCkeditorReadmeMd,
+	"assets/media/ckeditor/adapters/jquery.js":                                                  assetsMediaCkeditorAdaptersJqueryJs,
+	"assets/media/ckeditor/build-config.js":                                                     assetsMediaCkeditorBuildConfigJs,
+	"assets/media/ckeditor/ckeditor.js":                                                         assetsMediaCkeditorCkeditorJs,
+	"assets/media/ckeditor/config.js":                                                           assetsMediaCkeditorConfigJs,
+	"assets/media/ckeditor/contents.css":                                                        assetsMediaCkeditorContentsCss,
+	"assets/media/ckeditor/lang/af.js":                                                          assetsMediaCkeditorLangAfJs,
+	"assets/media/ckeditor/lang/ar.js":                                                          assetsMediaCkeditorLangArJs,
+	"assets/media/ckeditor/lang/bg.js":                                                          assetsMediaCkeditorLangBgJs,
+	"assets/media/ckeditor/lang/bn.js":                                                          assetsMediaCkeditorLangBnJs,
+	"assets/media/ckeditor/lang/bs.js":                                                          assetsMediaCkeditorLangBsJs,
+	"assets/media/ckeditor/lang/ca.js":                                                          assetsMediaCkeditorLangCaJs,
+	"assets/media/ckeditor/lang/cs.js":                                                          assetsMediaCkeditorLangCsJs,
+	"assets/media/ckeditor/lang/cy.js":                                                          assetsMediaCkeditorLangCyJs,
+	"assets/media/ckeditor/lang/da.js":                                                          assetsMediaCkeditorLangDaJs,
+	"assets/media/ckeditor/lang/de.js":                                                          assetsMediaCkeditorLangDeJs,
+	"assets/media/ckeditor/lang/el.js":                                                          assetsMediaCkeditorLangElJs,
+	"assets/media/ckeditor/lang/en-au.js":                                                       assetsMediaCkeditorLangEnAuJs,
+	"assets/media/ckeditor/lang/en-ca.js":                                                       assetsMediaCkeditorLangEnCaJs,
+	"assets/media/ckeditor/lang/en-gb.js":                                                       assetsMediaCkeditorLangEnGbJs,
+	"assets/media/ckeditor/lang/en.js":                                                          assetsMediaCkeditorLangEnJs,
+	"assets/media/ckeditor/lang/eo.js":                                                          assetsMediaCkeditorLangEoJs,
+	"assets/media/ckeditor/lang/es.js":                                                          assetsMediaCkeditorLangEsJs,
+	"assets/media/ckeditor/lang/et.js":                                                          assetsMediaCkeditorLangEtJs,
+	"assets/media/ckeditor/lang/eu.js":                                                          assetsMediaCkeditorLangEuJs,
+	"assets/media/ckeditor/lang/fa.js":                                                          assetsMediaCkeditorLangFaJs,
+	"assets/media/ckeditor/lang/fi.js":                                                          assetsMediaCkeditorLangFiJs,
+	"assets/media/ckeditor/lang/fo.js":                                                          assetsMediaCkeditorLangFoJs,
+	"assets/media/ckeditor/lang/fr-ca.js":                                                       assetsMediaCkeditorLangFrCaJs,
+	"assets/media/ckeditor/lang/fr.js":                                                          assetsMediaCkeditorLangFrJs,
+	"assets/media/ckeditor/lang/gl.js":                                                          assetsMediaCkeditorLangGlJs,
+	"assets/media/ckeditor/lang/gu.js":                                                          assetsMediaCkeditorLangGuJs,
+	"assets/media/ckeditor/lang/he.js":                                                          assetsMediaCkeditorLangHeJs,
+	"assets/media/ckeditor/lang/hi.js":                                                          assetsMediaCkeditorLangHiJs,
+	"assets/media/ckeditor/lang/hr.js":                                                          assetsMediaCkeditorLangHrJs,
+	"assets/media/ckeditor/lang/hu.js":                                                          assetsMediaCkeditorLangHuJs,
+	"assets/media/ckeditor/lang/id.js":                                                          assetsMediaCkeditorLangIdJs,
+	"assets/media/ckeditor/lang/is.js":                                                          assetsMediaCkeditorLangIsJs,
+	"assets/media/ckeditor/lang/it.js":                                                          assetsMediaCkeditorLangItJs,
+	"assets/media/ckeditor/lang/ja.js":                                                          assetsMediaCkeditorLangJaJs,
+	"assets/media/ckeditor/lang/ka.js":                                                          assetsMediaCkeditorLangKaJs,
+	"assets/media/ckeditor/lang/km.js":                                                          assetsMediaCkeditorLangKmJs,
+	"assets/media/ckeditor/lang/ko.js":                                                          assetsMediaCkeditorLangKoJs,
+	"assets/media/ckeditor/lang/ku.js":                                                          assetsMediaCkeditorLangKuJs,
+	"assets/media/ckeditor/lang/lt.js":                                                          assetsMediaCkeditorLangLtJs,
+	"assets/media/ckeditor/lang/lv.js":                                                          assetsMediaCkeditorLangLvJs,
+	"assets/media/ckeditor/lang/mk.js":                                                          assetsMediaCkeditorLangMkJs,
+	"assets/media/ckeditor/lang/mn.js":                                                          assetsMediaCkeditorLangMnJs,
+	"assets/media/ckeditor/lang/ms.js":                                                          assetsMediaCkeditorLangMsJs,
+	"assets/media/ckeditor/lang/nb.js":                                                          assetsMediaCkeditorLangNbJs,
+	"assets/media/ckeditor/lang/nl.js":                                                          assetsMediaCkeditorLangNlJs,
+	"assets/media/ckeditor/lang/no.js":                                                          assetsMediaCkeditorLangNoJs,
+	"assets/media/ckeditor/lang/pl.js":                                                          assetsMediaCkeditorLangPlJs,
+	"assets/media/ckeditor/lang/pt-br.js":                                                       assetsMediaCkeditorLangPtBrJs,
+	"assets/media/ckeditor/lang/pt.js":                                                          assetsMediaCkeditorLangPtJs,
+	"assets/media/ckeditor/lang/ro.js":                                                          assetsMediaCkeditorLangRoJs,
+	"assets/media/ckeditor/lang/ru.js":                                                          assetsMediaCkeditorLangRuJs,
+	"assets/media/ckeditor/lang/si.js":                                                          assetsMediaCkeditorLangSiJs,
+	"assets/media/ckeditor/lang/sk.js":                                                          assetsMediaCkeditorLangSkJs,
+	"assets/media/ckeditor/lang/sl.js":                                                          assetsMediaCkeditorLangSlJs,
+	"assets/media/ckeditor/lang/sq.js":                                                          assetsMediaCkeditorLangSqJs,
+	"assets/media/ckeditor/lang/sr-latn.js":                                                     assetsMediaCkeditorLangSrLatnJs,
+	"assets/media/ckeditor/lang/sr.js":                                                          assetsMediaCkeditorLangSrJs,
+	"assets/media/ckeditor/lang/sv.js":                                                          assetsMediaCkeditorLangSvJs,
+	"assets/media/ckeditor/lang/th.js":                                                          assetsMediaCkeditorLangThJs,
+	"assets/media/ckeditor/lang/tr.js":                                                          assetsMediaCkeditorLangTrJs,
+	"assets/media/ckeditor/lang/tt.js":                                                          assetsMediaCkeditorLangTtJs,
+	"assets/media/ckeditor/lang/ug.js":                                                          assetsMediaCkeditorLangUgJs,
+	"assets/media/ckeditor/lang/uk.js":                                                          assetsMediaCkeditorLangUkJs,
+	"assets/media/ckeditor/lang/vi.js":                                                          assetsMediaCkeditorLangViJs,
+	"assets/media/ckeditor/lang/zh-cn.js":                                                       assetsMediaCkeditorLangZhCnJs,
+	"assets/media/ckeditor/lang/zh.js":                                                          assetsMediaCkeditorLangZhJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/a11yhelp.js":                                assetsMediaCkeditorPluginsA11yhelpDialogsA11yhelpJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/_translationstatus.txt":                assetsMediaCkeditorPluginsA11yhelpDialogsLang_translationstatusTxt,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/af.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangAfJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ar.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangArJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/bg.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangBgJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ca.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangCaJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cs.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangCsJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/cy.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangCyJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/da.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangDaJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/de.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangDeJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/el.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangElJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en-gb.js":                              assetsMediaCkeditorPluginsA11yhelpDialogsLangEnGbJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/en.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangEnJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/eo.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangEoJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/es.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangEsJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/et.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangEtJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fa.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangFaJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fi.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangFiJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr-ca.js":                              assetsMediaCkeditorPluginsA11yhelpDialogsLangFrCaJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/fr.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangFrJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gl.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangGlJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/gu.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangGuJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/he.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangHeJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hi.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangHiJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hr.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangHrJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/hu.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangHuJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/id.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangIdJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/it.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangItJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ja.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangJaJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/km.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangKmJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ko.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangKoJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ku.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangKuJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lt.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangLtJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/lv.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangLvJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mk.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangMkJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/mn.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangMnJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nb.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangNbJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/nl.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangNlJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/no.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangNoJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pl.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangPlJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt-br.js":                              assetsMediaCkeditorPluginsA11yhelpDialogsLangPtBrJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/pt.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangPtJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ro.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangRoJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ru.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangRuJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/si.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSiJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sk.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSkJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sl.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSlJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sq.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSqJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr-latn.js":                            assetsMediaCkeditorPluginsA11yhelpDialogsLangSrLatnJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sr.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSrJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/sv.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangSvJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/th.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangThJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tr.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangTrJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/tt.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangTtJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/ug.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangUgJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/uk.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangUkJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/vi.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangViJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh-cn.js":                              assetsMediaCkeditorPluginsA11yhelpDialogsLangZhCnJs,
+	"assets/media/ckeditor/plugins/a11yhelp/dialogs/lang/zh.js":                                 assetsMediaCkeditorPluginsA11yhelpDialogsLangZhJs,
+	"assets/media/ckeditor/plugins/about/dialogs/about.js":                                      assetsMediaCkeditorPluginsAboutDialogsAboutJs,
+	"assets/media/ckeditor/plugins/about/dialogs/hidpi/logo_ckeditor.png":                       assetsMediaCkeditorPluginsAboutDialogsHidpiLogo_ckeditorPng,
+	"assets/media/ckeditor/plugins/about/dialogs/logo_ckeditor.png":                             assetsMediaCkeditorPluginsAboutDialogsLogo_ckeditorPng,
+	"assets/media/ckeditor/plugins/clipboard/dialogs/paste.js":                                  assetsMediaCkeditorPluginsClipboardDialogsPasteJs,
+	"assets/media/ckeditor/plugins/colordialog/dialogs/colordialog.js":                          assetsMediaCkeditorPluginsColordialogDialogsColordialogJs,
+	"assets/media/ckeditor/plugins/dialog/dialogDefinition.js":                                  assetsMediaCkeditorPluginsDialogDialogdefinitionJs,
+	"assets/media/ckeditor/plugins/div/dialogs/div.js":                                          assetsMediaCkeditorPluginsDivDialogsDivJs,
+	"assets/media/ckeditor/plugins/find/dialogs/find.js":                                        assetsMediaCkeditorPluginsFindDialogsFindJs,
+	"assets/media/ckeditor/plugins/flash/dialogs/flash.js":                                      assetsMediaCkeditorPluginsFlashDialogsFlashJs,
+	"assets/media/ckeditor/plugins/flash/images/placeholder.png":                                assetsMediaCkeditorPluginsFlashImagesPlaceholderPng,
+	"assets/media/ckeditor/plugins/forms/dialogs/button.js":                                     assetsMediaCkeditorPluginsFormsDialogsButtonJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/checkbox.js":                                   assetsMediaCkeditorPluginsFormsDialogsCheckboxJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/form.js":                                       assetsMediaCkeditorPluginsFormsDialogsFormJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/hiddenfield.js":                                assetsMediaCkeditorPluginsFormsDialogsHiddenfieldJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/radio.js":                                      assetsMediaCkeditorPluginsFormsDialogsRadioJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/select.js":                                     assetsMediaCkeditorPluginsFormsDialogsSelectJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/textarea.js":                                   assetsMediaCkeditorPluginsFormsDialogsTextareaJs,
+	"assets/media/ckeditor/plugins/forms/dialogs/textfield.js":                                  assetsMediaCkeditorPluginsFormsDialogsTextfieldJs,
+	"assets/media/ckeditor/plugins/forms/images/hiddenfield.gif":                                assetsMediaCkeditorPluginsFormsImagesHiddenfieldGif,
+	"assets/media/ckeditor/plugins/icons.png":                                                   assetsMediaCkeditorPluginsIconsPng,
+	"assets/media/ckeditor/plugins/icons_hidpi.png":                                             assetsMediaCkeditorPluginsIcons_hidpiPng,
+	"assets/media/ckeditor/plugins/iframe/dialogs/iframe.js":                                    assetsMediaCkeditorPluginsIframeDialogsIframeJs,
+	"assets/media/ckeditor/plugins/iframe/images/placeholder.png":                               assetsMediaCkeditorPluginsIframeImagesPlaceholderPng,
+	"assets/media/ckeditor/plugins/image/dialogs/image.js":                                      assetsMediaCkeditorPluginsImageDialogsImageJs,
+	"assets/media/ckeditor/plugins/image/images/noimage.png":                                    assetsMediaCkeditorPluginsImageImagesNoimagePng,
+	"assets/media/ckeditor/plugins/imagepaste/docs/install.html":                                assetsMediaCkeditorPluginsImagepasteDocsInstallHtml,
+	"assets/media/ckeditor/plugins/imagepaste/docs/styles.css":                                  assetsMediaCkeditorPluginsImagepasteDocsStylesCss,
+	"assets/media/ckeditor/plugins/imagepaste/plugin.js":                                        assetsMediaCkeditorPluginsImagepastePluginJs,
+	"assets/media/ckeditor/plugins/link/dialogs/anchor.js":                                      assetsMediaCkeditorPluginsLinkDialogsAnchorJs,
+	"assets/media/ckeditor/plugins/link/dialogs/link.js":                                        assetsMediaCkeditorPluginsLinkDialogsLinkJs,
+	"assets/media/ckeditor/plugins/link/images/anchor.png":                                      assetsMediaCkeditorPluginsLinkImagesAnchorPng,
+	"assets/media/ckeditor/plugins/link/images/hidpi/anchor.png":                                assetsMediaCkeditorPluginsLinkImagesHidpiAnchorPng,
+	"assets/media/ckeditor/plugins/liststyle/dialogs/liststyle.js":                              assetsMediaCkeditorPluginsListstyleDialogsListstyleJs,
+	"assets/media/ckeditor/plugins/magicline/images/hidpi/icon-rtl.png":                         assetsMediaCkeditorPluginsMagiclineImagesHidpiIconRtlPng,
+	"assets/media/ckeditor/plugins/magicline/images/hidpi/icon.png":                             assetsMediaCkeditorPluginsMagiclineImagesHidpiIconPng,
+	"assets/media/ckeditor/plugins/magicline/images/icon-rtl.png":                               assetsMediaCkeditorPluginsMagiclineImagesIconRtlPng,
+	"assets/media/ckeditor/plugins/magicline/images/icon.png":                                   assetsMediaCkeditorPluginsMagiclineImagesIconPng,
+	"assets/media/ckeditor/plugins/pagebreak/images/pagebreak.gif":                              assetsMediaCkeditorPluginsPagebreakImagesPagebreakGif,
+	"assets/media/ckeditor/plugins/pastefromword/filter/default.js":                             assetsMediaCkeditorPluginsPastefromwordFilterDefaultJs,
+	"assets/media/ckeditor/plugins/preview/preview.html":                                        assetsMediaCkeditorPluginsPreviewPreviewHtml,
+	"assets/media/ckeditor/plugins/scayt/LICENSE.md":                                            assetsMediaCkeditorPluginsScaytLicenseMd,
+	"assets/media/ckeditor/plugins/scayt/README.md":                                             assetsMediaCkeditorPluginsScaytReadmeMd,
+	"assets/media/ckeditor/plugins/scayt/dialogs/options.js":                                    assetsMediaCkeditorPluginsScaytDialogsOptionsJs,
+	"assets/media/ckeditor/plugins/scayt/dialogs/toolbar.css":                                   assetsMediaCkeditorPluginsScaytDialogsToolbarCss,
+	"assets/media/ckeditor/plugins/showblocks/images/block_address.png":                         assetsMediaCkeditorPluginsShowblocksImagesBlock_addressPng,
+	"assets/media/ckeditor/plugins/showblocks/images/block_blockquote.png":                      assetsMediaCkeditorPluginsShowblocksImagesBlock_blockquotePng,
+	"assets/media/ckeditor/plugins/showblocks/images/block_div.png":                             assetsMediaCkeditorPluginsShowblocksImagesBlock_divPng,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h1.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h1Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h2.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h2Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h3.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h3Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h4.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h4Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h5.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h5Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_h6.png":                              assetsMediaCkeditorPluginsShowblocksImagesBlock_h6Png,
+	"assets/media/ckeditor/plugins/showblocks/images/block_p.png":                               assetsMediaCkeditorPluginsShowblocksImagesBlock_pPng,
+	"assets/media/ckeditor/plugins/showblocks/images/block_pre.png":                             assetsMediaCkeditorPluginsShowblocksImagesBlock_prePng,
+	"assets/media/ckeditor/plugins/smiley/dialogs/smiley.js":                                    assetsMediaCkeditorPluginsSmileyDialogsSmileyJs,
+	"assets/media/ckeditor/plugins/smiley/images/angel_smile.gif":                               assetsMediaCkeditorPluginsSmileyImagesAngel_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/angel_smile.png":                               assetsMediaCkeditorPluginsSmileyImagesAngel_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/angry_smile.gif":                               assetsMediaCkeditorPluginsSmileyImagesAngry_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/angry_smile.png":                               assetsMediaCkeditorPluginsSmileyImagesAngry_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/broken_heart.gif":                              assetsMediaCkeditorPluginsSmileyImagesBroken_heartGif,
+	"assets/media/ckeditor/plugins/smiley/images/broken_heart.png":                              assetsMediaCkeditorPluginsSmileyImagesBroken_heartPng,
+	"assets/media/ckeditor/plugins/smiley/images/confused_smile.gif":                            assetsMediaCkeditorPluginsSmileyImagesConfused_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/confused_smile.png":                            assetsMediaCkeditorPluginsSmileyImagesConfused_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/cry_smile.gif":                                 assetsMediaCkeditorPluginsSmileyImagesCry_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/cry_smile.png":                                 assetsMediaCkeditorPluginsSmileyImagesCry_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/devil_smile.gif":                               assetsMediaCkeditorPluginsSmileyImagesDevil_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/devil_smile.png":                               assetsMediaCkeditorPluginsSmileyImagesDevil_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/embaressed_smile.gif":                          assetsMediaCkeditorPluginsSmileyImagesEmbaressed_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.gif":                         assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/embarrassed_smile.png":                         assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/envelope.gif":                                  assetsMediaCkeditorPluginsSmileyImagesEnvelopeGif,
+	"assets/media/ckeditor/plugins/smiley/images/envelope.png":                                  assetsMediaCkeditorPluginsSmileyImagesEnvelopePng,
+	"assets/media/ckeditor/plugins/smiley/images/heart.gif":                                     assetsMediaCkeditorPluginsSmileyImagesHeartGif,
+	"assets/media/ckeditor/plugins/smiley/images/heart.png":                                     assetsMediaCkeditorPluginsSmileyImagesHeartPng,
+	"assets/media/ckeditor/plugins/smiley/images/kiss.gif":                                      assetsMediaCkeditorPluginsSmileyImagesKissGif,
+	"assets/media/ckeditor/plugins/smiley/images/kiss.png":                                      assetsMediaCkeditorPluginsSmileyImagesKissPng,
+	"assets/media/ckeditor/plugins/smiley/images/lightbulb.gif":                                 assetsMediaCkeditorPluginsSmileyImagesLightbulbGif,
+	"assets/media/ckeditor/plugins/smiley/images/lightbulb.png":                                 assetsMediaCkeditorPluginsSmileyImagesLightbulbPng,
+	"assets/media/ckeditor/plugins/smiley/images/omg_smile.gif":                                 assetsMediaCkeditorPluginsSmileyImagesOmg_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/omg_smile.png":                                 assetsMediaCkeditorPluginsSmileyImagesOmg_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/regular_smile.gif":                             assetsMediaCkeditorPluginsSmileyImagesRegular_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/regular_smile.png":                             assetsMediaCkeditorPluginsSmileyImagesRegular_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/sad_smile.gif":                                 assetsMediaCkeditorPluginsSmileyImagesSad_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/sad_smile.png":                                 assetsMediaCkeditorPluginsSmileyImagesSad_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/shades_smile.gif":                              assetsMediaCkeditorPluginsSmileyImagesShades_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/shades_smile.png":                              assetsMediaCkeditorPluginsSmileyImagesShades_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/teeth_smile.gif":                               assetsMediaCkeditorPluginsSmileyImagesTeeth_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/teeth_smile.png":                               assetsMediaCkeditorPluginsSmileyImagesTeeth_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/thumbs_down.gif":                               assetsMediaCkeditorPluginsSmileyImagesThumbs_downGif,
+	"assets/media/ckeditor/plugins/smiley/images/thumbs_down.png":                               assetsMediaCkeditorPluginsSmileyImagesThumbs_downPng,
+	"assets/media/ckeditor/plugins/smiley/images/thumbs_up.gif":                                 assetsMediaCkeditorPluginsSmileyImagesThumbs_upGif,
+	"assets/media/ckeditor/plugins/smiley/images/thumbs_up.png":                                 assetsMediaCkeditorPluginsSmileyImagesThumbs_upPng,
+	"assets/media/ckeditor/plugins/smiley/images/tongue_smile.gif":                              assetsMediaCkeditorPluginsSmileyImagesTongue_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/tongue_smile.png":                              assetsMediaCkeditorPluginsSmileyImagesTongue_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/tounge_smile.gif":                              assetsMediaCkeditorPluginsSmileyImagesTounge_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.gif":                 assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/whatchutalkingabout_smile.png":                 assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smilePng,
+	"assets/media/ckeditor/plugins/smiley/images/wink_smile.gif":                                assetsMediaCkeditorPluginsSmileyImagesWink_smileGif,
+	"assets/media/ckeditor/plugins/smiley/images/wink_smile.png":                                assetsMediaCkeditorPluginsSmileyImagesWink_smilePng,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt":             assetsMediaCkeditorPluginsSpecialcharDialogsLang_translationstatusTxt,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/af.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangAfJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ar.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangArJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/bg.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangBgJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ca.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangCaJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/cs.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangCsJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/cy.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangCyJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/da.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangDaJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/de.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangDeJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/el.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangElJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/en-gb.js":                           assetsMediaCkeditorPluginsSpecialcharDialogsLangEnGbJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/en.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangEnJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/eo.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangEoJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/es.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangEsJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/et.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangEtJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/fa.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangFaJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/fi.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangFiJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js":                           assetsMediaCkeditorPluginsSpecialcharDialogsLangFrCaJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/fr.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangFrJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/gl.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangGlJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/he.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangHeJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/hr.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangHrJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/hu.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangHuJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/id.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangIdJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/it.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangItJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ja.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangJaJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/km.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangKmJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ku.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangKuJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/lt.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangLtJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/lv.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangLvJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/nb.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangNbJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/nl.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangNlJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/no.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangNoJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/pl.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangPlJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt-br.js":                           assetsMediaCkeditorPluginsSpecialcharDialogsLangPtBrJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/pt.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangPtJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ru.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangRuJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/si.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangSiJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/sk.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangSkJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/sl.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangSlJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/sq.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangSqJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/sv.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangSvJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/th.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangThJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/tr.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangTrJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/tt.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangTtJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/ug.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangUgJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/uk.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangUkJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/vi.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangViJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh-cn.js":                           assetsMediaCkeditorPluginsSpecialcharDialogsLangZhCnJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/lang/zh.js":                              assetsMediaCkeditorPluginsSpecialcharDialogsLangZhJs,
+	"assets/media/ckeditor/plugins/specialchar/dialogs/specialchar.js":                          assetsMediaCkeditorPluginsSpecialcharDialogsSpecialcharJs,
+	"assets/media/ckeditor/plugins/table/dialogs/table.js":                                      assetsMediaCkeditorPluginsTableDialogsTableJs,
+	"assets/media/ckeditor/plugins/tabletools/dialogs/tableCell.js":                             assetsMediaCkeditorPluginsTabletoolsDialogsTablecellJs,
+	"assets/media/ckeditor/plugins/templates/dialogs/templates.css":                             assetsMediaCkeditorPluginsTemplatesDialogsTemplatesCss,
+	"assets/media/ckeditor/plugins/templates/dialogs/templates.js":                              assetsMediaCkeditorPluginsTemplatesDialogsTemplatesJs,
+	"assets/media/ckeditor/plugins/templates/templates/default.js":                              assetsMediaCkeditorPluginsTemplatesTemplatesDefaultJs,
+	"assets/media/ckeditor/plugins/templates/templates/images/template1.gif":                    assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate1Gif,
+	"assets/media/ckeditor/plugins/templates/templates/images/template2.gif":                    assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate2Gif,
+	"assets/media/ckeditor/plugins/templates/templates/images/template3.gif":                    assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate3Gif,
+	"assets/media/ckeditor/plugins/wsc/LICENSE.md":                                              assetsMediaCkeditorPluginsWscLicenseMd,
+	"assets/media/ckeditor/plugins/wsc/README.md":                                               assetsMediaCkeditorPluginsWscReadmeMd,
+	"assets/media/ckeditor/plugins/wsc/dialogs/ciframe.html":                                    assetsMediaCkeditorPluginsWscDialogsCiframeHtml,
+	"assets/media/ckeditor/plugins/wsc/dialogs/tmpFrameset.html":                                assetsMediaCkeditorPluginsWscDialogsTmpframesetHtml,
+	"assets/media/ckeditor/plugins/wsc/dialogs/wsc.css":                                         assetsMediaCkeditorPluginsWscDialogsWscCss,
+	"assets/media/ckeditor/plugins/wsc/dialogs/wsc.js":                                          assetsMediaCkeditorPluginsWscDialogsWscJs,
+	"assets/media/ckeditor/plugins/wsc/dialogs/wsc_ie.js":                                       assetsMediaCkeditorPluginsWscDialogsWsc_ieJs,
+	"assets/media/ckeditor/samples/ajax.html":                                                   assetsMediaCkeditorSamplesAjaxHtml,
+	"assets/media/ckeditor/samples/api.html":                                                    assetsMediaCkeditorSamplesApiHtml,
+	"assets/media/ckeditor/samples/appendto.html":                                               assetsMediaCkeditorSamplesAppendtoHtml,
+	"assets/media/ckeditor/samples/assets/inlineall/logo.png":                                   assetsMediaCkeditorSamplesAssetsInlineallLogoPng,
+	"assets/media/ckeditor/samples/assets/outputxhtml/outputxhtml.css":                          assetsMediaCkeditorSamplesAssetsOutputxhtmlOutputxhtmlCss,
+	"assets/media/ckeditor/samples/assets/posteddata.php":                                       assetsMediaCkeditorSamplesAssetsPosteddataPhp,
+	"assets/media/ckeditor/samples/assets/sample.jpg":                                           assetsMediaCkeditorSamplesAssetsSampleJpg,
+	"assets/media/ckeditor/samples/assets/uilanguages/languages.js":                             assetsMediaCkeditorSamplesAssetsUilanguagesLanguagesJs,
+	"assets/media/ckeditor/samples/datafiltering.html":                                          assetsMediaCkeditorSamplesDatafilteringHtml,
+	"assets/media/ckeditor/samples/divreplace.html":                                             assetsMediaCkeditorSamplesDivreplaceHtml,
+	"assets/media/ckeditor/samples/index.html":                                                  assetsMediaCkeditorSamplesIndexHtml,
+	"assets/media/ckeditor/samples/inlineall.html":                                              assetsMediaCkeditorSamplesInlineallHtml,
+	"assets/media/ckeditor/samples/inlinebycode.html":                                           assetsMediaCkeditorSamplesInlinebycodeHtml,
+	"assets/media/ckeditor/samples/inlinetextarea.html":                                         assetsMediaCkeditorSamplesInlinetextareaHtml,
+	"assets/media/ckeditor/samples/jquery.html":                                                 assetsMediaCkeditorSamplesJqueryHtml,
+	"assets/media/ckeditor/samples/plugins/dialog/assets/my_dialog.js":                          assetsMediaCkeditorSamplesPluginsDialogAssetsMy_dialogJs,
+	"assets/media/ckeditor/samples/plugins/dialog/dialog.html":                                  assetsMediaCkeditorSamplesPluginsDialogDialogHtml,
+	"assets/media/ckeditor/samples/plugins/enterkey/enterkey.html":                              assetsMediaCkeditorSamplesPluginsEnterkeyEnterkeyHtml,
+	"assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.fla": assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashFla,
+	"assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/outputforflash.swf": assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashSwf,
+	"assets/media/ckeditor/samples/plugins/htmlwriter/assets/outputforflash/swfobject.js":       assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashSwfobjectJs,
+	"assets/media/ckeditor/samples/plugins/htmlwriter/outputforflash.html":                      assetsMediaCkeditorSamplesPluginsHtmlwriterOutputforflashHtml,
+	"assets/media/ckeditor/samples/plugins/htmlwriter/outputhtml.html":                          assetsMediaCkeditorSamplesPluginsHtmlwriterOutputhtmlHtml,
+	"assets/media/ckeditor/samples/plugins/magicline/magicline.html":                            assetsMediaCkeditorSamplesPluginsMagiclineMagiclineHtml,
+	"assets/media/ckeditor/samples/plugins/toolbar/toolbar.html":                                assetsMediaCkeditorSamplesPluginsToolbarToolbarHtml,
+	"assets/media/ckeditor/samples/plugins/wysiwygarea/fullpage.html":                           assetsMediaCkeditorSamplesPluginsWysiwygareaFullpageHtml,
+	"assets/media/ckeditor/samples/readonly.html":                                               assetsMediaCkeditorSamplesReadonlyHtml,
+	"assets/media/ckeditor/samples/replacebyclass.html":                                         assetsMediaCkeditorSamplesReplacebyclassHtml,
+	"assets/media/ckeditor/samples/replacebycode.html":                                          assetsMediaCkeditorSamplesReplacebycodeHtml,
+	"assets/media/ckeditor/samples/sample.css":                                                  assetsMediaCkeditorSamplesSampleCss,
+	"assets/media/ckeditor/samples/sample.js":                                                   assetsMediaCkeditorSamplesSampleJs,
+	"assets/media/ckeditor/samples/sample_posteddata.php":                                       assetsMediaCkeditorSamplesSample_posteddataPhp,
+	"assets/media/ckeditor/samples/tabindex.html":                                               assetsMediaCkeditorSamplesTabindexHtml,
+	"assets/media/ckeditor/samples/uicolor.html":                                                assetsMediaCkeditorSamplesUicolorHtml,
+	"assets/media/ckeditor/samples/uilanguages.html":                                            assetsMediaCkeditorSamplesUilanguagesHtml,
+	"assets/media/ckeditor/samples/xhtmlstyle.html":                                             assetsMediaCkeditorSamplesXhtmlstyleHtml,
+	"assets/media/ckeditor/skins/moono/dialog.css":                                              assetsMediaCkeditorSkinsMoonoDialogCss,
+	"assets/media/ckeditor/skins/moono/dialog_ie.css":                                           assetsMediaCkeditorSkinsMoonoDialog_ieCss,
+	"assets/media/ckeditor/skins/moono/dialog_ie7.css":                                          assetsMediaCkeditorSkinsMoonoDialog_ie7Css,
+	"assets/media/ckeditor/skins/moono/dialog_ie8.css":                                          assetsMediaCkeditorSkinsMoonoDialog_ie8Css,
+	"assets/media/ckeditor/skins/moono/dialog_iequirks.css":                                     assetsMediaCkeditorSkinsMoonoDialog_iequirksCss,
+	"assets/media/ckeditor/skins/moono/editor.css":                                              assetsMediaCkeditorSkinsMoonoEditorCss,
+	"assets/media/ckeditor/skins/moono/editor_gecko.css":                                        assetsMediaCkeditorSkinsMoonoEditor_geckoCss,
+	"assets/media/ckeditor/skins/moono/editor_ie.css":                                           assetsMediaCkeditorSkinsMoonoEditor_ieCss,
+	"assets/media/ckeditor/skins/moono/editor_ie7.css":                                          assetsMediaCkeditorSkinsMoonoEditor_ie7Css,
+	"assets/media/ckeditor/skins/moono/editor_ie8.css":                                          assetsMediaCkeditorSkinsMoonoEditor_ie8Css,
+	"assets/media/ckeditor/skins/moono/editor_iequirks.css":                                     assetsMediaCkeditorSkinsMoonoEditor_iequirksCss,
+	"assets/media/ckeditor/skins/moono/icons.png":                                               assetsMediaCkeditorSkinsMoonoIconsPng,
+	"assets/media/ckeditor/skins/moono/icons_hidpi.png":                                         assetsMediaCkeditorSkinsMoonoIcons_hidpiPng,
+	"assets/media/ckeditor/skins/moono/images/arrow.png":                                        assetsMediaCkeditorSkinsMoonoImagesArrowPng,
+	"assets/media/ckeditor/skins/moono/images/close.png":                                        assetsMediaCkeditorSkinsMoonoImagesClosePng,
+	"assets/media/ckeditor/skins/moono/images/hidpi/close.png":                                  assetsMediaCkeditorSkinsMoonoImagesHidpiClosePng,
+	"assets/media/ckeditor/skins/moono/images/hidpi/lock-open.png":                              assetsMediaCkeditorSkinsMoonoImagesHidpiLockOpenPng,
+	"assets/media/ckeditor/skins/moono/images/hidpi/lock.png":                                   assetsMediaCkeditorSkinsMoonoImagesHidpiLockPng,
+	"assets/media/ckeditor/skins/moono/images/hidpi/refresh.png":                                assetsMediaCkeditorSkinsMoonoImagesHidpiRefreshPng,
+	"assets/media/ckeditor/skins/moono/images/lock-open.png":                                    assetsMediaCkeditorSkinsMoonoImagesLockOpenPng,
+	"assets/media/ckeditor/skins/moono/images/lock.png":                                         assetsMediaCkeditorSkinsMoonoImagesLockPng,
+	"assets/media/ckeditor/skins/moono/images/refresh.png":                                      assetsMediaCkeditorSkinsMoonoImagesRefreshPng,
+	"assets/media/ckeditor/skins/moono/readme.md":                                               assetsMediaCkeditorSkinsMoonoReadmeMd,
+	"assets/media/ckeditor/styles.js":                                                           assetsMediaCkeditorStylesJs,
+	"assets/media/html/iching.html":                                                             assetsMediaHtmlIchingHtml,
+	"assets/media/html/t.html":                                                                  assetsMediaHtmlTHtml,
+	"assets/media/js/ajax.js":                                                                   assetsMediaJsAjaxJs,
+	"assets/media/js/inlineeditor/InlineEditor.Combo.js":                                        assetsMediaJsInlineeditorInlineeditorComboJs,
+	"assets/media/js/inlineeditor/InlineEditor.Textarea.js":                                     assetsMediaJsInlineeditorInlineeditorTextareaJs,
+	"assets/media/js/inlineeditor/InlineEditor.css":                                             assetsMediaJsInlineeditorInlineeditorCss,
+	"assets/media/js/inlineeditor/InlineEditor.js":                                              assetsMediaJsInlineeditorInlineeditorJs,
+	"assets/media/js/inlineeditor-source.js":                                                    assetsMediaJsInlineeditorSourceJs,
+	"assets/media/js/inlineeditor.js":                                                           assetsMediaJsInlineeditorJs,
+	"assets/media/tinymce/LICENSE.TXT":                                                          assetsMediaTinymceLicenseTxt,
+	"assets/media/tinymce/changelog.txt":                                                        assetsMediaTinymceChangelogTxt,
+	"assets/media/tinymce/js/tinymce/jquery.tinymce.min.js":                                     assetsMediaTinymceJsTinymceJqueryTinymceMinJs,
+	"assets/media/tinymce/js/tinymce/langs/readme.md":                                           assetsMediaTinymceJsTinymceLangsReadmeMd,
+	"assets/media/tinymce/js/tinymce/license.txt":                                               assetsMediaTinymceJsTinymceLicenseTxt,
+	"assets/media/tinymce/js/tinymce/plugins/advlist/plugin.min.js":                             assetsMediaTinymceJsTinymcePluginsAdvlistPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/anchor/plugin.min.js":                              assetsMediaTinymceJsTinymcePluginsAnchorPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/autolink/plugin.min.js":                            assetsMediaTinymceJsTinymcePluginsAutolinkPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/autoresize/plugin.min.js":                          assetsMediaTinymceJsTinymcePluginsAutoresizePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/autosave/plugin.min.js":                            assetsMediaTinymceJsTinymcePluginsAutosavePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/bbcode/plugin.min.js":                              assetsMediaTinymceJsTinymcePluginsBbcodePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/charmap/plugin.min.js":                             assetsMediaTinymceJsTinymcePluginsCharmapPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/code/plugin.min.js":                                assetsMediaTinymceJsTinymcePluginsCodePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/colorpicker/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsColorpickerPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/contextmenu/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsContextmenuPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/directionality/plugin.min.js":                      assetsMediaTinymceJsTinymcePluginsDirectionalityPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cool.gif":                     assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCoolGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-cry.gif":                      assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCryGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-embarassed.gif":               assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyEmbarassedGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif":            assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFootInMouthGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-frown.gif":                    assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFrownGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-innocent.gif":                 assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyInnocentGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-kiss.gif":                     assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyKissGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-laughing.gif":                 assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyLaughingGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-money-mouth.gif":              assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyMoneyMouthGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-sealed.gif":                   assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySealedGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-smile.gif":                    assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySmileGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-surprised.gif":                assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySurprisedGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-tongue-out.gif":               assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyTongueOutGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-undecided.gif":                assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyUndecidedGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-wink.gif":                     assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyWinkGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/img/smiley-yell.gif":                     assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyYellGif,
+	"assets/media/tinymce/js/tinymce/plugins/emoticons/plugin.min.js":                           assetsMediaTinymceJsTinymcePluginsEmoticonsPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/example/dialog.html":                               assetsMediaTinymceJsTinymcePluginsExampleDialogHtml,
+	"assets/media/tinymce/js/tinymce/plugins/example/plugin.min.js":                             assetsMediaTinymceJsTinymcePluginsExamplePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/example_dependency/plugin.min.js":                  assetsMediaTinymceJsTinymcePluginsExample_dependencyPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/fullpage/plugin.min.js":                            assetsMediaTinymceJsTinymcePluginsFullpagePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/fullscreen/plugin.min.js":                          assetsMediaTinymceJsTinymcePluginsFullscreenPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/hr/plugin.min.js":                                  assetsMediaTinymceJsTinymcePluginsHrPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/image/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsImagePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/importcss/plugin.min.js":                           assetsMediaTinymceJsTinymcePluginsImportcssPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/insertdatetime/plugin.min.js":                      assetsMediaTinymceJsTinymcePluginsInsertdatetimePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/layer/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsLayerPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/legacyoutput/plugin.min.js":                        assetsMediaTinymceJsTinymcePluginsLegacyoutputPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/link/plugin.min.js":                                assetsMediaTinymceJsTinymcePluginsLinkPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/lists/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsListsPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/media/moxieplayer.swf":                             assetsMediaTinymceJsTinymcePluginsMediaMoxieplayerSwf,
+	"assets/media/tinymce/js/tinymce/plugins/media/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsMediaPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/nonbreaking/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsNonbreakingPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/noneditable/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsNoneditablePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/pagebreak/plugin.min.js":                           assetsMediaTinymceJsTinymcePluginsPagebreakPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/paste/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsPastePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/preview/plugin.min.js":                             assetsMediaTinymceJsTinymcePluginsPreviewPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/print/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsPrintPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/save/plugin.min.js":                                assetsMediaTinymceJsTinymcePluginsSavePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/searchreplace/plugin.min.js":                       assetsMediaTinymceJsTinymcePluginsSearchreplacePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/spellchecker/plugin.min.js":                        assetsMediaTinymceJsTinymcePluginsSpellcheckerPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/tabfocus/plugin.min.js":                            assetsMediaTinymceJsTinymcePluginsTabfocusPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/table/plugin.min.js":                               assetsMediaTinymceJsTinymcePluginsTablePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/template/plugin.min.js":                            assetsMediaTinymceJsTinymcePluginsTemplatePluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/textcolor/plugin.min.js":                           assetsMediaTinymceJsTinymcePluginsTextcolorPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/textpattern/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsTextpatternPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/visualblocks/css/visualblocks.css":                 assetsMediaTinymceJsTinymcePluginsVisualblocksCssVisualblocksCss,
+	"assets/media/tinymce/js/tinymce/plugins/visualblocks/plugin.min.js":                        assetsMediaTinymceJsTinymcePluginsVisualblocksPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/visualchars/plugin.min.js":                         assetsMediaTinymceJsTinymcePluginsVisualcharsPluginMinJs,
+	"assets/media/tinymce/js/tinymce/plugins/wordcount/plugin.min.js":                           assetsMediaTinymceJsTinymcePluginsWordcountPluginMinJs,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/content.inline.min.css":                    assetsMediaTinymceJsTinymceSkinsLightgrayContentInlineMinCss,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/content.min.css":                           assetsMediaTinymceJsTinymceSkinsLightgrayContentMinCss,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.eot":                   assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallEot,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.svg":                   assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallSvg,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.ttf":                   assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallTtf,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce-small.woff":                  assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallWoff,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.eot":                         assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceEot,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.svg":                         assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSvg,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.ttf":                         assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceTtf,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/fonts/tinymce.woff":                        assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceWoff,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/img/anchor.gif":                            assetsMediaTinymceJsTinymceSkinsLightgrayImgAnchorGif,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/img/loader.gif":                            assetsMediaTinymceJsTinymceSkinsLightgrayImgLoaderGif,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/img/object.gif":                            assetsMediaTinymceJsTinymceSkinsLightgrayImgObjectGif,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/img/trans.gif":                             assetsMediaTinymceJsTinymceSkinsLightgrayImgTransGif,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/skin.ie7.min.css":                          assetsMediaTinymceJsTinymceSkinsLightgraySkinIe7MinCss,
+	"assets/media/tinymce/js/tinymce/skins/lightgray/skin.min.css":                              assetsMediaTinymceJsTinymceSkinsLightgraySkinMinCss,
+	"assets/media/tinymce/js/tinymce/themes/modern/theme.min.js":                                assetsMediaTinymceJsTinymceThemesModernThemeMinJs,
+	"assets/media/tinymce/js/tinymce/tinymce.min.js":                                            assetsMediaTinymceJsTinymceTinymceMinJs,
+	"assets/templates/cred_search_results.html":                                                 assetsTemplatesCred_search_resultsHtml,
+	"assets/templates/footer.html":                                                              assetsTemplatesFooterHtml,
+	"assets/templates/frontpage.html":                                                           assetsTemplatesFrontpageHtml,
+	"assets/templates/head_menu.html":                                                           assetsTemplatesHead_menuHtml,
+	"assets/templates/header.html":                                                              assetsTemplatesHeaderHtml,
+	"assets/templates/list_attachment.html":                                                     assetsTemplatesList_attachmentHtml,
+	"assets/templates/list_note_attachment.html":                                                assetsTemplatesList_note_attachmentHtml,
+	"assets/templates/login.html":                                                               assetsTemplatesLoginHtml,
+	"assets/templates/noteview1.html":                                                           assetsTemplatesNoteview1Html,
+	"assets/templates/noteview2.html":                                                           assetsTemplatesNoteview2Html,
+	"assets/templates/noteview3.html":                                                           assetsTemplatesNoteview3Html,
+	"assets/templates/search_result.html":                                                       assetsTemplatesSearch_resultHtml,
+	"assets/templates/searchuser.html":                                                          assetsTemplatesSearchuserHtml,
+	"assets/templates/upload.html":                                                              assetsTemplatesUploadHtml,
+	"assets/templates/userform.html":                                                            assetsTemplatesUserformHtml,
+	"assets/templates/userpref_form.html":                                                       assetsTemplatesUserpref_formHtml,
+	"assets/templates/userpref_list_form.html":                                                  assetsTemplatesUserpref_list_formHtml,
 }
 
 // AssetDir returns the file names below a certain
@@ -809,19 +9629,744 @@ var _bintree = &bintree{nil, map[string]*bintree{
 	"assets": &bintree{nil, map[string]*bintree{
 		"media": &bintree{nil, map[string]*bintree{
 			"ckeditor": &bintree{nil, map[string]*bintree{
-				"CHANGES.md":      &bintree{assetsMediaCkeditorChangesMd, map[string]*bintree{}},
-				"LICENSE.md":      &bintree{assetsMediaCkeditorLicenseMd, map[string]*bintree{}},
-				"README.md":       &bintree{assetsMediaCkeditorReadmeMd, map[string]*bintree{}},
+				"CHANGES.md": &bintree{assetsMediaCkeditorChangesMd, map[string]*bintree{}},
+				"LICENSE.md": &bintree{assetsMediaCkeditorLicenseMd, map[string]*bintree{}},
+				"README.md":  &bintree{assetsMediaCkeditorReadmeMd, map[string]*bintree{}},
+				"adapters": &bintree{nil, map[string]*bintree{
+					"jquery.js": &bintree{assetsMediaCkeditorAdaptersJqueryJs, map[string]*bintree{}},
+				}},
 				"build-config.js": &bintree{assetsMediaCkeditorBuildConfigJs, map[string]*bintree{}},
 				"ckeditor.js":     &bintree{assetsMediaCkeditorCkeditorJs, map[string]*bintree{}},
 				"config.js":       &bintree{assetsMediaCkeditorConfigJs, map[string]*bintree{}},
 				"contents.css":    &bintree{assetsMediaCkeditorContentsCss, map[string]*bintree{}},
-				"styles.js":       &bintree{assetsMediaCkeditorStylesJs, map[string]*bintree{}},
+				"lang": &bintree{nil, map[string]*bintree{
+					"af.js":      &bintree{assetsMediaCkeditorLangAfJs, map[string]*bintree{}},
+					"ar.js":      &bintree{assetsMediaCkeditorLangArJs, map[string]*bintree{}},
+					"bg.js":      &bintree{assetsMediaCkeditorLangBgJs, map[string]*bintree{}},
+					"bn.js":      &bintree{assetsMediaCkeditorLangBnJs, map[string]*bintree{}},
+					"bs.js":      &bintree{assetsMediaCkeditorLangBsJs, map[string]*bintree{}},
+					"ca.js":      &bintree{assetsMediaCkeditorLangCaJs, map[string]*bintree{}},
+					"cs.js":      &bintree{assetsMediaCkeditorLangCsJs, map[string]*bintree{}},
+					"cy.js":      &bintree{assetsMediaCkeditorLangCyJs, map[string]*bintree{}},
+					"da.js":      &bintree{assetsMediaCkeditorLangDaJs, map[string]*bintree{}},
+					"de.js":      &bintree{assetsMediaCkeditorLangDeJs, map[string]*bintree{}},
+					"el.js":      &bintree{assetsMediaCkeditorLangElJs, map[string]*bintree{}},
+					"en-au.js":   &bintree{assetsMediaCkeditorLangEnAuJs, map[string]*bintree{}},
+					"en-ca.js":   &bintree{assetsMediaCkeditorLangEnCaJs, map[string]*bintree{}},
+					"en-gb.js":   &bintree{assetsMediaCkeditorLangEnGbJs, map[string]*bintree{}},
+					"en.js":      &bintree{assetsMediaCkeditorLangEnJs, map[string]*bintree{}},
+					"eo.js":      &bintree{assetsMediaCkeditorLangEoJs, map[string]*bintree{}},
+					"es.js":      &bintree{assetsMediaCkeditorLangEsJs, map[string]*bintree{}},
+					"et.js":      &bintree{assetsMediaCkeditorLangEtJs, map[string]*bintree{}},
+					"eu.js":      &bintree{assetsMediaCkeditorLangEuJs, map[string]*bintree{}},
+					"fa.js":      &bintree{assetsMediaCkeditorLangFaJs, map[string]*bintree{}},
+					"fi.js":      &bintree{assetsMediaCkeditorLangFiJs, map[string]*bintree{}},
+					"fo.js":      &bintree{assetsMediaCkeditorLangFoJs, map[string]*bintree{}},
+					"fr-ca.js":   &bintree{assetsMediaCkeditorLangFrCaJs, map[string]*bintree{}},
+					"fr.js":      &bintree{assetsMediaCkeditorLangFrJs, map[string]*bintree{}},
+					"gl.js":      &bintree{assetsMediaCkeditorLangGlJs, map[string]*bintree{}},
+					"gu.js":      &bintree{assetsMediaCkeditorLangGuJs, map[string]*bintree{}},
+					"he.js":      &bintree{assetsMediaCkeditorLangHeJs, map[string]*bintree{}},
+					"hi.js":      &bintree{assetsMediaCkeditorLangHiJs, map[string]*bintree{}},
+					"hr.js":      &bintree{assetsMediaCkeditorLangHrJs, map[string]*bintree{}},
+					"hu.js":      &bintree{assetsMediaCkeditorLangHuJs, map[string]*bintree{}},
+					"id.js":      &bintree{assetsMediaCkeditorLangIdJs, map[string]*bintree{}},
+					"is.js":      &bintree{assetsMediaCkeditorLangIsJs, map[string]*bintree{}},
+					"it.js":      &bintree{assetsMediaCkeditorLangItJs, map[string]*bintree{}},
+					"ja.js":      &bintree{assetsMediaCkeditorLangJaJs, map[string]*bintree{}},
+					"ka.js":      &bintree{assetsMediaCkeditorLangKaJs, map[string]*bintree{}},
+					"km.js":      &bintree{assetsMediaCkeditorLangKmJs, map[string]*bintree{}},
+					"ko.js":      &bintree{assetsMediaCkeditorLangKoJs, map[string]*bintree{}},
+					"ku.js":      &bintree{assetsMediaCkeditorLangKuJs, map[string]*bintree{}},
+					"lt.js":      &bintree{assetsMediaCkeditorLangLtJs, map[string]*bintree{}},
+					"lv.js":      &bintree{assetsMediaCkeditorLangLvJs, map[string]*bintree{}},
+					"mk.js":      &bintree{assetsMediaCkeditorLangMkJs, map[string]*bintree{}},
+					"mn.js":      &bintree{assetsMediaCkeditorLangMnJs, map[string]*bintree{}},
+					"ms.js":      &bintree{assetsMediaCkeditorLangMsJs, map[string]*bintree{}},
+					"nb.js":      &bintree{assetsMediaCkeditorLangNbJs, map[string]*bintree{}},
+					"nl.js":      &bintree{assetsMediaCkeditorLangNlJs, map[string]*bintree{}},
+					"no.js":      &bintree{assetsMediaCkeditorLangNoJs, map[string]*bintree{}},
+					"pl.js":      &bintree{assetsMediaCkeditorLangPlJs, map[string]*bintree{}},
+					"pt-br.js":   &bintree{assetsMediaCkeditorLangPtBrJs, map[string]*bintree{}},
+					"pt.js":      &bintree{assetsMediaCkeditorLangPtJs, map[string]*bintree{}},
+					"ro.js":      &bintree{assetsMediaCkeditorLangRoJs, map[string]*bintree{}},
+					"ru.js":      &bintree{assetsMediaCkeditorLangRuJs, map[string]*bintree{}},
+					"si.js":      &bintree{assetsMediaCkeditorLangSiJs, map[string]*bintree{}},
+					"sk.js":      &bintree{assetsMediaCkeditorLangSkJs, map[string]*bintree{}},
+					"sl.js":      &bintree{assetsMediaCkeditorLangSlJs, map[string]*bintree{}},
+					"sq.js":      &bintree{assetsMediaCkeditorLangSqJs, map[string]*bintree{}},
+					"sr-latn.js": &bintree{assetsMediaCkeditorLangSrLatnJs, map[string]*bintree{}},
+					"sr.js":      &bintree{assetsMediaCkeditorLangSrJs, map[string]*bintree{}},
+					"sv.js":      &bintree{assetsMediaCkeditorLangSvJs, map[string]*bintree{}},
+					"th.js":      &bintree{assetsMediaCkeditorLangThJs, map[string]*bintree{}},
+					"tr.js":      &bintree{assetsMediaCkeditorLangTrJs, map[string]*bintree{}},
+					"tt.js":      &bintree{assetsMediaCkeditorLangTtJs, map[string]*bintree{}},
+					"ug.js":      &bintree{assetsMediaCkeditorLangUgJs, map[string]*bintree{}},
+					"uk.js":      &bintree{assetsMediaCkeditorLangUkJs, map[string]*bintree{}},
+					"vi.js":      &bintree{assetsMediaCkeditorLangViJs, map[string]*bintree{}},
+					"zh-cn.js":   &bintree{assetsMediaCkeditorLangZhCnJs, map[string]*bintree{}},
+					"zh.js":      &bintree{assetsMediaCkeditorLangZhJs, map[string]*bintree{}},
+				}},
+				"plugins": &bintree{nil, map[string]*bintree{
+					"a11yhelp": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"a11yhelp.js": &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsA11yhelpJs, map[string]*bintree{}},
+							"lang": &bintree{nil, map[string]*bintree{
+								"_translationstatus.txt": &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLang_translationstatusTxt, map[string]*bintree{}},
+								"af.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangAfJs, map[string]*bintree{}},
+								"ar.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangArJs, map[string]*bintree{}},
+								"bg.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangBgJs, map[string]*bintree{}},
+								"ca.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangCaJs, map[string]*bintree{}},
+								"cs.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangCsJs, map[string]*bintree{}},
+								"cy.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangCyJs, map[string]*bintree{}},
+								"da.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangDaJs, map[string]*bintree{}},
+								"de.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangDeJs, map[string]*bintree{}},
+								"el.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangElJs, map[string]*bintree{}},
+								"en-gb.js":               &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangEnGbJs, map[string]*bintree{}},
+								"en.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangEnJs, map[string]*bintree{}},
+								"eo.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangEoJs, map[string]*bintree{}},
+								"es.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangEsJs, map[string]*bintree{}},
+								"et.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangEtJs, map[string]*bintree{}},
+								"fa.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangFaJs, map[string]*bintree{}},
+								"fi.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangFiJs, map[string]*bintree{}},
+								"fr-ca.js":               &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangFrCaJs, map[string]*bintree{}},
+								"fr.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangFrJs, map[string]*bintree{}},
+								"gl.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangGlJs, map[string]*bintree{}},
+								"gu.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangGuJs, map[string]*bintree{}},
+								"he.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangHeJs, map[string]*bintree{}},
+								"hi.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangHiJs, map[string]*bintree{}},
+								"hr.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangHrJs, map[string]*bintree{}},
+								"hu.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangHuJs, map[string]*bintree{}},
+								"id.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangIdJs, map[string]*bintree{}},
+								"it.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangItJs, map[string]*bintree{}},
+								"ja.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangJaJs, map[string]*bintree{}},
+								"km.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangKmJs, map[string]*bintree{}},
+								"ko.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangKoJs, map[string]*bintree{}},
+								"ku.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangKuJs, map[string]*bintree{}},
+								"lt.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangLtJs, map[string]*bintree{}},
+								"lv.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangLvJs, map[string]*bintree{}},
+								"mk.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangMkJs, map[string]*bintree{}},
+								"mn.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangMnJs, map[string]*bintree{}},
+								"nb.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangNbJs, map[string]*bintree{}},
+								"nl.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangNlJs, map[string]*bintree{}},
+								"no.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangNoJs, map[string]*bintree{}},
+								"pl.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangPlJs, map[string]*bintree{}},
+								"pt-br.js":               &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangPtBrJs, map[string]*bintree{}},
+								"pt.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangPtJs, map[string]*bintree{}},
+								"ro.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangRoJs, map[string]*bintree{}},
+								"ru.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangRuJs, map[string]*bintree{}},
+								"si.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSiJs, map[string]*bintree{}},
+								"sk.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSkJs, map[string]*bintree{}},
+								"sl.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSlJs, map[string]*bintree{}},
+								"sq.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSqJs, map[string]*bintree{}},
+								"sr-latn.js":             &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSrLatnJs, map[string]*bintree{}},
+								"sr.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSrJs, map[string]*bintree{}},
+								"sv.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangSvJs, map[string]*bintree{}},
+								"th.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangThJs, map[string]*bintree{}},
+								"tr.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangTrJs, map[string]*bintree{}},
+								"tt.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangTtJs, map[string]*bintree{}},
+								"ug.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangUgJs, map[string]*bintree{}},
+								"uk.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangUkJs, map[string]*bintree{}},
+								"vi.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangViJs, map[string]*bintree{}},
+								"zh-cn.js":               &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangZhCnJs, map[string]*bintree{}},
+								"zh.js":                  &bintree{assetsMediaCkeditorPluginsA11yhelpDialogsLangZhJs, map[string]*bintree{}},
+							}},
+						}},
+					}},
+					"about": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"about.js": &bintree{assetsMediaCkeditorPluginsAboutDialogsAboutJs, map[string]*bintree{}},
+							"hidpi": &bintree{nil, map[string]*bintree{
+								"logo_ckeditor.png": &bintree{assetsMediaCkeditorPluginsAboutDialogsHidpiLogo_ckeditorPng, map[string]*bintree{}},
+							}},
+							"logo_ckeditor.png": &bintree{assetsMediaCkeditorPluginsAboutDialogsLogo_ckeditorPng, map[string]*bintree{}},
+						}},
+					}},
+					"clipboard": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"paste.js": &bintree{assetsMediaCkeditorPluginsClipboardDialogsPasteJs, map[string]*bintree{}},
+						}},
+					}},
+					"colordialog": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"colordialog.js": &bintree{assetsMediaCkeditorPluginsColordialogDialogsColordialogJs, map[string]*bintree{}},
+						}},
+					}},
+					"dialog": &bintree{nil, map[string]*bintree{
+						"dialogDefinition.js": &bintree{assetsMediaCkeditorPluginsDialogDialogdefinitionJs, map[string]*bintree{}},
+					}},
+					"div": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"div.js": &bintree{assetsMediaCkeditorPluginsDivDialogsDivJs, map[string]*bintree{}},
+						}},
+					}},
+					"find": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"find.js": &bintree{assetsMediaCkeditorPluginsFindDialogsFindJs, map[string]*bintree{}},
+						}},
+					}},
+					"flash": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"flash.js": &bintree{assetsMediaCkeditorPluginsFlashDialogsFlashJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"placeholder.png": &bintree{assetsMediaCkeditorPluginsFlashImagesPlaceholderPng, map[string]*bintree{}},
+						}},
+					}},
+					"forms": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"button.js":      &bintree{assetsMediaCkeditorPluginsFormsDialogsButtonJs, map[string]*bintree{}},
+							"checkbox.js":    &bintree{assetsMediaCkeditorPluginsFormsDialogsCheckboxJs, map[string]*bintree{}},
+							"form.js":        &bintree{assetsMediaCkeditorPluginsFormsDialogsFormJs, map[string]*bintree{}},
+							"hiddenfield.js": &bintree{assetsMediaCkeditorPluginsFormsDialogsHiddenfieldJs, map[string]*bintree{}},
+							"radio.js":       &bintree{assetsMediaCkeditorPluginsFormsDialogsRadioJs, map[string]*bintree{}},
+							"select.js":      &bintree{assetsMediaCkeditorPluginsFormsDialogsSelectJs, map[string]*bintree{}},
+							"textarea.js":    &bintree{assetsMediaCkeditorPluginsFormsDialogsTextareaJs, map[string]*bintree{}},
+							"textfield.js":   &bintree{assetsMediaCkeditorPluginsFormsDialogsTextfieldJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"hiddenfield.gif": &bintree{assetsMediaCkeditorPluginsFormsImagesHiddenfieldGif, map[string]*bintree{}},
+						}},
+					}},
+					"icons.png":       &bintree{assetsMediaCkeditorPluginsIconsPng, map[string]*bintree{}},
+					"icons_hidpi.png": &bintree{assetsMediaCkeditorPluginsIcons_hidpiPng, map[string]*bintree{}},
+					"iframe": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"iframe.js": &bintree{assetsMediaCkeditorPluginsIframeDialogsIframeJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"placeholder.png": &bintree{assetsMediaCkeditorPluginsIframeImagesPlaceholderPng, map[string]*bintree{}},
+						}},
+					}},
+					"image": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"image.js": &bintree{assetsMediaCkeditorPluginsImageDialogsImageJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"noimage.png": &bintree{assetsMediaCkeditorPluginsImageImagesNoimagePng, map[string]*bintree{}},
+						}},
+					}},
+					"imagepaste": &bintree{nil, map[string]*bintree{
+						"docs": &bintree{nil, map[string]*bintree{
+							"install.html": &bintree{assetsMediaCkeditorPluginsImagepasteDocsInstallHtml, map[string]*bintree{}},
+							"styles.css":   &bintree{assetsMediaCkeditorPluginsImagepasteDocsStylesCss, map[string]*bintree{}},
+						}},
+						"plugin.js": &bintree{assetsMediaCkeditorPluginsImagepastePluginJs, map[string]*bintree{}},
+					}},
+					"link": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"anchor.js": &bintree{assetsMediaCkeditorPluginsLinkDialogsAnchorJs, map[string]*bintree{}},
+							"link.js":   &bintree{assetsMediaCkeditorPluginsLinkDialogsLinkJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"anchor.png": &bintree{assetsMediaCkeditorPluginsLinkImagesAnchorPng, map[string]*bintree{}},
+							"hidpi": &bintree{nil, map[string]*bintree{
+								"anchor.png": &bintree{assetsMediaCkeditorPluginsLinkImagesHidpiAnchorPng, map[string]*bintree{}},
+							}},
+						}},
+					}},
+					"liststyle": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"liststyle.js": &bintree{assetsMediaCkeditorPluginsListstyleDialogsListstyleJs, map[string]*bintree{}},
+						}},
+					}},
+					"magicline": &bintree{nil, map[string]*bintree{
+						"images": &bintree{nil, map[string]*bintree{
+							"hidpi": &bintree{nil, map[string]*bintree{
+								"icon-rtl.png": &bintree{assetsMediaCkeditorPluginsMagiclineImagesHidpiIconRtlPng, map[string]*bintree{}},
+								"icon.png":     &bintree{assetsMediaCkeditorPluginsMagiclineImagesHidpiIconPng, map[string]*bintree{}},
+							}},
+							"icon-rtl.png": &bintree{assetsMediaCkeditorPluginsMagiclineImagesIconRtlPng, map[string]*bintree{}},
+							"icon.png":     &bintree{assetsMediaCkeditorPluginsMagiclineImagesIconPng, map[string]*bintree{}},
+						}},
+					}},
+					"pagebreak": &bintree{nil, map[string]*bintree{
+						"images": &bintree{nil, map[string]*bintree{
+							"pagebreak.gif": &bintree{assetsMediaCkeditorPluginsPagebreakImagesPagebreakGif, map[string]*bintree{}},
+						}},
+					}},
+					"pastefromword": &bintree{nil, map[string]*bintree{
+						"filter": &bintree{nil, map[string]*bintree{
+							"default.js": &bintree{assetsMediaCkeditorPluginsPastefromwordFilterDefaultJs, map[string]*bintree{}},
+						}},
+					}},
+					"preview": &bintree{nil, map[string]*bintree{
+						"preview.html": &bintree{assetsMediaCkeditorPluginsPreviewPreviewHtml, map[string]*bintree{}},
+					}},
+					"scayt": &bintree{nil, map[string]*bintree{
+						"LICENSE.md": &bintree{assetsMediaCkeditorPluginsScaytLicenseMd, map[string]*bintree{}},
+						"README.md":  &bintree{assetsMediaCkeditorPluginsScaytReadmeMd, map[string]*bintree{}},
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"options.js":  &bintree{assetsMediaCkeditorPluginsScaytDialogsOptionsJs, map[string]*bintree{}},
+							"toolbar.css": &bintree{assetsMediaCkeditorPluginsScaytDialogsToolbarCss, map[string]*bintree{}},
+						}},
+					}},
+					"showblocks": &bintree{nil, map[string]*bintree{
+						"images": &bintree{nil, map[string]*bintree{
+							"block_address.png":    &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_addressPng, map[string]*bintree{}},
+							"block_blockquote.png": &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_blockquotePng, map[string]*bintree{}},
+							"block_div.png":        &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_divPng, map[string]*bintree{}},
+							"block_h1.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h1Png, map[string]*bintree{}},
+							"block_h2.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h2Png, map[string]*bintree{}},
+							"block_h3.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h3Png, map[string]*bintree{}},
+							"block_h4.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h4Png, map[string]*bintree{}},
+							"block_h5.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h5Png, map[string]*bintree{}},
+							"block_h6.png":         &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_h6Png, map[string]*bintree{}},
+							"block_p.png":          &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_pPng, map[string]*bintree{}},
+							"block_pre.png":        &bintree{assetsMediaCkeditorPluginsShowblocksImagesBlock_prePng, map[string]*bintree{}},
+						}},
+					}},
+					"smiley": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"smiley.js": &bintree{assetsMediaCkeditorPluginsSmileyDialogsSmileyJs, map[string]*bintree{}},
+						}},
+						"images": &bintree{nil, map[string]*bintree{
+							"angel_smile.gif":               &bintree{assetsMediaCkeditorPluginsSmileyImagesAngel_smileGif, map[string]*bintree{}},
+							"angel_smile.png":               &bintree{assetsMediaCkeditorPluginsSmileyImagesAngel_smilePng, map[string]*bintree{}},
+							"angry_smile.gif":               &bintree{assetsMediaCkeditorPluginsSmileyImagesAngry_smileGif, map[string]*bintree{}},
+							"angry_smile.png":               &bintree{assetsMediaCkeditorPluginsSmileyImagesAngry_smilePng, map[string]*bintree{}},
+							"broken_heart.gif":              &bintree{assetsMediaCkeditorPluginsSmileyImagesBroken_heartGif, map[string]*bintree{}},
+							"broken_heart.png":              &bintree{assetsMediaCkeditorPluginsSmileyImagesBroken_heartPng, map[string]*bintree{}},
+							"confused_smile.gif":            &bintree{assetsMediaCkeditorPluginsSmileyImagesConfused_smileGif, map[string]*bintree{}},
+							"confused_smile.png":            &bintree{assetsMediaCkeditorPluginsSmileyImagesConfused_smilePng, map[string]*bintree{}},
+							"cry_smile.gif":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesCry_smileGif, map[string]*bintree{}},
+							"cry_smile.png":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesCry_smilePng, map[string]*bintree{}},
+							"devil_smile.gif":               &bintree{assetsMediaCkeditorPluginsSmileyImagesDevil_smileGif, map[string]*bintree{}},
+							"devil_smile.png":               &bintree{assetsMediaCkeditorPluginsSmileyImagesDevil_smilePng, map[string]*bintree{}},
+							"embaressed_smile.gif":          &bintree{assetsMediaCkeditorPluginsSmileyImagesEmbaressed_smileGif, map[string]*bintree{}},
+							"embarrassed_smile.gif":         &bintree{assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smileGif, map[string]*bintree{}},
+							"embarrassed_smile.png":         &bintree{assetsMediaCkeditorPluginsSmileyImagesEmbarrassed_smilePng, map[string]*bintree{}},
+							"envelope.gif":                  &bintree{assetsMediaCkeditorPluginsSmileyImagesEnvelopeGif, map[string]*bintree{}},
+							"envelope.png":                  &bintree{assetsMediaCkeditorPluginsSmileyImagesEnvelopePng, map[string]*bintree{}},
+							"heart.gif":                     &bintree{assetsMediaCkeditorPluginsSmileyImagesHeartGif, map[string]*bintree{}},
+							"heart.png":                     &bintree{assetsMediaCkeditorPluginsSmileyImagesHeartPng, map[string]*bintree{}},
+							"kiss.gif":                      &bintree{assetsMediaCkeditorPluginsSmileyImagesKissGif, map[string]*bintree{}},
+							"kiss.png":                      &bintree{assetsMediaCkeditorPluginsSmileyImagesKissPng, map[string]*bintree{}},
+							"lightbulb.gif":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesLightbulbGif, map[string]*bintree{}},
+							"lightbulb.png":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesLightbulbPng, map[string]*bintree{}},
+							"omg_smile.gif":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesOmg_smileGif, map[string]*bintree{}},
+							"omg_smile.png":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesOmg_smilePng, map[string]*bintree{}},
+							"regular_smile.gif":             &bintree{assetsMediaCkeditorPluginsSmileyImagesRegular_smileGif, map[string]*bintree{}},
+							"regular_smile.png":             &bintree{assetsMediaCkeditorPluginsSmileyImagesRegular_smilePng, map[string]*bintree{}},
+							"sad_smile.gif":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesSad_smileGif, map[string]*bintree{}},
+							"sad_smile.png":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesSad_smilePng, map[string]*bintree{}},
+							"shades_smile.gif":              &bintree{assetsMediaCkeditorPluginsSmileyImagesShades_smileGif, map[string]*bintree{}},
+							"shades_smile.png":              &bintree{assetsMediaCkeditorPluginsSmileyImagesShades_smilePng, map[string]*bintree{}},
+							"teeth_smile.gif":               &bintree{assetsMediaCkeditorPluginsSmileyImagesTeeth_smileGif, map[string]*bintree{}},
+							"teeth_smile.png":               &bintree{assetsMediaCkeditorPluginsSmileyImagesTeeth_smilePng, map[string]*bintree{}},
+							"thumbs_down.gif":               &bintree{assetsMediaCkeditorPluginsSmileyImagesThumbs_downGif, map[string]*bintree{}},
+							"thumbs_down.png":               &bintree{assetsMediaCkeditorPluginsSmileyImagesThumbs_downPng, map[string]*bintree{}},
+							"thumbs_up.gif":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesThumbs_upGif, map[string]*bintree{}},
+							"thumbs_up.png":                 &bintree{assetsMediaCkeditorPluginsSmileyImagesThumbs_upPng, map[string]*bintree{}},
+							"tongue_smile.gif":              &bintree{assetsMediaCkeditorPluginsSmileyImagesTongue_smileGif, map[string]*bintree{}},
+							"tongue_smile.png":              &bintree{assetsMediaCkeditorPluginsSmileyImagesTongue_smilePng, map[string]*bintree{}},
+							"tounge_smile.gif":              &bintree{assetsMediaCkeditorPluginsSmileyImagesTounge_smileGif, map[string]*bintree{}},
+							"whatchutalkingabout_smile.gif": &bintree{assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smileGif, map[string]*bintree{}},
+							"whatchutalkingabout_smile.png": &bintree{assetsMediaCkeditorPluginsSmileyImagesWhatchutalkingabout_smilePng, map[string]*bintree{}},
+							"wink_smile.gif":                &bintree{assetsMediaCkeditorPluginsSmileyImagesWink_smileGif, map[string]*bintree{}},
+							"wink_smile.png":                &bintree{assetsMediaCkeditorPluginsSmileyImagesWink_smilePng, map[string]*bintree{}},
+						}},
+					}},
+					"specialchar": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"lang": &bintree{nil, map[string]*bintree{
+								"_translationstatus.txt": &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLang_translationstatusTxt, map[string]*bintree{}},
+								"af.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangAfJs, map[string]*bintree{}},
+								"ar.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangArJs, map[string]*bintree{}},
+								"bg.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangBgJs, map[string]*bintree{}},
+								"ca.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangCaJs, map[string]*bintree{}},
+								"cs.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangCsJs, map[string]*bintree{}},
+								"cy.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangCyJs, map[string]*bintree{}},
+								"da.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangDaJs, map[string]*bintree{}},
+								"de.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangDeJs, map[string]*bintree{}},
+								"el.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangElJs, map[string]*bintree{}},
+								"en-gb.js":               &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangEnGbJs, map[string]*bintree{}},
+								"en.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangEnJs, map[string]*bintree{}},
+								"eo.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangEoJs, map[string]*bintree{}},
+								"es.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangEsJs, map[string]*bintree{}},
+								"et.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangEtJs, map[string]*bintree{}},
+								"fa.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangFaJs, map[string]*bintree{}},
+								"fi.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangFiJs, map[string]*bintree{}},
+								"fr-ca.js":               &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangFrCaJs, map[string]*bintree{}},
+								"fr.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangFrJs, map[string]*bintree{}},
+								"gl.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangGlJs, map[string]*bintree{}},
+								"he.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangHeJs, map[string]*bintree{}},
+								"hr.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangHrJs, map[string]*bintree{}},
+								"hu.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangHuJs, map[string]*bintree{}},
+								"id.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangIdJs, map[string]*bintree{}},
+								"it.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangItJs, map[string]*bintree{}},
+								"ja.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangJaJs, map[string]*bintree{}},
+								"km.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangKmJs, map[string]*bintree{}},
+								"ku.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangKuJs, map[string]*bintree{}},
+								"lt.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangLtJs, map[string]*bintree{}},
+								"lv.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangLvJs, map[string]*bintree{}},
+								"nb.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangNbJs, map[string]*bintree{}},
+								"nl.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangNlJs, map[string]*bintree{}},
+								"no.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangNoJs, map[string]*bintree{}},
+								"pl.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangPlJs, map[string]*bintree{}},
+								"pt-br.js":               &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangPtBrJs, map[string]*bintree{}},
+								"pt.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangPtJs, map[string]*bintree{}},
+								"ru.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangRuJs, map[string]*bintree{}},
+								"si.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangSiJs, map[string]*bintree{}},
+								"sk.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangSkJs, map[string]*bintree{}},
+								"sl.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangSlJs, map[string]*bintree{}},
+								"sq.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangSqJs, map[string]*bintree{}},
+								"sv.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangSvJs, map[string]*bintree{}},
+								"th.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangThJs, map[string]*bintree{}},
+								"tr.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangTrJs, map[string]*bintree{}},
+								"tt.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangTtJs, map[string]*bintree{}},
+								"ug.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangUgJs, map[string]*bintree{}},
+								"uk.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangUkJs, map[string]*bintree{}},
+								"vi.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangViJs, map[string]*bintree{}},
+								"zh-cn.js":               &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangZhCnJs, map[string]*bintree{}},
+								"zh.js":                  &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsLangZhJs, map[string]*bintree{}},
+							}},
+							"specialchar.js": &bintree{assetsMediaCkeditorPluginsSpecialcharDialogsSpecialcharJs, map[string]*bintree{}},
+						}},
+					}},
+					"table": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"table.js": &bintree{assetsMediaCkeditorPluginsTableDialogsTableJs, map[string]*bintree{}},
+						}},
+					}},
+					"tabletools": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"tableCell.js": &bintree{assetsMediaCkeditorPluginsTabletoolsDialogsTablecellJs, map[string]*bintree{}},
+						}},
+					}},
+					"templates": &bintree{nil, map[string]*bintree{
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"templates.css": &bintree{assetsMediaCkeditorPluginsTemplatesDialogsTemplatesCss, map[string]*bintree{}},
+							"templates.js":  &bintree{assetsMediaCkeditorPluginsTemplatesDialogsTemplatesJs, map[string]*bintree{}},
+						}},
+						"templates": &bintree{nil, map[string]*bintree{
+							"default.js": &bintree{assetsMediaCkeditorPluginsTemplatesTemplatesDefaultJs, map[string]*bintree{}},
+							"images": &bintree{nil, map[string]*bintree{
+								"template1.gif": &bintree{assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate1Gif, map[string]*bintree{}},
+								"template2.gif": &bintree{assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate2Gif, map[string]*bintree{}},
+								"template3.gif": &bintree{assetsMediaCkeditorPluginsTemplatesTemplatesImagesTemplate3Gif, map[string]*bintree{}},
+							}},
+						}},
+					}},
+					"wsc": &bintree{nil, map[string]*bintree{
+						"LICENSE.md": &bintree{assetsMediaCkeditorPluginsWscLicenseMd, map[string]*bintree{}},
+						"README.md":  &bintree{assetsMediaCkeditorPluginsWscReadmeMd, map[string]*bintree{}},
+						"dialogs": &bintree{nil, map[string]*bintree{
+							"ciframe.html":     &bintree{assetsMediaCkeditorPluginsWscDialogsCiframeHtml, map[string]*bintree{}},
+							"tmpFrameset.html": &bintree{assetsMediaCkeditorPluginsWscDialogsTmpframesetHtml, map[string]*bintree{}},
+							"wsc.css":          &bintree{assetsMediaCkeditorPluginsWscDialogsWscCss, map[string]*bintree{}},
+							"wsc.js":           &bintree{assetsMediaCkeditorPluginsWscDialogsWscJs, map[string]*bintree{}},
+							"wsc_ie.js":        &bintree{assetsMediaCkeditorPluginsWscDialogsWsc_ieJs, map[string]*bintree{}},
+						}},
+					}},
+				}},
+				"samples": &bintree{nil, map[string]*bintree{
+					"ajax.html":     &bintree{assetsMediaCkeditorSamplesAjaxHtml, map[string]*bintree{}},
+					"api.html":      &bintree{assetsMediaCkeditorSamplesApiHtml, map[string]*bintree{}},
+					"appendto.html": &bintree{assetsMediaCkeditorSamplesAppendtoHtml, map[string]*bintree{}},
+					"assets": &bintree{nil, map[string]*bintree{
+						"inlineall": &bintree{nil, map[string]*bintree{
+							"logo.png": &bintree{assetsMediaCkeditorSamplesAssetsInlineallLogoPng, map[string]*bintree{}},
+						}},
+						"outputxhtml": &bintree{nil, map[string]*bintree{
+							"outputxhtml.css": &bintree{assetsMediaCkeditorSamplesAssetsOutputxhtmlOutputxhtmlCss, map[string]*bintree{}},
+						}},
+						"posteddata.php": &bintree{assetsMediaCkeditorSamplesAssetsPosteddataPhp, map[string]*bintree{}},
+						"sample.jpg":     &bintree{assetsMediaCkeditorSamplesAssetsSampleJpg, map[string]*bintree{}},
+						"uilanguages": &bintree{nil, map[string]*bintree{
+							"languages.js": &bintree{assetsMediaCkeditorSamplesAssetsUilanguagesLanguagesJs, map[string]*bintree{}},
+						}},
+					}},
+					"datafiltering.html":  &bintree{assetsMediaCkeditorSamplesDatafilteringHtml, map[string]*bintree{}},
+					"divreplace.html":     &bintree{assetsMediaCkeditorSamplesDivreplaceHtml, map[string]*bintree{}},
+					"index.html":          &bintree{assetsMediaCkeditorSamplesIndexHtml, map[string]*bintree{}},
+					"inlineall.html":      &bintree{assetsMediaCkeditorSamplesInlineallHtml, map[string]*bintree{}},
+					"inlinebycode.html":   &bintree{assetsMediaCkeditorSamplesInlinebycodeHtml, map[string]*bintree{}},
+					"inlinetextarea.html": &bintree{assetsMediaCkeditorSamplesInlinetextareaHtml, map[string]*bintree{}},
+					"jquery.html":         &bintree{assetsMediaCkeditorSamplesJqueryHtml, map[string]*bintree{}},
+					"plugins": &bintree{nil, map[string]*bintree{
+						"dialog": &bintree{nil, map[string]*bintree{
+							"assets": &bintree{nil, map[string]*bintree{
+								"my_dialog.js": &bintree{assetsMediaCkeditorSamplesPluginsDialogAssetsMy_dialogJs, map[string]*bintree{}},
+							}},
+							"dialog.html": &bintree{assetsMediaCkeditorSamplesPluginsDialogDialogHtml, map[string]*bintree{}},
+						}},
+						"enterkey": &bintree{nil, map[string]*bintree{
+							"enterkey.html": &bintree{assetsMediaCkeditorSamplesPluginsEnterkeyEnterkeyHtml, map[string]*bintree{}},
+						}},
+						"htmlwriter": &bintree{nil, map[string]*bintree{
+							"assets": &bintree{nil, map[string]*bintree{
+								"outputforflash": &bintree{nil, map[string]*bintree{
+									"outputforflash.fla": &bintree{assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashFla, map[string]*bintree{}},
+									"outputforflash.swf": &bintree{assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashOutputforflashSwf, map[string]*bintree{}},
+									"swfobject.js":       &bintree{assetsMediaCkeditorSamplesPluginsHtmlwriterAssetsOutputforflashSwfobjectJs, map[string]*bintree{}},
+								}},
+							}},
+							"outputforflash.html": &bintree{assetsMediaCkeditorSamplesPluginsHtmlwriterOutputforflashHtml, map[string]*bintree{}},
+							"outputhtml.html":     &bintree{assetsMediaCkeditorSamplesPluginsHtmlwriterOutputhtmlHtml, map[string]*bintree{}},
+						}},
+						"magicline": &bintree{nil, map[string]*bintree{
+							"magicline.html": &bintree{assetsMediaCkeditorSamplesPluginsMagiclineMagiclineHtml, map[string]*bintree{}},
+						}},
+						"toolbar": &bintree{nil, map[string]*bintree{
+							"toolbar.html": &bintree{assetsMediaCkeditorSamplesPluginsToolbarToolbarHtml, map[string]*bintree{}},
+						}},
+						"wysiwygarea": &bintree{nil, map[string]*bintree{
+							"fullpage.html": &bintree{assetsMediaCkeditorSamplesPluginsWysiwygareaFullpageHtml, map[string]*bintree{}},
+						}},
+					}},
+					"readonly.html":         &bintree{assetsMediaCkeditorSamplesReadonlyHtml, map[string]*bintree{}},
+					"replacebyclass.html":   &bintree{assetsMediaCkeditorSamplesReplacebyclassHtml, map[string]*bintree{}},
+					"replacebycode.html":    &bintree{assetsMediaCkeditorSamplesReplacebycodeHtml, map[string]*bintree{}},
+					"sample.css":            &bintree{assetsMediaCkeditorSamplesSampleCss, map[string]*bintree{}},
+					"sample.js":             &bintree{assetsMediaCkeditorSamplesSampleJs, map[string]*bintree{}},
+					"sample_posteddata.php": &bintree{assetsMediaCkeditorSamplesSample_posteddataPhp, map[string]*bintree{}},
+					"tabindex.html":         &bintree{assetsMediaCkeditorSamplesTabindexHtml, map[string]*bintree{}},
+					"uicolor.html":          &bintree{assetsMediaCkeditorSamplesUicolorHtml, map[string]*bintree{}},
+					"uilanguages.html":      &bintree{assetsMediaCkeditorSamplesUilanguagesHtml, map[string]*bintree{}},
+					"xhtmlstyle.html":       &bintree{assetsMediaCkeditorSamplesXhtmlstyleHtml, map[string]*bintree{}},
+				}},
+				"skins": &bintree{nil, map[string]*bintree{
+					"moono": &bintree{nil, map[string]*bintree{
+						"dialog.css":          &bintree{assetsMediaCkeditorSkinsMoonoDialogCss, map[string]*bintree{}},
+						"dialog_ie.css":       &bintree{assetsMediaCkeditorSkinsMoonoDialog_ieCss, map[string]*bintree{}},
+						"dialog_ie7.css":      &bintree{assetsMediaCkeditorSkinsMoonoDialog_ie7Css, map[string]*bintree{}},
+						"dialog_ie8.css":      &bintree{assetsMediaCkeditorSkinsMoonoDialog_ie8Css, map[string]*bintree{}},
+						"dialog_iequirks.css": &bintree{assetsMediaCkeditorSkinsMoonoDialog_iequirksCss, map[string]*bintree{}},
+						"editor.css":          &bintree{assetsMediaCkeditorSkinsMoonoEditorCss, map[string]*bintree{}},
+						"editor_gecko.css":    &bintree{assetsMediaCkeditorSkinsMoonoEditor_geckoCss, map[string]*bintree{}},
+						"editor_ie.css":       &bintree{assetsMediaCkeditorSkinsMoonoEditor_ieCss, map[string]*bintree{}},
+						"editor_ie7.css":      &bintree{assetsMediaCkeditorSkinsMoonoEditor_ie7Css, map[string]*bintree{}},
+						"editor_ie8.css":      &bintree{assetsMediaCkeditorSkinsMoonoEditor_ie8Css, map[string]*bintree{}},
+						"editor_iequirks.css": &bintree{assetsMediaCkeditorSkinsMoonoEditor_iequirksCss, map[string]*bintree{}},
+						"icons.png":           &bintree{assetsMediaCkeditorSkinsMoonoIconsPng, map[string]*bintree{}},
+						"icons_hidpi.png":     &bintree{assetsMediaCkeditorSkinsMoonoIcons_hidpiPng, map[string]*bintree{}},
+						"images": &bintree{nil, map[string]*bintree{
+							"arrow.png": &bintree{assetsMediaCkeditorSkinsMoonoImagesArrowPng, map[string]*bintree{}},
+							"close.png": &bintree{assetsMediaCkeditorSkinsMoonoImagesClosePng, map[string]*bintree{}},
+							"hidpi": &bintree{nil, map[string]*bintree{
+								"close.png":     &bintree{assetsMediaCkeditorSkinsMoonoImagesHidpiClosePng, map[string]*bintree{}},
+								"lock-open.png": &bintree{assetsMediaCkeditorSkinsMoonoImagesHidpiLockOpenPng, map[string]*bintree{}},
+								"lock.png":      &bintree{assetsMediaCkeditorSkinsMoonoImagesHidpiLockPng, map[string]*bintree{}},
+								"refresh.png":   &bintree{assetsMediaCkeditorSkinsMoonoImagesHidpiRefreshPng, map[string]*bintree{}},
+							}},
+							"lock-open.png": &bintree{assetsMediaCkeditorSkinsMoonoImagesLockOpenPng, map[string]*bintree{}},
+							"lock.png":      &bintree{assetsMediaCkeditorSkinsMoonoImagesLockPng, map[string]*bintree{}},
+							"refresh.png":   &bintree{assetsMediaCkeditorSkinsMoonoImagesRefreshPng, map[string]*bintree{}},
+						}},
+						"readme.md": &bintree{assetsMediaCkeditorSkinsMoonoReadmeMd, map[string]*bintree{}},
+					}},
+				}},
+				"styles.js": &bintree{assetsMediaCkeditorStylesJs, map[string]*bintree{}},
+			}},
+			"html": &bintree{nil, map[string]*bintree{
+				"iching.html": &bintree{assetsMediaHtmlIchingHtml, map[string]*bintree{}},
+				"t.html":      &bintree{assetsMediaHtmlTHtml, map[string]*bintree{}},
 			}},
 			"js": &bintree{nil, map[string]*bintree{
-				"ajax.js":                &bintree{assetsMediaJsAjaxJs, map[string]*bintree{}},
+				"ajax.js": &bintree{assetsMediaJsAjaxJs, map[string]*bintree{}},
+				"inlineeditor": &bintree{nil, map[string]*bintree{
+					"InlineEditor.Combo.js":    &bintree{assetsMediaJsInlineeditorInlineeditorComboJs, map[string]*bintree{}},
+					"InlineEditor.Textarea.js": &bintree{assetsMediaJsInlineeditorInlineeditorTextareaJs, map[string]*bintree{}},
+					"InlineEditor.css":         &bintree{assetsMediaJsInlineeditorInlineeditorCss, map[string]*bintree{}},
+					"InlineEditor.js":          &bintree{assetsMediaJsInlineeditorInlineeditorJs, map[string]*bintree{}},
+				}},
 				"inlineeditor-source.js": &bintree{assetsMediaJsInlineeditorSourceJs, map[string]*bintree{}},
 				"inlineeditor.js":        &bintree{assetsMediaJsInlineeditorJs, map[string]*bintree{}},
+			}},
+			"tinymce": &bintree{nil, map[string]*bintree{
+				"LICENSE.TXT":   &bintree{assetsMediaTinymceLicenseTxt, map[string]*bintree{}},
+				"changelog.txt": &bintree{assetsMediaTinymceChangelogTxt, map[string]*bintree{}},
+				"js": &bintree{nil, map[string]*bintree{
+					"tinymce": &bintree{nil, map[string]*bintree{
+						"jquery.tinymce.min.js": &bintree{assetsMediaTinymceJsTinymceJqueryTinymceMinJs, map[string]*bintree{}},
+						"langs": &bintree{nil, map[string]*bintree{
+							"readme.md": &bintree{assetsMediaTinymceJsTinymceLangsReadmeMd, map[string]*bintree{}},
+						}},
+						"license.txt": &bintree{assetsMediaTinymceJsTinymceLicenseTxt, map[string]*bintree{}},
+						"plugins": &bintree{nil, map[string]*bintree{
+							"advlist": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsAdvlistPluginMinJs, map[string]*bintree{}},
+							}},
+							"anchor": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsAnchorPluginMinJs, map[string]*bintree{}},
+							}},
+							"autolink": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsAutolinkPluginMinJs, map[string]*bintree{}},
+							}},
+							"autoresize": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsAutoresizePluginMinJs, map[string]*bintree{}},
+							}},
+							"autosave": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsAutosavePluginMinJs, map[string]*bintree{}},
+							}},
+							"bbcode": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsBbcodePluginMinJs, map[string]*bintree{}},
+							}},
+							"charmap": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsCharmapPluginMinJs, map[string]*bintree{}},
+							}},
+							"code": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsCodePluginMinJs, map[string]*bintree{}},
+							}},
+							"colorpicker": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsColorpickerPluginMinJs, map[string]*bintree{}},
+							}},
+							"contextmenu": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsContextmenuPluginMinJs, map[string]*bintree{}},
+							}},
+							"directionality": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsDirectionalityPluginMinJs, map[string]*bintree{}},
+							}},
+							"emoticons": &bintree{nil, map[string]*bintree{
+								"img": &bintree{nil, map[string]*bintree{
+									"smiley-cool.gif":          &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCoolGif, map[string]*bintree{}},
+									"smiley-cry.gif":           &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyCryGif, map[string]*bintree{}},
+									"smiley-embarassed.gif":    &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyEmbarassedGif, map[string]*bintree{}},
+									"smiley-foot-in-mouth.gif": &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFootInMouthGif, map[string]*bintree{}},
+									"smiley-frown.gif":         &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyFrownGif, map[string]*bintree{}},
+									"smiley-innocent.gif":      &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyInnocentGif, map[string]*bintree{}},
+									"smiley-kiss.gif":          &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyKissGif, map[string]*bintree{}},
+									"smiley-laughing.gif":      &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyLaughingGif, map[string]*bintree{}},
+									"smiley-money-mouth.gif":   &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyMoneyMouthGif, map[string]*bintree{}},
+									"smiley-sealed.gif":        &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySealedGif, map[string]*bintree{}},
+									"smiley-smile.gif":         &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySmileGif, map[string]*bintree{}},
+									"smiley-surprised.gif":     &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileySurprisedGif, map[string]*bintree{}},
+									"smiley-tongue-out.gif":    &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyTongueOutGif, map[string]*bintree{}},
+									"smiley-undecided.gif":     &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyUndecidedGif, map[string]*bintree{}},
+									"smiley-wink.gif":          &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyWinkGif, map[string]*bintree{}},
+									"smiley-yell.gif":          &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsImgSmileyYellGif, map[string]*bintree{}},
+								}},
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsEmoticonsPluginMinJs, map[string]*bintree{}},
+							}},
+							"example": &bintree{nil, map[string]*bintree{
+								"dialog.html":   &bintree{assetsMediaTinymceJsTinymcePluginsExampleDialogHtml, map[string]*bintree{}},
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsExamplePluginMinJs, map[string]*bintree{}},
+							}},
+							"example_dependency": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsExample_dependencyPluginMinJs, map[string]*bintree{}},
+							}},
+							"fullpage": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsFullpagePluginMinJs, map[string]*bintree{}},
+							}},
+							"fullscreen": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsFullscreenPluginMinJs, map[string]*bintree{}},
+							}},
+							"hr": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsHrPluginMinJs, map[string]*bintree{}},
+							}},
+							"image": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsImagePluginMinJs, map[string]*bintree{}},
+							}},
+							"importcss": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsImportcssPluginMinJs, map[string]*bintree{}},
+							}},
+							"insertdatetime": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsInsertdatetimePluginMinJs, map[string]*bintree{}},
+							}},
+							"layer": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsLayerPluginMinJs, map[string]*bintree{}},
+							}},
+							"legacyoutput": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsLegacyoutputPluginMinJs, map[string]*bintree{}},
+							}},
+							"link": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsLinkPluginMinJs, map[string]*bintree{}},
+							}},
+							"lists": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsListsPluginMinJs, map[string]*bintree{}},
+							}},
+							"media": &bintree{nil, map[string]*bintree{
+								"moxieplayer.swf": &bintree{assetsMediaTinymceJsTinymcePluginsMediaMoxieplayerSwf, map[string]*bintree{}},
+								"plugin.min.js":   &bintree{assetsMediaTinymceJsTinymcePluginsMediaPluginMinJs, map[string]*bintree{}},
+							}},
+							"nonbreaking": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsNonbreakingPluginMinJs, map[string]*bintree{}},
+							}},
+							"noneditable": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsNoneditablePluginMinJs, map[string]*bintree{}},
+							}},
+							"pagebreak": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsPagebreakPluginMinJs, map[string]*bintree{}},
+							}},
+							"paste": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsPastePluginMinJs, map[string]*bintree{}},
+							}},
+							"preview": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsPreviewPluginMinJs, map[string]*bintree{}},
+							}},
+							"print": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsPrintPluginMinJs, map[string]*bintree{}},
+							}},
+							"save": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsSavePluginMinJs, map[string]*bintree{}},
+							}},
+							"searchreplace": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsSearchreplacePluginMinJs, map[string]*bintree{}},
+							}},
+							"spellchecker": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsSpellcheckerPluginMinJs, map[string]*bintree{}},
+							}},
+							"tabfocus": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsTabfocusPluginMinJs, map[string]*bintree{}},
+							}},
+							"table": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsTablePluginMinJs, map[string]*bintree{}},
+							}},
+							"template": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsTemplatePluginMinJs, map[string]*bintree{}},
+							}},
+							"textcolor": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsTextcolorPluginMinJs, map[string]*bintree{}},
+							}},
+							"textpattern": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsTextpatternPluginMinJs, map[string]*bintree{}},
+							}},
+							"visualblocks": &bintree{nil, map[string]*bintree{
+								"css": &bintree{nil, map[string]*bintree{
+									"visualblocks.css": &bintree{assetsMediaTinymceJsTinymcePluginsVisualblocksCssVisualblocksCss, map[string]*bintree{}},
+								}},
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsVisualblocksPluginMinJs, map[string]*bintree{}},
+							}},
+							"visualchars": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsVisualcharsPluginMinJs, map[string]*bintree{}},
+							}},
+							"wordcount": &bintree{nil, map[string]*bintree{
+								"plugin.min.js": &bintree{assetsMediaTinymceJsTinymcePluginsWordcountPluginMinJs, map[string]*bintree{}},
+							}},
+						}},
+						"skins": &bintree{nil, map[string]*bintree{
+							"lightgray": &bintree{nil, map[string]*bintree{
+								"content.inline.min.css": &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayContentInlineMinCss, map[string]*bintree{}},
+								"content.min.css":        &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayContentMinCss, map[string]*bintree{}},
+								"fonts": &bintree{nil, map[string]*bintree{
+									"tinymce-small.eot":  &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallEot, map[string]*bintree{}},
+									"tinymce-small.svg":  &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallSvg, map[string]*bintree{}},
+									"tinymce-small.ttf":  &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallTtf, map[string]*bintree{}},
+									"tinymce-small.woff": &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSmallWoff, map[string]*bintree{}},
+									"tinymce.eot":        &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceEot, map[string]*bintree{}},
+									"tinymce.svg":        &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceSvg, map[string]*bintree{}},
+									"tinymce.ttf":        &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceTtf, map[string]*bintree{}},
+									"tinymce.woff":       &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayFontsTinymceWoff, map[string]*bintree{}},
+								}},
+								"img": &bintree{nil, map[string]*bintree{
+									"anchor.gif": &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayImgAnchorGif, map[string]*bintree{}},
+									"loader.gif": &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayImgLoaderGif, map[string]*bintree{}},
+									"object.gif": &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayImgObjectGif, map[string]*bintree{}},
+									"trans.gif":  &bintree{assetsMediaTinymceJsTinymceSkinsLightgrayImgTransGif, map[string]*bintree{}},
+								}},
+								"skin.ie7.min.css": &bintree{assetsMediaTinymceJsTinymceSkinsLightgraySkinIe7MinCss, map[string]*bintree{}},
+								"skin.min.css":     &bintree{assetsMediaTinymceJsTinymceSkinsLightgraySkinMinCss, map[string]*bintree{}},
+							}},
+						}},
+						"themes": &bintree{nil, map[string]*bintree{
+							"modern": &bintree{nil, map[string]*bintree{
+								"theme.min.js": &bintree{assetsMediaTinymceJsTinymceThemesModernThemeMinJs, map[string]*bintree{}},
+							}},
+						}},
+						"tinymce.min.js": &bintree{assetsMediaTinymceJsTinymceTinymceMinJs, map[string]*bintree{}},
+					}},
+				}},
 			}},
 		}},
 		"templates": &bintree{nil, map[string]*bintree{

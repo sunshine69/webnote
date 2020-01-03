@@ -51,7 +51,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	aNote := m.NoteNew(map[string]interface{}{
 		"author_id": user.ID,
-		"group_id": uGroups[0].Group_id,
+		"group_id": int8(1),
 	})
 
 	if err := t.Execute(w, map[string]interface{}{
@@ -63,6 +63,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		"note": &aNote,
 		"user": user,
 		"groups": uGroups,
+		"permission_list": m.PermissionList,
 
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

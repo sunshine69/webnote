@@ -116,9 +116,9 @@ func NoteNew(in map[string]interface{}) (*Note) {
 
 	n.AuthorID = GetMapByKey(in, "author_id", int64(0)).(int64)
 
-	n.GroupID = GetMapByKey(in, "group_id", int8(0)).(int8)
+	n.GroupID = GetMapByKey(in, "group_id", int8(1)).(int8)
 
-	n.Permission = GetMapByKey(in, "permission", int8(3)).(int8)
+	n.Permission = GetMapByKey(in, "permission", int8(1)).(int8)
 	n.RawEditor = GetMapByKey(in, "raw_editor", int8(0)).(int8)
 
 	n.Update()
@@ -127,7 +127,6 @@ func NoteNew(in map[string]interface{}) (*Note) {
 
 //Save a note. If new note then create on. If existing note then create a revisions before update.
 func (n *Note) Save() {
-	var noteID int64
 	currentNote := GetNote(n.Title)//This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
 	DB := GetDB("")
 	defer DB.Close()
@@ -160,7 +159,7 @@ func (n *Note) Save() {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert note - %v\n", e)
 		}
-		noteID, _ = res.LastInsertId()
+		n.ID, _ = res.LastInsertId()
 		tx.Commit()
 	} else {//Insert into revision and update current
 		sql = `INSERT INTO note_revision(
@@ -215,7 +214,6 @@ func (n *Note) Save() {
 		}
 		tx.Commit()
 	}
-	n.ID = noteID
 }
 
 func GetNoteByID(id int64) (*Note) {

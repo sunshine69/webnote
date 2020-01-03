@@ -31,6 +31,9 @@ type AppSettings struct {
 //Settings -
 var Settings *AppSettings
 
+//PermissionsList -
+var PermissionList *map[int8]string
+
 //GetSessionVal -
 func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{} {
 	ses, e := SessionStore.Get(r, "auth-session")
@@ -85,6 +88,14 @@ func InitConfig() {
 		BASE_URL: "https://note.xvt.technology",
 		ADMIN_EMAIL: "msh.computing@gmail.com",
 	}
+	PermissionList = &map[int8]string{
+		0: "only owner",
+		1: "group read",
+		2: "group rw",
+		3: "group w, all read",
+		4: "all rw",
+		5: "world read, all rw",
+	}
 }
 
 //CreateAdminUser -
@@ -97,6 +108,8 @@ func CreateAdminUser() {
 	u.Save()
 	u.SaltLength = 16
 	u.SetUserPassword("1qa2ws")
+	log.Printf("DEBUG user object before calling SetGroup %v\n", *u)
+	u.SetGroup("default", "family", "friend")
 }
 
 //SetupDefaultConfig - Setup/reset default configuration set
