@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
 <br/>
-<form method="POST" action="{{ .settings.BASE_URL }}" name="note" id="note">{{ .csrfField }}
+<form method="POST" action="{{ .settings.BASE_URL }}/savenote" name="note" id="note">{{ .csrfField }}
 <input type="hidden" name="action" value="save_newnote"/>
 <input type="hidden" name="id" value="{{ .note.ID }}"/>
 <table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
@@ -11,7 +11,7 @@
     </tr>
     <tr>
         <TD><i>Datelog</i></TD>
-        <td><input type="text" name="datelog" value='{{ .note.Datelog | time_fmt "2006/01/02 15:04:05" }}' size="25"/></td>
+        <td><input type="text" name="datelog" value='{{ .note.Datelog | time_fmt .date_layout }}' size="25"/></td>
         <td><i>Tags :A:B:C</i></td>
         <td><input type="text" name="flags" value="{{ .note.Flags }}" size="25"/></td>
     </tr>

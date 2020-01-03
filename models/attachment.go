@@ -5,14 +5,12 @@ import (
 )
 
 type Attachment struct {
+	Object
 	ID int64
 	Name string
 	Description string
-	AuthorID int64
 	Author *User
-	GroupID int8
 	Group *Group
-	Permission int8
 	AttachedFile string
 	Mimetype string
 	Created int64

@@ -85,7 +85,7 @@ func InitConfig() {
 	DateLayout = GetConfig("date_layout")
 	WebNoteUser = GetConfig("webnote_user")
 	Settings = &AppSettings{
-		BASE_URL: "https://note.xvt.technology",
+		BASE_URL: "https://note.xvt.technology:8080",
 		ADMIN_EMAIL: "msh.computing@gmail.com",
 	}
 	PermissionList = &map[int8]string{
@@ -349,28 +349,49 @@ func SetupAppDatabase() {
 	tx.Commit()
 }
 
-// func CheckPerm(Obj interface{}, UserID int64, Action string) (bool) {
-// 		//obj must have fields :  permission, author_id, group_id
-// 		if obj.Permission.(string) == "5" {
-// 			if Action == "r" {
-// 				return true
-// 			} else {
-// 				if UserID {
-// 					return true
-// 				} else {return false}
-// 			}
-// 		}
-// 		if ! UserID {return false}
+//CheckPerm - Check permission to do an operation on a object
+//obj must have fields :  Permission, AuthorID/Author,  GroupID/Group (similar to a note)
+//Action can be a string of 'r' (read), 'w' (write), 'rw' (read-write), 'd' (delete)
+func CheckPerm(obj Object, UserID int64, Action string) (bool) {
+		if obj.Permission == 5 {//World read, everyone logged in can do anything
+			if Action == "r" {
+				return true
+			} else if UserID > 0 {
+				return true
+			}
+			return false
+		}
 
-		// user = User.objects.get(id=user_id)
-		// if (obj.author_id == user.id): return True
-		// if (action == u'd'): return False
-		// if (obj.permission == 4): return True
-		// if (obj.group_id not in [ug['id'] for ug in user.groups.values()]):
-		// 	if  ((action == u'r') and (obj.permission == 3)): return True
-		// 	else: return False
-		// if (obj.permission >= 2): return True
-		// if (obj.permission == 0): return False
-		// if (action == u'r'): return True
-		// else: return False
-	// }
+		if UserID == 0 { return false }//From here we require a logged in
+
+		user := GetUserByID(UserID)
+		if (obj.AuthorID == user.ID) { return true } //Object created by this userID can do all
+
+		//From now user is not the owner of the object
+		if (Action == "d") {return false} //Only owner can delete object
+
+		if (obj.Permission == 4) {return true} //Logged in user can do anything except deletion
+
+		var groupIDMap map[int8]string
+		for _, g := range(user.Groups) {
+			groupIDMap[g.Group_id] = g.Name
+		}
+		if _, ok := groupIDMap[obj.GroupID]; !ok {
+			//user has no group which matches with this object group
+			if (obj.Permission == 3) {//Group w, all read
+				if (Action == "r") {
+					return true
+				}
+				return false
+			}
+		}
+		//From now on user has a group that this object is in
+		if (obj.Permission >= 2) {return true}// group rw granted
+
+		if (obj.Permission == 0) {return false}//Only owner can do
+		//Only left Permission == 1
+		if (Action == "r") {
+			return true
+		}
+		return false
+	}

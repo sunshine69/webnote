@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"regexp"
 	"strings"
 	"bytes"
@@ -38,8 +39,6 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	// t, err := template.New("home", Asset).Funcs(*TemplateFuncMap).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
-
 	t, err := template.New("home", Asset).Funcs(*TemplateFuncMap).ParseFiles("assets/templates/header.html", "assets/templates/head_menu.html", "assets/templates/list_note_attachment.html", "assets/templates/footer.html", "assets/templates/frontpage.html")
 
 	if err != nil {
@@ -49,10 +48,21 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	user := m.GetUser(useremail)
 	uGroups := user.Groups
 
-	aNote := m.NoteNew(map[string]interface{}{
-		"author_id": user.ID,
-		"group_id": int8(1),
-	})
+	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
+
+	raw_editor, _ := strconv.Atoi(GetRequestValue(r, "raw_editor", "1"))
+
+	var aNote *m.Note
+	if noteID == 0 {
+		aNote = m.NoteNew(map[string]interface{}{
+			"ID": noteID,
+			"author_id": user.ID,
+			"group_id": int8(1),
+			"raw_editor": int8(raw_editor),
+		})
+	} else {
+		aNote = m.GetNoteByID(noteID)
+	}
 
 	if err := t.Execute(w, map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
@@ -60,10 +70,11 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		"page": "FrontPage",
 		"msg":  "",
 		"settings": m.Settings,
-		"note": &aNote,
+		"note": aNote,
 		"user": user,
 		"groups": uGroups,
 		"permission_list": m.PermissionList,
+		"date_layout": m.DateLayout,
 
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -127,7 +138,6 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		var user *m.User
-		// m.SetConfig("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
 
 		whitelistIP := m.GetConfigSave("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
 		if ! m.CheckUserIPInWhiteList(userIP, whitelistIP){
@@ -158,6 +168,111 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//GetRequestValue - Attempt to get a val by key from the request in all cases.
+//First from the mux variables in the route path such as /dosomething/{var1}/{var2}
+//Then check the query string values such as /dosomething?var1=x&var2=y
+//Then check the form values if any
+//Then check the default value if supplied to use as return value
+//For performance we split each type into each function so it can be called independantly
+func GetRequestValue(r *http.Request, key ...string) string {
+	o := GetMuxValue(r, key[0], "")
+	if o == "" {
+		o = GetQueryValue(r, key[0], "")
+	}
+	if o == "" {
+		o = GetFormValue(r, key[0], "")
+	}
+	if o == "" {
+		if len(key) > 1 {
+			o = key[1]
+		} else {
+			o = ""
+		}
+	}
+	return o
+}
+
+//GetMuxValue -
+func GetMuxValue(r *http.Request, key ...string) string {
+	vars := mux.Vars(r)
+	val, ok := vars[key[0]]
+	if !ok {
+		if len(key) > 1 {
+			return key[1]
+		}
+		return ""
+	}
+	return val
+}
+
+//GetFormValue -
+func GetFormValue(r *http.Request, key ...string) string {
+	val := r.FormValue(key[0])
+	if val == "" {
+		if len(key) > 1 {
+			return key[1]
+		}
+	}
+	return val
+}
+
+//GetQueryValue -
+func GetQueryValue(r *http.Request, key ...string) string {
+	vars := r.URL.Query()
+	val, ok := vars[key[0]]
+	if !ok {
+		if len(key) > 1 {
+			return key[1]
+		}
+		return ""
+	}
+	return val[0]
+}
+
+func DoSaveNote(w http.ResponseWriter, r *http.Request) {
+	msg := "Note saved"
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := m.GetUser(useremail)
+
+	r.ParseForm()
+	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
+	ngroup := m.GetGroup(GetFormValue(r, "ngroup", "default"))
+	_permission, _ := strconv.Atoi(GetFormValue(r, "permission", "0"))
+	permission := int8(_permission)
+
+	_raw_editor, _ := strconv.Atoi(GetFormValue(r, "raw_editor", "0"))
+	raw_editor := int8(_raw_editor)
+
+	aNote := m.NoteNew(map[string]interface{} {
+		"title": r.FormValue("title"),
+		"datelog" : r.FormValue("datelog"),
+		"flags": r.FormValue("flags"),
+		"content": r.FormValue("content"),
+		"url": r.FormValue("url"),
+		"raw_editor": raw_editor, //If checked return string 1, otherwise empty string
+		"permission": permission,
+		"author_id": user.ID,
+		"group_id": ngroup.Group_id,
+		},
+	)
+	if noteID == 0 {//New note created by current user
+		aNote.Save()
+	} else {//Existing note loaded. Need to check permmission
+		aNote.ID = noteID
+		if m.CheckPerm(aNote.Object, user.ID, "w") {
+			aNote.Save()
+		} else {
+			msg = "Permission denied."
+		}
+	}
+	is_ajax := GetRequestValue(r, "is_ajax", "0")
+	if is_ajax == "1" {
+		fmt.Fprintf(w, msg)
+	} else {
+		http.Redirect(w, r, fmt.Sprintf("/?id=%d", aNote.ID), http.StatusFound)
+	}
+}
+
 func ReadUserIP(r *http.Request) string {
     IPAddress := r.Header.Get("X-Real-Ip")
     if IPAddress == "" {
@@ -172,7 +287,6 @@ func ReadUserIP(r *http.Request) string {
 //HandleRequests -
 func HandleRequests() {
 	router := mux.NewRouter()
-
 	csrfKey := m.MakePassword(32)
 	CSRF := csrf.Protect(
 		[]byte(csrfKey),
@@ -185,6 +299,9 @@ func HandleRequests() {
 	router.PathPrefix("/assets").Handler(http.FileServer(AssetFile()))
 	router.HandleFunc("/login", DoLogin).Methods("GET", "POST")
 	router.Handle("/", isAuthorized(HomePage)).Methods("GET")
+
+	//All routes handlers
+	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 
 	srv := &http.Server{
         Addr:  ":" + ServerPort,

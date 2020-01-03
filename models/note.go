@@ -9,8 +9,17 @@ import (
 	"strconv"
 )
 
-//Note
+//Object - Generic Object which has some special fields to allow us to check permissions etc...
+//All other types (except user and group itself) should embed this type. Example: Note, Attachment
+type Object struct {
+	Permission int8
+	AuthorID int64
+	GroupID int8
+}
+
+//Note -
 type Note struct {
+	Object
 	ID int64
 	Title string
 	Datelog int64
@@ -20,11 +29,8 @@ type Note struct {
 	Flags string
 	Timestamp int64
 	TimeSpent int64
-	AuthorID int64
 	Author *User
-	GroupID int8
 	Group *Group
-	Permission int8
 	RawEditor int8
 	Attachments []*Attachment
 }
@@ -221,7 +227,7 @@ func GetNoteByID(id int64) (*Note) {
 	defer DB.Close()
 	n := Note{ ID: id }
 	if e := DB.QueryRow(`SELECT
-		id() as note_id,
+		title,
 		flags,
 		content,
 		url,
@@ -233,7 +239,7 @@ func GetNoteByID(id int64) (*Note) {
 		group_id,
 		permission,
 		raw_editor
-		FROM note WHERE id() = $1`, id).Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
+		FROM note WHERE id() = $1`, id).Scan(&n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
 		log.Printf("INFO - Can not find note ID %d - %v\n", id, e)
 		return nil
 	}
