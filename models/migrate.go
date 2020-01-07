@@ -1,6 +1,7 @@
 package models
 
 import (
+	"time"
 	"os"
 	"log"
 	"database/sql"
@@ -19,18 +20,6 @@ func Migrate() {
 		datelog,
 		content,
 		url,
-		reminder_ticks,
-		flags,
-		timestamp,
-		time_spent,
-		permission,
-		raw_editor
-	FROM webnote_note
-	`
-	q = `SELECT
-		title,
-		content,
-		url,
 		flags,
 		timestamp,
 		permission,
@@ -46,18 +35,18 @@ func Migrate() {
 		aNote.AuthorID = int64(1)
 		aNote.GroupID = int8(1)
 		var nContent, nURL, nFlags sql.NullString
-		// var nReminder, nTimeSpent sql.NullInt64
+		var dateLog, timeStamp sql.NullInt64
 		if err := rows.Scan(
-			&aNote.Title, &nContent, &nURL,
-			&nFlags, &aNote.Timestamp, &aNote.Permission, &aNote.RawEditor,
+			&aNote.Title, &dateLog, &nContent, &nURL,
+			&nFlags, &timeStamp, &aNote.Permission, &aNote.RawEditor,
 		); err != nil {
 			log.Fatalf("ERROR Scan result %v\n", err)
 		}
 		if nContent.Valid {	aNote.Content = nContent.String	}
 		if nURL.Valid { aNote.URL = nURL.String }
 		if nFlags.Valid { aNote.Flags = nFlags.String }
-		// if nReminder.Valid { aNote.ReminderTicks = nReminder.Int64 }
-		// if nTimeSpent.Valid { aNote.TimeSpent = nTimeSpent.Int64 }
+		if dateLog.Valid { aNote.Datelog = dateLog.Int64 * int64(time.Second / time.Nanosecond) }
+		if timeStamp.Valid { aNote.Timestamp = timeStamp.Int64 * int64(time.Second / time.Nanosecond) }
 		aNote.Save()
 	}
 }

@@ -5,7 +5,7 @@
     <body style="background-image: url('{{ .settings.BASE_URL }}?action=sendfile&id=113')">
         <table rules="rows,cols" align='center' border="0" cellpadding="5" cellspacing="5" width="95%" style="background-image: url('{{ .settings.BASE_URL }}?action=sendfile&id=112')">
             <tr>
-                <td>{{ .note.Content|raw_html }}</td>
+                <td>{{ .note.Content|unsafe_raw_html }}</td>
             </tr>
         </table>
     </body>

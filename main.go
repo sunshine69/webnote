@@ -296,6 +296,9 @@ func main() {
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
 			return template.HTML(cleanupBytes)
 		},
+		"unsafe_raw_html": func(html string) template.HTML {
+			return template.HTML(html)
+		},
 		"if_ie": func() template.HTML {
 			return template.HTML("<!--[if IE]>")
 		},
