@@ -137,7 +137,6 @@ func (n *Note) Save() {
 	DB := GetDB("")
 	defer DB.Close()
 	var sql string
-
 	if currentNote == nil {//New note
 		if n.Title == "" {
 			if n.Content != "" {
@@ -146,6 +145,7 @@ func (n *Note) Save() {
 				n.Title = strings.ReplaceAll(n.Content[0:_l], "\n", " ")
 			}
 		}
+		log.Printf("INFO new note title %s\n", n.Title)
 		tx, _ := DB.Begin()
 		sql = `INSERT INTO note(
 			title,
@@ -240,7 +240,7 @@ func GetNoteByID(id int64) (*Note) {
 		permission,
 		raw_editor
 		FROM note WHERE id() = $1`, id).Scan(&n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
-		log.Printf("INFO - Can not find note ID %d - %v\n", id, e)
+		// log.Printf("INFO - Can not find note ID %d - %v\n", id, e)
 		return nil
 	}
 	n.Update()
@@ -265,7 +265,7 @@ func GetNote(title string) (*Note) {
 		permission,
 		raw_editor
 		FROM note WHERE title = $1`, title).Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
-		log.Printf("INFO - Can not find note title %s - %v\n", title, e)
+		// log.Printf("INFO - Can not find note title %s - %v\n", title, e)
 		return nil
 	}
 	n.Update()
@@ -357,7 +357,7 @@ func SearchNote(keyword string) []Note {
 		_l := len(tokens)
 		for i, t := range(tokens) {
 			if i == _l - 1 {
-				q = fmt.Sprintf(`%s (flags LIKE "%s") ORDER BY datelog DESC LIMIT 200;`, q, t)
+				q = fmt.Sprintf(`%s (flags LIKE "%s") ORDER BY datelog DESC LIMIT 200`, q, t)
 			} else {
 				q = fmt.Sprintf(`%s (flags LIKE "%s") OR `, q, t)
 			}
@@ -376,13 +376,14 @@ func SearchNote(keyword string) []Note {
 				combind = "AND"
 			}
 			if i == _l - 1 {
-				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) ORDER BY timestamp DESC;`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) ORDER BY timestamp DESC`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			} else {
 				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			}
 		}
 		q = fmt.Sprintf("SELECT id() as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
+	q = fmt.Sprintf("%s LIMIT 200;", q)
 	// fmt.Println(q)
 	DB := GetDB("")
 	defer DB.Close()

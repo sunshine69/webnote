@@ -13,9 +13,9 @@ func TestAttachement(t *testing.T) {
 	a := Attachment{
 		Name: "test attachment 1",
 		AttachedFile: "/tmp/t",
-		GroupID: 1,
-		AuthorID: 52,
 	}
+	a.GroupID = 1
+	a.AuthorID = 52
 	a.Save()
 	a1 := GetAttachement("test attachment 1")
 	log.Println(a1)

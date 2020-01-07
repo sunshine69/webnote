@@ -43,7 +43,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		aNote = m.GetNoteByID(noteID)
 	}
 	CommonRenderTemplate("frontpage.html", &w, r, &map[string]interface{}{
-		"title": "Webnote - new note",
+		"title": "Webnote - note " + aNote.Title,
 		"page": "frontpage",
 		"msg":  "",
 		"note": aNote,
@@ -138,7 +138,7 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := m.GetNoteByID(noteID)
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
-		"title": "Webnote - Search result",
+		"title": "Webnote - " + aNote.Title,
 		"page": "noteview",
 		"msg":  "",
 		"note": aNote,

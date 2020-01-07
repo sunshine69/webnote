@@ -67,12 +67,13 @@ func GetDB(dbPath string) (*sql.DB) {
 		dbPath = DBPATH
 	}
 	// fmt.Printf("Use dbpath %v\n", dbPath)
-	ql.RegisterDriver2()
+	// ql.RegisterDriver2()
+	ql.RegisterDriver()
 	// ql.Options {
 	// 	RemoveEmptyWAL: true,
 	// }
 
-	DB, err := sql.Open("ql2", dbPath)
+	DB, err := sql.Open("ql", dbPath)
 	if err != nil {
 	  panic("failed to connect database")
 	}
