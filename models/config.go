@@ -3,7 +3,7 @@ package models
 import (
 	"net/http"
 	"github.com/gorilla/sessions"
-	"modernc.org/ql"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"database/sql"
 	"os"
@@ -66,14 +66,7 @@ func GetDB(dbPath string) (*sql.DB) {
 		}
 		dbPath = DBPATH
 	}
-	// fmt.Printf("Use dbpath %v\n", dbPath)
-	// ql.RegisterDriver2()
-	ql.RegisterDriver()
-	// ql.Options {
-	// 	RemoveEmptyWAL: true,
-	// }
-
-	DB, err := sql.Open("ql", dbPath)
+	DB, err := sql.Open("sqlite3", "file://" + dbPath + "?_timeout=15")
 	if err != nil {
 	  panic("failed to connect database")
 	}
@@ -123,8 +116,8 @@ func SetupDefaultConfig() {
 	}
 	sql := `DROP TABLE IF EXISTS appconfig;
 	CREATE TABLE appconfig(
-		key STRING,
-		val STRING,
+		key text,
+		val text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS appconfigkeyidx ON appconfig(key);
 	`
@@ -212,87 +205,92 @@ func DeleteConfig(key string) {
 //SetupAppDatabase -
 func SetupAppDatabase() {
 	SqlSetup = `
-	BEGIN TRANSACTION;
-
-	CREATE TABLE IF NOT EXISTS note (
-		title STRING,
-		datelog int64,
-		flags STRING,
-		content STRING,
-		url STRING,
-		reminder_ticks int64 default 0,
-		timestamp int64 default 0,
-		time_spent int64 default 0,
-		author_id int64 default 0,
-		group_id int8 default 0,
-		permission int8,
-		raw_editor int8
+	CREATE TABLE IF NOT EXISTS "note" (
+		"id" integer NOT NULL PRIMARY KEY,
+		"title" varchar(254) NOT NULL,
+		"datelog" integer,
+		"content" text,
+		"url" varchar(356),
+		"reminder_ticks" integer,
+		"flags" varchar(512),
+		"timestamp" integer,
+		"time_spent" integer,
+		"author_id" integer NOT NULL,
+		"group_id" integer NOT NULL REFERENCES "ngroup" ("id"),
+		"permission" integer NOT NULL,
+		"raw_editor" integer default 0
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_title_idx ON note(title);
 
 	CREATE TABLE IF NOT EXISTS note_revision (
-		note_id int64,
-		timestamp int64,
-		flags STRING,
-		url STRING,
-		content STRING,
-		author_id int64,
-		group_id int8,
-		permission int8
+		id integer NOT NULL PRIMARY KEY,
+		note_id integer,
+		timestamp integer,
+		flags text,
+		url text,
+		content text,
+		author_id integer,
+		group_id integer,
+		permission integer
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_revision_idx ON note_revision(note_id, timestamp);
 
 	CREATE TABLE IF NOT EXISTS note_comment (
-		user_id int64,
-		note_id int64,
-		datelog int64,
-		comment STRING
+		id integer NOT NULL PRIMARY KEY,
+		user_id integer,
+		note_id integer,
+		datelog integer,
+		comment text
 	);
 
 	CREATE TABLE IF NOT EXISTS note_attachment (
-		user_id int64 ,
-		note_id int64,
-		attachment_id int64,
-		timestamp int64
+		id integer NOT NULL PRIMARY KEY,
+		user_id integer ,
+		note_id integer,
+		attachment_id integer,
+		timestamp integer
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_attachmentidx ON note_attachment(note_id, attachment_id);
 
 	CREATE TABLE IF NOT EXISTS attachment(
-		name STRING,
-		description STRING,
-		author_id int64 ,
-		group_id int8 ,
-		permission int8,
-		attached_file STRING,
-		mimetype STRING,
-		created int64,
-		updated int64
+		id integer NOT NULL PRIMARY KEY,
+		name text,
+		description text,
+		author_id integer ,
+		group_id integer ,
+		permission integer,
+		attached_file text,
+		mimetype text,
+		created integer,
+		updated integer
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS attachmentidx ON attachment(name);
 
 	CREATE TABLE IF NOT EXISTS user (
-		f_name STRING,
-		l_name STRING,
-		email STRING,
-		address STRING,
-		passwd STRING,
-		salt_length int8,
-		h_phone STRING,
-		w_phone STRING,
-		m_phone STRING,
-		extra_info STRING,
-		last_attempt int64,
-		attempt_count int8,
-		last_login int64,
-		pref_id int8 default 0,
-		totp_passwd STRING
+		id integer NOT NULL PRIMARY KEY,
+		f_name text,
+		l_name text,
+		email text,
+		address text,
+		passwd text,
+		salt_length integer,
+		h_phone text,
+		w_phone text,
+		m_phone text,
+		extra_info text,
+		last_attempt integer,
+		attempt_count integer,
+		last_login integer,
+		pref_id integer default 0,
+		totp_passwd text
 		);
 	CREATE UNIQUE INDEX IF NOT EXISTS useremailidx ON user(email);
 
 	CREATE TABLE IF NOT EXISTS ngroup (
-		group_id int8,
-		name STRING,
-		description STRING,
+		id integer NOT NULL PRIMARY KEY,
+		group_id integer,
+		name text,
+		description text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS groupidx ON ngroup(name);
 	CREATE UNIQUE INDEX IF NOT EXISTS groupididx ON ngroup(group_id);
@@ -302,43 +300,42 @@ func SetupAppDatabase() {
 	INSERT INTO ngroup(group_id, name, description) VALUES(3, "friend", "friend group");
 
 	CREATE TABLE IF NOT EXISTS user_group (
-		user_id int64,
-		group_id int8,
+		id integer NOT NULL PRIMARY KEY,
+		user_id integer,
+		group_id integer
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS user_groupidx ON user_group(user_id, group_id);
 
 -- End main application. Below is the extra app that the webnote per each sub app has
 -- Andrew account ledger
 	CREATE TABLE IF NOT EXISTS andrewaccount (
-		datelog int64,
-		description STRING,
+		datelog integer,
+		description text,
 		amount float64
 	);
 -- End Andrew account ledger
 
 -- credential app
 	CREATE TABLE IF NOT EXISTS credential (
-		user_id int64,
-		cred_username STRING ,
-		cred_password STRING ,
+		user_id integer,
+		cred_username text ,
+		cred_password text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS credentialidx ON credential(user_id, cred_username, cred_password);
 
 	CREATE TABLE IF NOT EXISTS url (
-		url STRING
+		url text
 	);
 
 	CREATE TABLE IF NOT EXISTS url_cred (
-		cred_id int64  ,
-		url_id int64  ,
-		note STRING,
-		datelog int64,
-		qrlink STRING,
+		cred_id integer,
+		url_id integer,
+		note text,
+		datelog integer,
+		qrlink text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS url_credidx ON url_cred(cred_id, url_id);
 -- End credential app
-
-	COMMIT;
 	`
 	DB := GetDB("")
 	defer DB.Close()

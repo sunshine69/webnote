@@ -22,7 +22,7 @@ func (g *Group) Save() {
 			group_id,
 			name,
 			description
-			) values(int8($1), $2, $3)`, g.Group_id, g.Name, g.Description)
+			) values($1, $2, $3)`, g.Group_id, g.Name, g.Description)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert group %s - %v\n", g.Name, e)
@@ -36,7 +36,7 @@ func GetGroup(name string) *Group {
 	DB := GetDB(""); defer DB.Close()
 	g := Group{}
 	if e := DB.QueryRow(`SELECT
-	id() as id,
+	id,
 	group_id,
 	name,
 	description
@@ -51,11 +51,11 @@ func GetGroupByID(id int8) *Group {
 	DB := GetDB(""); defer DB.Close()
 	g := Group{}
 	if e := DB.QueryRow(`SELECT
-	id(),
+	id ,
 	group_id,
 	name,
 	description
-	FROM ngroup where group_id = int8($1)`, id).Scan(&g.ID, &g.Group_id,  &g.Name,  &g.Description); e != nil {
+	FROM ngroup where group_id = $1`, id).Scan(&g.ID, &g.Group_id,  &g.Name,  &g.Description); e != nil {
 		log.Printf("WARN group ID %d not found - %v\n", id, e)
 		return nil
 	}

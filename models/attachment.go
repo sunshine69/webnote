@@ -38,7 +38,7 @@ func (a *Attachment) Save() {
 			mimetype,
 			created,
 			updated)
-			VALUES($1, $2, $3, int8($4), int8($5), $6, $7, $8, $9)`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.Mimetype, a.Created, a.Updated)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.Mimetype, a.Created, a.Updated)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert attachment - %v\n", e)
@@ -51,12 +51,12 @@ func (a *Attachment) Save() {
 			name = $1,
 			description = $2,
 			author_id = $3,
-			group_id = int8($4),
-			permission = int8($5),
+			group_id = $4,
+			permission = $5,
 			attached_file = $6,
 			mimetype = $7,
 			created = $8,
-			updated = $9,
+			updated = $9
 			WHERE name = $10`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.Mimetype, a.Created, a.Updated, a.Name)
 		if e != nil {
 			tx.Rollback()
@@ -71,7 +71,7 @@ func GetAttachement(aName string) *Attachment {
 	DB := GetDB(""); defer DB.Close()
 	a := Attachment{}
 	if e := DB.QueryRow(`SELECT
-		id() as id,
+		id,
 		name ,
 		description ,
 		author_id  ,
@@ -94,7 +94,7 @@ func GetAttachementByID(id int64) *Attachment {
 	DB := GetDB(""); defer DB.Close()
 	a := Attachment{}
 	if e := DB.QueryRow(`SELECT
-		id() as id,
+		id,
 		name,
 		description,
 		author_id,
@@ -105,7 +105,7 @@ func GetAttachementByID(id int64) *Attachment {
 		created,
 		updated
 		FROM attachment
-		WHERE id() = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+		WHERE id = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
 			log.Printf("WARN No attachement ID %d found - %v\n", id, e)
 			return nil
 	}

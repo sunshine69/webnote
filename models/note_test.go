@@ -16,7 +16,7 @@ func TestNote(t *testing.T) {
 		"flags": ":TODO",
 		"content": "Content note 1",
 		"group_id": int8(3),
-		"author_id": int64(52),
+		"author_id": int64(1),
 	})
 	log.Printf("Note: %v\n", aNote)
 	aNote.Save()

@@ -4,7 +4,6 @@ import (
 	"os"
 	"log"
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func Migrate() {
@@ -44,7 +43,7 @@ func Migrate() {
 	}
 	for rows.Next() {
 		aNote := Note{}
-		aNote.AuthorID = int64(52)
+		aNote.AuthorID = int64(1)
 		aNote.GroupID = int8(1)
 		var nContent, nURL, nFlags sql.NullString
 		// var nReminder, nTimeSpent sql.NullInt64

@@ -59,7 +59,7 @@ func (n *Note) GetNoteAttachments() []*Attachment {
 		a.created,
 		a.updated
 		FROM note_attachment AS na, attachment AS a
-		WHERE na.attachment_id = id(attachment)
+		WHERE na.attachment_id = a.id
 		AND na.note_id = $1
 	`, n.ID)
 	if e != nil {
@@ -159,7 +159,7 @@ func (n *Note) Save() {
 			author_id,
 			group_id,
 			permission,
-			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, int8($10), int8($11), int8($12));`
+			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`
 		res, e := tx.Exec(sql, n.Title, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor)
 		if e != nil {
 			tx.Rollback()
@@ -176,7 +176,7 @@ func (n *Note) Save() {
 			url,
 			author_id,
 			group_id,
-			permission) VALUES($1, $2, $3, $4, $5, $6, int8($7), int8($8))`
+			permission) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
 		tx, _ := DB.Begin()
 		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission)
 		if e != nil {
@@ -210,9 +210,9 @@ func (n *Note) Save() {
 			timestamp = $6,
 			time_spent = $7,
 			author_id = $8,
-			group_id = int8($9),
-			permission = int8($10),
-			raw_editor = int8($11) WHERE title = $12`
+			group_id = $9,
+			permission = $10,
+			raw_editor = $11 WHERE title = $12`
 		res, e = tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
 		if e != nil {
 			tx.Rollback()
@@ -239,7 +239,7 @@ func GetNoteByID(id int64) (*Note) {
 		group_id,
 		permission,
 		raw_editor
-		FROM note WHERE id() = $1`, id).Scan(&n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
+		FROM note WHERE id = $1`, id).Scan(&n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
 		// log.Printf("INFO - Can not find note ID %d - %v\n", id, e)
 		return nil
 	}
@@ -252,7 +252,7 @@ func GetNote(title string) (*Note) {
 	defer DB.Close()
 	n := Note{ Title: title }
 	if e := DB.QueryRow(`SELECT
-		id() as note_id,
+		id,
 		flags,
 		content,
 		url,
@@ -313,7 +313,7 @@ func NoteDeleteByID(id int64) bool {
 	var o bool
 	DB := GetDB(""); defer DB.Close()
 	tx, _ := DB.Begin()
-	_, e := tx.Exec(`DELETE FROM note WHERE id() = $1`, id)
+	_, e := tx.Exec(`DELETE FROM note WHERE id = $1`, id)
 	if e != nil {
 		tx.Rollback()
 		log.Printf("WARN Can not delete note ID %d\n", id)
@@ -357,12 +357,12 @@ func SearchNote(keyword string) []Note {
 		_l := len(tokens)
 		for i, t := range(tokens) {
 			if i == _l - 1 {
-				q = fmt.Sprintf(`%s (flags LIKE "%s") ORDER BY datelog DESC LIMIT 200`, q, t)
+				q = fmt.Sprintf(`%s (flags LIKE "%%%s%%") ORDER BY datelog DESC LIMIT 200`, q, t)
 			} else {
-				q = fmt.Sprintf(`%s (flags LIKE "%s") OR `, q, t)
+				q = fmt.Sprintf(`%s (flags LIKE "%%%s%%") OR `, q, t)
 			}
 		}
-		q = fmt.Sprintf("SELECT id() as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	} else {
 		_l := len(tokens)
 
@@ -376,12 +376,12 @@ func SearchNote(keyword string) []Note {
 				combind = "AND"
 			}
 			if i == _l - 1 {
-				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) ORDER BY timestamp DESC`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%%%s%%") %s %s(url LIKE "%%%s%%")) ORDER BY timestamp DESC`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			} else {
-				q = fmt.Sprintf(`%s (%s(title LIKE "%s") %s %s(flags LIKE "%s") %s %s(content LIKE "%s") %s %s(url LIKE "%s")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%s") %s %s(url LIKE "%%%s%%")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			}
 		}
-		q = fmt.Sprintf("SELECT id() as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
+		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
 	q = fmt.Sprintf("%s LIMIT 200;", q)
 	// fmt.Println(q)

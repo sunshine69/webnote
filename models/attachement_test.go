@@ -15,7 +15,7 @@ func TestAttachement(t *testing.T) {
 		AttachedFile: "/tmp/t",
 	}
 	a.GroupID = 1
-	a.AuthorID = 52
+	a.AuthorID = 1
 	a.Save()
 	a1 := GetAttachement("test attachment 1")
 	log.Println(a1)
