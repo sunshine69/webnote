@@ -314,28 +314,6 @@ func SetupAppDatabase() {
 		amount float64
 	);
 -- End Andrew account ledger
-
--- credential app
-	CREATE TABLE IF NOT EXISTS credential (
-		user_id integer,
-		cred_username text ,
-		cred_password text
-	);
-	CREATE UNIQUE INDEX IF NOT EXISTS credentialidx ON credential(user_id, cred_username, cred_password);
-
-	CREATE TABLE IF NOT EXISTS url (
-		url text
-	);
-
-	CREATE TABLE IF NOT EXISTS url_cred (
-		cred_id integer,
-		url_id integer,
-		note text,
-		datelog integer,
-		qrlink text
-	);
-	CREATE UNIQUE INDEX IF NOT EXISTS url_credidx ON url_cred(cred_id, url_id);
--- End credential app
 	`
 	DB := GetDB("")
 	defer DB.Close()

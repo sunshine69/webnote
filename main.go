@@ -18,6 +18,7 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/microcosm-cc/bluemonday"
 	m "github.com/sunshine69/webnote-go/models"
+	"github.com/sunshine69/webnote-go/app"
 )
 
 var ServerPort, SSLKey, SSLCert string
@@ -29,8 +30,8 @@ func init() {
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
-	raw_editor, _ := strconv.Atoi(GetRequestValue(r, "raw_editor", "1"))
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	raw_editor, _ := strconv.Atoi(m.GetRequestValue(r, "raw_editor", "1"))
 
 	var aNote *m.Note
 	if noteID == 0 {
@@ -56,12 +57,12 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	user := m.GetUser(useremail)
 
 	r.ParseForm()
-	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
-	ngroup := m.GetGroup(GetFormValue(r, "ngroup", "default"))
-	_permission, _ := strconv.Atoi(GetFormValue(r, "permission", "0"))
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	ngroup := m.GetGroup(m.GetFormValue(r, "ngroup", "default"))
+	_permission, _ := strconv.Atoi(m.GetFormValue(r, "permission", "0"))
 	permission := int8(_permission)
 
-	_raw_editor, _ := strconv.Atoi(GetFormValue(r, "raw_editor", "0"))
+	_raw_editor, _ := strconv.Atoi(m.GetFormValue(r, "raw_editor", "0"))
 	raw_editor := int8(_raw_editor)
 
 	var aNote *m.Note
@@ -95,7 +96,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			msg = "Permission denied."
 		}
 	}
-	isAjax := GetRequestValue(r, "is_ajax", "0")
+	isAjax := m.GetRequestValue(r, "is_ajax", "0")
 	if isAjax == "1" {
 		fmt.Fprintf(w, msg)
 	} else {
@@ -119,7 +120,7 @@ func ReadUserIP(r *http.Request) string {
 }
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
-	keyword := GetRequestValue(r, "keyword", "")
+	keyword := m.GetRequestValue(r, "keyword", "")
 	notes := m.SearchNote(keyword)
 
 	CommonRenderTemplate("search_result.html", &w, r, &map[string]interface{}{
@@ -132,10 +133,10 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 
 //DoViewNote -
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
-	viewType := GetRequestValue(r, "t", "1")
+	viewType := m.GetRequestValue(r, "t", "1")
 	tName := "noteview"  + viewType + ".html"
 
-	noteID, _ := strconv.ParseInt(GetRequestValue(r, "id", "0"), 10, 64)
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := m.GetNoteByID(noteID)
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
@@ -146,7 +147,7 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
-	noteIDStr := GetRequestValue(r, "id", "0")
+	noteIDStr := m.GetRequestValue(r, "id", "0")
 	msg := "OK"
 	if noteIDStr != "0" {
 		useremail := m.GetSessionVal(r, "useremail", "").(string)
@@ -161,9 +162,9 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 	} else {
 		msg = "Invalid noteID"
 	}
-	isAjax := GetRequestValue(r, "is_ajax", "0")
-	page := GetRequestValue(r, "page", "0")
-	keyword := GetRequestValue(r, "keyword", "")
+	isAjax := m.GetRequestValue(r, "is_ajax", "0")
+	page := m.GetRequestValue(r, "page", "0")
+	keyword := m.GetRequestValue(r, "keyword", "")
 	var redirectURL string
 	switch page{
 	case "frontpage":
@@ -197,15 +198,20 @@ func DoLogout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/"), http.StatusFound)
 }
 
+var CSRF_TOKEN string
 //HandleRequests -
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
-	csrfKey := m.MakePassword(32)
+	CSRF_TOKEN := m.MakePassword(32)
 	CSRF := csrf.Protect(
-		[]byte(csrfKey),
+		[]byte(CSRF_TOKEN),
 		// instruct the browser to never send cookies during cross site requests
 		csrf.SameSite(csrf.SameSiteStrictMode),
+		csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+		csrf.RequestHeader("X-CSRF-Token"),
+		// csrf.FieldName("authenticity_token"),
+		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
 	)
 	csrf.Secure(true)
 	router.Use(CSRF)
@@ -224,6 +230,8 @@ func HandleRequests() {
 	router.Handle("/view", isAuthorized(DoViewNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
+	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
+	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
 
 	srv := &http.Server{
         Addr:  ":" + ServerPort,
@@ -320,20 +328,15 @@ func main() {
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
 			return template.HTML( cleanupBytes )
 		},
+		"replace": func(old, new, data string) template.HTML {
+			o := strings.ReplaceAll(data, old, new)
+			return template.HTML(o)
+		},
 	}
 	TemplateFuncMap = &_TemplateFuncMap
 	LoadAllTemplates()
 	HandleRequests()
 }
-
-// func LoadTemplate(tFilePath ...string) (string) {
-// 	var o bytes.Buffer
-// 	for _, f := range(tFilePath) {
-// 		tStringb, _ := Asset(f)
-// 		o.Write(tStringb)
-// 	}
-// 	return o.String()
-// }
 
 var AllTemplates *template.Template
 
@@ -425,66 +428,6 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-//GetRequestValue - Attempt to get a val by key from the request in all cases.
-//First from the mux variables in the route path such as /dosomething/{var1}/{var2}
-//Then check the query string values such as /dosomething?var1=x&var2=y
-//Then check the form values if any
-//Then check the default value if supplied to use as return value
-//For performance we split each type into each function so it can be called independantly
-func GetRequestValue(r *http.Request, key ...string) string {
-	o := GetMuxValue(r, key[0], "")
-	if o == "" {
-		o = GetQueryValue(r, key[0], "")
-	}
-	if o == "" {
-		o = GetFormValue(r, key[0], "")
-	}
-	if o == "" {
-		if len(key) > 1 {
-			o = key[1]
-		} else {
-			o = ""
-		}
-	}
-	return o
-}
-
-//GetMuxValue -
-func GetMuxValue(r *http.Request, key ...string) string {
-	vars := mux.Vars(r)
-	val, ok := vars[key[0]]
-	if !ok {
-		if len(key) > 1 {
-			return key[1]
-		}
-		return ""
-	}
-	return val
-}
-
-//GetFormValue -
-func GetFormValue(r *http.Request, key ...string) string {
-	val := r.FormValue(key[0])
-	if val == "" {
-		if len(key) > 1 {
-			return key[1]
-		}
-	}
-	return val
-}
-
-//GetQueryValue -
-func GetQueryValue(r *http.Request, key ...string) string {
-	vars := r.URL.Query()
-	val, ok := vars[key[0]]
-	if !ok {
-		if len(key) > 1 {
-			return key[1]
-		}
-		return ""
-	}
-	return val[0]
-}
 
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -494,6 +437,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		endpoint(w, r)
     })
 }
@@ -502,7 +446,7 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	user := m.GetUser(useremail)
 	uGroups := user.Groups
-	keyword := GetRequestValue(r, "keyword", "")
+	keyword := m.GetRequestValue(r, "keyword", "")
 	commonMapData := map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"keyword": keyword,
