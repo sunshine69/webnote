@@ -344,7 +344,11 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		if ! m.CheckUserIPInWhiteList(userIP, whitelistIP){
 			totop := r.FormValue("totp_number")
 			log.Printf("INFO user input totp %s\n", totop)
-			user = m.VerifyLogin(useremail, password, totop)
+			if totop == "" {
+				user = nil
+			} else{
+				user = m.VerifyLogin(useremail, password, totop)
+			}
 		} else {
 			log.Printf("INFO user IP whitelisted, ignore OTP - ip %s - list: %s\n", userIP, whitelistIP)
 			user = m.VerifyLogin(useremail, password, "")
