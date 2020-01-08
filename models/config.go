@@ -71,7 +71,7 @@ func GetDB(dbPath string) (*sql.DB) {
 		}
 		dbPath = DBPATH
 	}
-	DB, err := sql.Open("sqlite3", "file://" + dbPath + "?_timeout=15")
+	DB, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 	  panic("failed to connect database")
 	}
@@ -84,7 +84,7 @@ func InitConfig() {
 	DateLayout = GetConfig("date_layout")
 	WebNoteUser = GetConfig("webnote_user")
 	Settings = &AppSettings{
-		BASE_URL: "https://note.xvt.technology:8080",
+		BASE_URL: GetConfig("base_url"),
 		ADMIN_EMAIL: "msh.computing@gmail.com",
 	}
 	PermissionList = &map[int8]string{

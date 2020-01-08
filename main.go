@@ -20,7 +20,6 @@ import (
 var ServerPort, SSLKey, SSLCert string
 
 func init() {
-	ServerPort = m.GetConfig("server_port", "8080")
 	SSLKey = m.GetConfig("ssl_key", "")
 	SSLCert = m.GetConfig("ssl_cert", "")
 }
@@ -253,7 +252,11 @@ func main() {
 	setup := flag.Bool("setup", false, "Run initial setup DB and config")
 	sslKey := flag.String("key", "", "SSL Key path")
 	sslCert := flag.String("cert", "", "SSL Cert path")
+    port := flag.String("p", "", "Port")
+    base_url := flag.String("baseurl", "", "baseurl")
 	flag.Parse()
+
+    ServerPort = *port
 
 	os.Setenv("DBPATH", *dbPath)
 	if *setup {
@@ -262,10 +265,11 @@ func main() {
 		m.CreateAdminUser()
 	}
 
-	m.InitConfig()
-
 	SSLKey = m.GetConfigSave("ssl_key", *sslKey)
 	SSLCert = m.GetConfigSave("ssl_cert", *sslCert)
+    m.GetConfigSave("base_url", *base_url)
+
+	m.InitConfig()
 
 	if *sessionKey == "" {
 		*sessionKey = m.GetConfig("session-key", "")
@@ -339,9 +343,10 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		whitelistIP := m.GetConfigSave("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
 		if ! m.CheckUserIPInWhiteList(userIP, whitelistIP){
 			totop := r.FormValue("totp_number")
-			log.Printf("INFO input totp %s\n", totop)
+			log.Printf("INFO user input totp %s\n", totop)
 			user = m.VerifyLogin(useremail, password, totop)
 		} else {
+			log.Printf("INFO user IP whitelisted, ignore OTP - ip %s - list: %s\n", userIP, whitelistIP)
 			user = m.VerifyLogin(useremail, password, "")
 		}
 		ses, _ := m.SessionStore.Get(r, "auth-session")
@@ -370,7 +375,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
-		log.Printf("DEBUG isAuth %v\n", isAuth)
+		// log.Printf("DEBUG isAuth %v\n", isAuth)
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
