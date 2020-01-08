@@ -1,6 +1,8 @@
 package app
 
 import (
+	"bytes"
+	"strconv"
 	"time"
 	"fmt"
 	"log"
@@ -33,15 +35,66 @@ func DoCredUpdateQrlink(w *http.ResponseWriter, r *http.Request) {
 }
 
 func DoCredAdd(w *http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(*w, "TODO")
+	cred_url := m.GetRequestValue(r, "cred_url", "")
+	cred_username := m.GetRequestValue(r, "cred_username", "")
+	cred_password := m.GetRequestValue(r, "cred_password", "")
+	cred_note := m.GetRequestValue(r, "cred_note", "")
+	qrlink := m.GetRequestValue(r, "qrlink", "")
+
+	u := UrlNew(cred_url)
+
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := m.GetUser(useremail)
+	c := CredentialNew(map[string]interface{}{
+		"user_id": user.ID,
+		"cred_username": cred_username,
+		"cred_password": cred_password,
+	})
+	uc := UrlCredNew(map[string]interface{}{
+		"cred_id": c.Id,
+		"url_id": u.Id,
+		"cred_note": cred_note,
+		"qrlink": qrlink,
+	})
+	fmt.Fprintf(*w, "OK Cred URL added ID %d", uc.Id)
 }
 
 func DoCredDelete(w *http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(*w, "TODO")
+	msg := "OK deleted"
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := m.GetUser(useremail)
+	idStr := m.GetRequestValue(r, "id", "-1")
+	id, _ := strconv.ParseInt(idStr, 10, 64)
+	if id != -1 {
+		if uc := GetUrlCredByID(id); uc != nil {
+			log.Println(uc)
+			c := uc.Credential
+			log.Println(c)
+			if c.User_id == user.ID{
+				uc.Delete()
+			} else {
+				msg = "Permission denied"
+			}
+		}
+	}
+	fmt.Fprintf(*w, msg)
 }
 
 func DoCredSearch(w *http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(*w, "TODO")
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := m.GetUser(useremail)
+	kw := m.GetRequestValue(r, "kw", "")
+	ucs := SearchCredentials(kw, user.ID)
+	commonMapData := map[string]interface{}{
+		"user": user,
+		"date_layout": m.DateLayout,
+		"cred_search_results": ucs,
+	}
+	var tpl bytes.Buffer
+	if err := m.AllTemplates.ExecuteTemplate(&tpl, "cred_search_results.html", commonMapData); err != nil {
+		http.Error(*w, err.Error(), http.StatusInternalServerError)
+	}
+	fmt.Fprintf(*w, tpl.String())
 }
 
 func SetupSchema() {
@@ -58,6 +111,7 @@ func SetupSchema() {
 		id integer NOT NULL PRIMARY KEY,
 		url text
 	);
+	CREATE UNIQUE INDEX IF NOT EXISTS urlidx ON url(url)
 
 	CREATE TABLE IF NOT EXISTS url_cred (
 		id integer NOT NULL PRIMARY KEY,
@@ -84,7 +138,6 @@ type Credential struct {
 	User_id int64
 	Cred_username string
 	Cred_password string
-	Url string
 }
 
 type Url struct {
@@ -106,18 +159,28 @@ type UrlCred struct {
 func (uc *UrlCred) Save() {
 	DB := m.GetDB(""); defer DB.Close()
 	tx, _ := DB.Begin()
-	q := `INSERT OR REPLACE INTO url_cred(
-		cred_id,
-		url_id,
-		note,
-		datelog,
-		qrlink)
-		VALUES($1, $2, $3, $4, $5)
-	`
+	var q string
+	if uc.Id == -1 {
+		q = `INSERT INTO url_cred(
+			cred_id,
+			url_id,
+			note,
+			datelog,
+			qrlink)
+			VALUES($1, $2, $3, $4, $5)
+		`
+	} else {
+		q = fmt.Sprintf(`UPDATE url_cred SET
+			cred_id = $1,
+			url_id  = $2,
+			note    = $3,
+			datelog = $4,
+			qrlink  = $5  WHERE id = %d`, uc.Id)
+	}
 	res, err := tx.Exec(q, uc.Cred_id, uc.Url_id, uc.Note, uc.Datelog, uc.Qrlink)
 	if err != nil {
-		log.Printf("WARN - error insert url_cred %v\n", err)
 		tx.Rollback()
+		log.Printf("WARN - Save insert url_cred %v\n", err)
 	} else {
 		tx.Commit()
 		uc.Id, _ = res.LastInsertId()
@@ -125,21 +188,141 @@ func (uc *UrlCred) Save() {
 	}
 }
 
-func UrlCredNew(in map[string]interface{}) *UrlCred {
+func UrlNew(url string) *Url {
+	u := GetUrl(url)
+	DB := m.GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	q := `INSERT INTO url(url) VALUES($1);`
+	res, e := tx.Exec(q, url)
+	if e != nil {
+		tx.Rollback()
+		log.Printf("WARN can not insert into url - %v\n", e)
+	} else {
+		tx.Commit()
+		u.Id, _ = res.LastInsertId()
+	}
+	return u
+}
+
+func GetUrlCredByID(id int64) *UrlCred {
+	DB := m.GetDB(""); defer DB.Close()
+	q := `SELECT
+	id,
+	cred_id,
+	url_id,
+	note,
+	datelog,
+	qrlink
+	FROM url_cred WHERE id = $1
+	`
 	uc := UrlCred{}
-	uc.Cred_id = m.GetMapByKey(in, "cred_id", 0).(int64)
-	uc.Url_id = m.GetMapByKey(in, "url_id", 0).(int64)
-	uc.Note = m.GetMapByKey(in, "note", "").(string)
-	uc.Datelog = time.Now().UnixNano()
-	uc.Qrlink = m.GetMapByKey(in, "qr_link", "").(string)
-	uc.Save()
+	if e := DB.QueryRow(q, id).Scan(&uc.Id, &uc.Cred_id, &uc.Url_id, &uc.Note, &uc.Datelog, &uc.Qrlink); e != nil {
+		log.Printf("ERROR can not get url-cred %v\n", e)
+		return nil
+	}
 	uc.Update()
 	return &uc
+}
+
+func GetUrlCred(cred_id, url_id int64) *UrlCred {
+	DB := m.GetDB(""); defer DB.Close()
+	q := `SELECT
+	id,
+	cred_id,
+	url_id,
+	note,
+	datelog,
+	qrlink
+	FROM url_cred WHERE cred_id = $1 AND url_id = $2
+	`
+	uc := UrlCred{}
+	if e := DB.QueryRow(q, cred_id, url_id).Scan(&uc.Id, &uc.Cred_id, &uc.Url_id, &uc.Note, &uc.Datelog, &uc.Qrlink); e != nil {
+		log.Printf("ERROR can not get url-cred %v\n", e)
+		uc.Id, uc.Cred_id, uc.Url_id = int64(-1), cred_id, url_id
+	}
+	return &uc
+}
+
+func UrlCredNew(in map[string]interface{}) *UrlCred {
+	Cred_id := m.GetMapByKey(in, "cred_id", int64(-1)).(int64)
+	Url_id := m.GetMapByKey(in, "url_id", int64(-1)).(int64)
+
+	uc := GetUrlCred(Cred_id, Url_id)
+	uc.Note = m.GetMapByKey(in, "cred_note", "").(string)
+	uc.Datelog = time.Now().UnixNano()
+	uc.Qrlink = m.GetMapByKey(in, "qrlink", "").(string)
+	uc.Save()
+	uc.Update()
+	return uc
 }
 
 func (uc *UrlCred) Update() {
 	uc.Credential = GetCredentialByID(uc.Cred_id)
 	uc.Url = GetUrlByID(uc.Url_id)
+}
+
+func (uc *UrlCred) Delete() {
+	DB := m.GetDB(""); defer DB.Close()
+	q := `DELETE FROM url_cred WHERE id = $1`
+	tx, _ := DB.Begin()
+	_, e := tx.Exec(q, uc.Id)
+	if e != nil {
+		tx.Rollback()
+		log.Printf("ERROR removing url_cred %d\n", uc.Id)
+		return
+	}
+	tx.Commit()
+	u := GetUrlByID(uc.Url_id)
+	c := GetCredentialByID(uc.Cred_id)
+	//These cleanup need to be sure there is no other links by themself
+	u.Delete()
+	c.Delete()
+}
+
+func (u *Url) Delete() {
+	//Check if any ref in url_cred
+	DB := m.GetDB(""); defer DB.Close()
+	var dummy int64
+	if e := DB.QueryRow(`SELECT url_id FROM url_cred WHERE url_id = $1`, u.Id).Scan(&dummy); e != nil {
+		tx, _ := DB.Begin()
+		if _, e := tx.Exec(`DELETE FROM url WHERE id = $1`, u.Id); e != nil {
+			tx.Rollback()
+			log.Printf("ERROR can not remove url %v\n", e)
+		} else {
+			tx.Commit()
+		}
+	} else {
+		log.Printf("INFO url not delete because in use\n")
+	}
+}
+
+func (c *Credential) Delete() {
+	DB := m.GetDB(""); defer DB.Close()
+	if e := DB.QueryRow(`SELECT cred_id FROM url_cred WHERE cred_id = $1`, c.Id).Scan(&c.Id); e != nil {
+		tx, _ := DB.Begin()
+		q := `DELETE FROM credential WHERE id = $1`
+		if _, e := tx.Exec(q, c.Id); e != nil {
+			log.Printf("ERROR can not remove cred %v\n", e)
+		} else {
+			tx.Commit()
+		}
+	} else {
+		log.Printf("INFO cred not delete because in use\n")
+	}
+
+}
+
+func GetUrl(url string) *Url {
+	DB := m.GetDB(""); defer DB.Close()
+	q := `SELECT
+	id,
+	url FROM url WHERE url = $1`
+	u := Url{}
+	if e := DB.QueryRow(q, url).Scan(&u.Id, &u.Url); e != nil {
+		log.Printf("WARN GetUrlByID %v\n", e)
+		u.Url = url
+	}
+	return &u
 }
 
 func GetUrlByID(id int64) *Url {
@@ -157,7 +340,7 @@ func GetUrlByID(id int64) *Url {
 
 func SearchCredentials(kw string, UserID int64) *[]UrlCred {
 	DB := m.GetDB(""); defer DB.Close()
-	q := `SELECT
+	q := fmt.Sprintf(`SELECT
 	u.id,
 	u.cred_id,
 	u.url_id,
@@ -167,11 +350,12 @@ func SearchCredentials(kw string, UserID int64) *[]UrlCred {
 	FROM url_cred as u, credential as c, url
 	WHERE c.id == u.cred_id
 	AND url.id = u.url_id
-	AND c.user_id = $1
-	AND ((url.url LIKE "%$2%")
-		OR (u.note LIKE "%$2%")
+	AND c.user_id = %d
+	AND ((url.url LIKE "%%%s%%")
+		OR (u.note LIKE "%%%s%%")
 	)
-	`
+	`, UserID, kw, kw)
+	// log.Println(q)
 	rows, err := DB.Query(q, UserID, kw)
 	if err != nil {
 		log.Printf("WARN Error searching url-cred - %v\n", err)
@@ -186,9 +370,29 @@ func SearchCredentials(kw string, UserID int64) *[]UrlCred {
 			log.Printf("WARN Error searching url-cred - %v\n", err)
 			return &o
 		}
+		UrlCred.Update()
 		o = append(o, UrlCred)
 	}
 	return &o
+}
+
+func GetCredential(userID int64, credUserName, credPassword string) *Credential {
+	DB := m.GetDB(""); defer DB.Close()
+	q := `SELECT
+	id,
+	user_id,
+	cred_username,
+	cred_password
+	FROM credential WHERE user_id = $1 AND cred_username = $2 AND cred_password = $3`
+	cred := Credential{}
+	if err := DB.QueryRow(q, userID, credUserName, credPassword).Scan(&cred.Id, &cred.User_id, &cred.Cred_username, &cred.Cred_password); err != nil {
+		log.Printf("WARN Can not get cred from db.  %v\n", err)
+		cred.Id = -1
+		cred.User_id = userID
+		cred.Cred_username = credUserName
+		cred.Cred_password = credPassword
+	}
+	return &cred
 }
 
 func GetCredentialByID(id int64) *Credential {
@@ -207,6 +411,31 @@ func GetCredentialByID(id int64) *Credential {
 	return &cred
 }
 
-func (c *Credential) Save() {
+func CredentialNew(in map[string]interface{}) *Credential {
+	userID := m.GetMapByKey(in, "user_id", int64(0)).(int64)
+	username := m.GetMapByKey(in, "cred_username", "").(string)
+	password := m.GetMapByKey(in, "cred_password", "").(string)
+	c := GetCredential(userID, username, password)
+	c.Save()
+	return c
+}
 
+//Save -
+//Always add new row or dont do anything. We need some sql to remove dangling cred later on
+func (c *Credential) Save() {
+	DB := m.GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	q := `INSERT INTO credential (
+		user_id,
+		cred_username,
+		cred_password ) VALUES ($1, $2, $3)
+		`
+	res, e := tx.Exec(q, c.User_id, c.Cred_username, c.Cred_password)
+	if e != nil {
+		tx.Rollback()
+		log.Printf("WARN save Cred %v\n", e)
+	} else {
+		tx.Commit()
+		c.Id, _ = res.LastInsertId()
+	}
 }

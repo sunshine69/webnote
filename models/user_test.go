@@ -29,3 +29,9 @@ func TestUser(t *testing.T) {
 	}
 	log.Println(VerifyLogin("msh.computing@gmail.com", "1qa2ws", ""))
 }
+
+func TestChangeUserPassword(t *testing.T) {
+	os.Setenv("DBPATH", "/home/stevek/src/webnote-go/testwebnote.db")
+	u := GetUser("msh.computing@gmail.com")
+	u.SetUserPassword("XXXXXXX")
+}

@@ -1,0 +1,21 @@
+<table rules="rows,cols" border="1" cellpadding="1" cellspacing="1" id="display_search_results">
+{{ $date_layout := .date_layout }}
+{{ range $idx, $res :=  .cred_search_results }}
+    <tr id="row_{{ $idx }}" bgcolor="{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle $idx "#FFFFFF" "#F8F8F8" }}';">
+        <td>
+        {{ if $res.Url.Url | contains "http" }}
+            <a id="search_result_url_{{ $idx }}" onclick="return mark_row_clicked({{ $idx }}, '{{ $res.Credential.Cred_password }}');" href="{{ $res.Url.Url }}" target="_blank">{{ $res.Url.Url }}</a>
+        {{ else }}
+            <span id="search_result_url_{{ $idx }}">{{ $res.Url.Url }}</span>
+        {{ end }}
+        </td>
+        <td id="search_result_username_{{ $idx }}" onClick="return mycopyTextToClipboard('{{ $res.Credential.Cred_username }}', '-1');">{{ $res.Credential.Cred_username }}
+
+        </td>
+        <td title="{{ $res.Datelog|time_fmt $date_layout }}" onClick="return mycopyTextToClipboard('{{ $res.Credential.Cred_password }}', '{{ $idx }}', {{ $res.Id }}, '{{ $res.Qrlink }}');">Click to copy</td>
+        <td><textarea rows=1 cols=30 id="search_result_cred_note_{{ $idx }}">{{ $res.Note }}</textarea></td>
+        <td><a href="{{ $res.Qrlink }}">qrlink</a></td>
+        <td><input type="button" value="rm" onClick="return cred_delete('{{ $res.Id }}', 'row_{{ $idx }}');"/></td>
+    </tr>
+{{ end }}
+</table>

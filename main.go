@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"strconv"
 	"regexp"
 	"strings"
@@ -14,9 +13,6 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/csrf"
-	"html/template"
-	"github.com/yuin/goldmark"
-	"github.com/microcosm-cc/bluemonday"
 	m "github.com/sunshine69/webnote-go/models"
 	"github.com/sunshine69/webnote-go/app"
 )
@@ -209,7 +205,7 @@ func HandleRequests() {
 		// instruct the browser to never send cookies during cross site requests
 		csrf.SameSite(csrf.SameSiteStrictMode),
 		csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
-		csrf.RequestHeader("X-CSRF-Token"),
+		// csrf.RequestHeader("X-CSRF-Token"),
 		// csrf.FieldName("authenticity_token"),
 		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
 	)
@@ -251,9 +247,6 @@ func HandleRequests() {
 	}
 }
 
-//TemplateFuncMap - custom template func map
-var TemplateFuncMap *template.FuncMap
-
 func main() {
 	dbPath := flag.String("db", "", "Application DB path")
 	sessionKey := flag.String("sessionkey", "", "Session Key")
@@ -288,64 +281,8 @@ func main() {
 		HttpOnly: true,
 	}
 	// log.Println(*sessionKey)
-	//Template custom functions
-	_TemplateFuncMap := template.FuncMap{
-		// The name "inc" is what the function will be called in the template text.
-		"inc": func(i int) int {
-			return i + 1
-		},
-		"add": func(x, y int) int {
-			return x + y
-		},
-		"time_fmt": func(timelayout string, timeticks int64) string {
-			return m.NsToTime(timeticks).Format(timelayout)
-		},
-		"raw_html": func(html string) template.HTML {
-			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
-			return template.HTML(cleanupBytes)
-		},
-		"unsafe_raw_html": func(html string) template.HTML {
-			return template.HTML(html)
-		},
-		"if_ie": func() template.HTML {
-			return template.HTML("<!--[if IE]>")
-		},
-		"end_if_ie": func() template.HTML {
-			return template.HTML("<![endif]-->")
-		},
-		"truncatechars": func(length int, in string) template.HTML {
-			return template.HTML(m.ChunkString(in, length)[0])
-		},
-		"cycle": func(idx int, vals ...string) template.HTML {
-			_idx := idx % len(vals)
-			return template.HTML(vals[_idx])
-		},
-		"md2html": func(md string) template.HTML {
-			var buf bytes.Buffer
-			if err := goldmark.Convert([]byte(md), &buf); err != nil {
-				panic(err)
-			}
-			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
-			return template.HTML( cleanupBytes )
-		},
-		"replace": func(old, new, data string) template.HTML {
-			o := strings.ReplaceAll(data, old, new)
-			return template.HTML(o)
-		},
-	}
-	TemplateFuncMap = &_TemplateFuncMap
-	LoadAllTemplates()
+	m.LoadAllTemplates()
 	HandleRequests()
-}
-
-var AllTemplates *template.Template
-
-func LoadAllTemplates() {
-	t, err := template.New("templ").Funcs(*TemplateFuncMap).ParseGlob("assets/templates/*.html")
-	if err != nil {
-		log.Fatalf("ERROR can not parse templates %v\n", err)
-	}
-	AllTemplates = t
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
@@ -385,7 +322,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				"msg":  "",
 				"client_ip": userIP,
 			}
-			if err := AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
+			if err := m.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
@@ -394,7 +331,6 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		r.ParseForm()
 		useremail := r.FormValue("username")
-		m.SaveSessionVal(r, &w, "useremail", useremail)
 
 		password := r.FormValue("password")
 
@@ -412,15 +348,17 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		if user != nil {
 			log.Printf("INFO Verified user %v\n", user)
 			ses.Values["authenticated"] = true
+			m.SaveSessionVal(r, &w, "useremail", useremail)
 			ses.Save(r, w)
 			http.Redirect(w, r, "/", http.StatusFound)
 			m.SaveSessionVal(r, &w, "trycount", 0)
 			return
 		} else {
 			log.Printf("INFO Failed To Verify user %s\n", useremail)
+			ses.Values["authenticated"] = false
+			m.SaveSessionVal(r, &w, "useremail", "")
+			ses.Save(r, w)
 			if trycount.(int) >= 3 {
-				ses.Values["authenticated"] = nil
-				ses.Save(r, w)
 				currentBlackList := m.GetConfig("blacklist_ips", "")
 				m.SetConfig("blacklist_ips", currentBlackList + "," + userIP)
 			}
@@ -431,13 +369,14 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		useremail := m.GetSessionVal(r, "useremail", nil)
-		if useremail == nil {
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		log.Printf("DEBUG isAuth %v\n", isAuth)
+		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
+		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		endpoint(w, r)
     })
 }
@@ -461,7 +400,7 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 		commonMapData[_k] = _v
 	}
 
-	if err := AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
+	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}
 }

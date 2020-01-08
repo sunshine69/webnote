@@ -1,6 +1,11 @@
 package models
 
 import (
+	"strings"
+	"github.com/yuin/goldmark"
+	"bytes"
+	"github.com/microcosm-cc/bluemonday"
+	"html/template"
 	"net/http"
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
@@ -371,3 +376,64 @@ func CheckPerm(obj Object, UserID int64, Action string) (bool) {
 		}
 		return false
 	}
+
+//TemplateFuncMap - custom template func map
+var TemplateFuncMap *template.FuncMap
+var AllTemplates *template.Template
+
+func LoadAllTemplates() {
+	//Template custom functions
+	_TemplateFuncMap := template.FuncMap{
+		// The name "inc" is what the function will be called in the template text.
+		"inc": func(i int) int {
+			return i + 1
+		},
+		"add": func(x, y int) int {
+			return x + y
+		},
+		"time_fmt": func(timelayout string, timeticks int64) string {
+			return NsToTime(timeticks).Format(timelayout)
+		},
+		"raw_html": func(html string) template.HTML {
+			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
+			return template.HTML(cleanupBytes)
+		},
+		"unsafe_raw_html": func(html string) template.HTML {
+			return template.HTML(html)
+		},
+		"if_ie": func() template.HTML {
+			return template.HTML("<!--[if IE]>")
+		},
+		"end_if_ie": func() template.HTML {
+			return template.HTML("<![endif]-->")
+		},
+		"truncatechars": func(length int, in string) template.HTML {
+			return template.HTML(ChunkString(in, length)[0])
+		},
+		"cycle": func(idx int, vals ...string) template.HTML {
+			_idx := idx % len(vals)
+			return template.HTML(vals[_idx])
+		},
+		"md2html": func(md string) template.HTML {
+			var buf bytes.Buffer
+			if err := goldmark.Convert([]byte(md), &buf); err != nil {
+				panic(err)
+			}
+			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
+			return template.HTML( cleanupBytes )
+		},
+		"replace": func(old, new, data string) template.HTML {
+			o := strings.ReplaceAll(data, old, new)
+			return template.HTML(o)
+		},
+		"contains": func(subStr, data string) bool {
+			return strings.Contains(data, subStr)
+		},
+	}
+	TemplateFuncMap = &_TemplateFuncMap
+	t, err := template.New("templ").Funcs(*TemplateFuncMap).ParseGlob("assets/templates/*.html")
+	if err != nil {
+		log.Fatalf("ERROR can not parse templates %v\n", err)
+	}
+	AllTemplates = t
+}

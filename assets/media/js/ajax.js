@@ -230,7 +230,7 @@ if( typeof AJAX == 'undefined' ){
         var request = AJAX.httprequest();
         if (user && pass) request.open("POST", url, true, user, pass);
         else request.open("POST", url, true);
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         // This caused error: Refused to set unsafe header
         //request.setRequestHeader("Content-length", params.length);
         //request.setRequestHeader("connection", "close");
