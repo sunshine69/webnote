@@ -47,7 +47,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoSaveNote(w http.ResponseWriter, r *http.Request) {
-	msg := "Note saved"
+	msg := "OK note saved"
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	user := m.GetUser(useremail)
 
@@ -95,7 +95,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	if isAjax == "1" {
 		fmt.Fprintf(w, msg)
 	} else {
-		if msg != "Note saved" {
+		if msg != "OK note saved" {
 			fmt.Fprintf(w, msg)
 		} else {
 			http.Redirect(w, r, fmt.Sprintf("/?id=%d", aNote.ID), http.StatusFound)
