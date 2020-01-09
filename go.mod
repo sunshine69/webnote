@@ -11,4 +11,5 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/pquerna/otp v1.2.0
 	github.com/yuin/goldmark v1.1.20
+	golang.org/x/crypto v0.0.0-20200108215511-5d647ca15757
 )

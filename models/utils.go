@@ -1,7 +1,14 @@
 package models
 
 import (
+	"io/ioutil"
+	"bytes"
+	"image/png"
+	"os"
+	"fmt"
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/ssh/terminal"
+	"github.com/pquerna/otp/totp"
 	"net/http"
 	"time"
 	"regexp"
@@ -93,10 +100,11 @@ func CheckUserIPInWhiteList(ip, whitelist string) (bool) {
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	host := portPtn.ReplaceAllString(ip, "")
 	ipA := net.ParseIP(host)
+	if len(listNetwork) == 0 {return false}
 	for _, nwStr := range(listNetwork) {
 		nwStr = strings.TrimSpace(nwStr)
 		_, netB, _ := net.ParseCIDR(nwStr)
-		if netB.Contains(ipA) { return true }
+		if (netB != nil) && netB.Contains(ipA) { return true }
 	}
 	return false
 }
@@ -192,4 +200,39 @@ func GetQueryValue(r *http.Request, key ...string) string {
 		return ""
 	}
 	return val[0]
+}
+
+func SetAdminPassword() {
+	u := GetUser(Settings.ADMIN_EMAIL)
+	fmt.Printf("please type in the password (mandatory): ")
+    password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	u.SetUserPassword(string(password))
+}
+
+func SetAdminOTP() {
+	u := GetUser(Settings.ADMIN_EMAIL)
+	Issuer := "inxuanthuy.com"
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:    Issuer,
+		AccountName: u.Email,
+	})
+	if err != nil {
+		panic(err)
+	}
+	// Convert TOTP key into a PNG
+	var buf bytes.Buffer
+	img, err := key.Image(200, 200)
+	if err != nil {
+		panic(err)
+	}
+	png.Encode(&buf, img)
+
+	// display the QR code to the user.
+	filename := fmt.Sprintf("%s@%s-OTP.png", u.Email, Issuer)
+	ioutil.WriteFile(filename, buf.Bytes(), 0600)
+	fmt.Printf("PNG QR encoded file name %s has been generated in the current folder\n", filename)
+	// Now Validate that the user's successfully added the passcode.
+	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
+	u.TotpPassword = key.Secret()
+	u.Save()
 }

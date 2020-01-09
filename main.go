@@ -253,7 +253,9 @@ func main() {
 	sslKey := flag.String("key", "", "SSL Key path")
 	sslCert := flag.String("cert", "", "SSL Cert path")
     port := flag.String("p", "", "Port")
-    base_url := flag.String("baseurl", "", "baseurl")
+	base_url := flag.String("baseurl", "", "baseurl")
+	cmd := flag.String("cmd", "", "Command utils to manage config")
+
 	flag.Parse()
 
     ServerPort = *port
@@ -271,22 +273,32 @@ func main() {
 
 	m.InitConfig()
 
-	if *sessionKey == "" {
-		*sessionKey = m.GetConfig("session-key", "")
-		if *sessionKey == "" {
-			*sessionKey = m.MakePassword(64)
-			m.SetConfig("session-key", *sessionKey)
+	if *cmd != "" {
+		//Run command utils
+		switch *cmd {
+		case "set_admin_password":
+			m.SetAdminPassword()
+		case "set_admin_otp":
+			m.SetAdminOTP()
 		}
+	} else {//Server mode
+		if *sessionKey == "" {
+			*sessionKey = m.GetConfig("session-key", "")
+			if *sessionKey == "" {
+				*sessionKey = m.MakePassword(64)
+				m.SetConfig("session-key", *sessionKey)
+			}
+		}
+		m.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
+		m.SessionStore.Options = &sessions.Options{
+			Path:     "/",
+			MaxAge:   3600 * 4,
+			HttpOnly: true,
+		}
+		// log.Println(*sessionKey)
+		m.LoadAllTemplates()
+		HandleRequests()
 	}
-	m.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
-    m.SessionStore.Options = &sessions.Options{
-		Path:     "/",
-		MaxAge:   3600 * 4,
-		HttpOnly: true,
-	}
-	// log.Println(*sessionKey)
-	m.LoadAllTemplates()
-	HandleRequests()
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
@@ -340,7 +352,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 		var user *m.User
 
-		whitelistIP := m.GetConfigSave("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
+		// whitelistIP := m.GetConfigSave("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
+		whitelistIP := m.GetConfigSave("white_list_ips", "")
 		if ! m.CheckUserIPInWhiteList(userIP, whitelistIP){
 			totop := r.FormValue("totp_number")
 			log.Printf("INFO user input totp %s\n", totop)
