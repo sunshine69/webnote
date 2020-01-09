@@ -138,6 +138,7 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 		"page": "noteview",
 		"msg":  "",
 		"note": aNote,
+		"revisions": m.GetNoteRevisions(aNote.ID),
 	})
 }
 
@@ -195,6 +196,21 @@ func DoLogout(w http.ResponseWriter, r *http.Request) {
 
 var CSRF_TOKEN string
 //HandleRequests -
+
+func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
+	viewType := m.GetRequestValue(r, "t", "1")
+	tName := "noteview"  + viewType + ".html"
+
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	aNote := m.GetNoteRevisionByID(noteID)
+	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
+		"title": "Webnote - " + aNote.Title,
+		"page": "noteview",
+		"msg":  "",
+		"note": aNote,
+	})
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -223,6 +239,7 @@ func HandleRequests() {
 	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
 	router.Handle("/view", isAuthorized(DoViewNote)).Methods("GET")
+	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value

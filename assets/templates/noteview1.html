@@ -1,7 +1,7 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
 <br><br>
-<table rules="rows,cols" align='center' border="1" cellpadding="3" cellspacing="3">
+<table rules="rows,cols" align='center' border="1" cellpadding="2" cellspacing="2">
     <TR>
         <TD></TD>
         <TD contenteditable="true" colspan="2" id="title" onChange="isModified=true;">{{ .note.Title }}</TD>
@@ -54,27 +54,27 @@
 {{ template "list_note_attachment" . }}
 {{ if not (eq .user.ID 0) }}
     <br><br>
-    Update history
-    <br><br>
-    <table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
-        <TR>
-            <TD>user</TD>
-            <td>date</td>
-            <td>content</td>
-            <td>&nbsp;</td>
+    Revisions history
+    <table rules="rows,cols" border="1" cellpadding="2" cellspacing="2">
+        <TR bgcolor="blue">
+            <b>
+            <TD>title</TD>
+            <TD>datelog</TD>
+            <td>author</td>
+            <td>v</td>
+            <td>v2</td>
+            </b>
         </TR>
-    {{ $date_layout := .date_layout }}
-    {{ range $idx, $comment := .comments }}
-        <form action="{{ .settings.BASE_URL }}/save_comment" method="POST">{{ .csrfField }}
-        <input type="hidden" name="id" value="{{ .comment.ID }}"/>
-        <tr id={{ $comment.ID }}>
-            <TD>{{ $comment.User.Email }}</TD>
-            <td>{{ $comment.Datelog | time_fmt $date_layout }}</td>
-            <td class="editable">{{ $comment.Content }}</td>
-            <td><input type="submit" name="submit" value="delete"/></td>
+        {{ $date_layout := .date_layout }}
+        {{ range $idx, $note := .revisions }}
+        <tr bgcolor="{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}';">
+            <TD title="{{ $note.Title }}"><i>{{ $note.Title | truncatechars 50 }}</i></TD>
+            <td>{{ $note.Datelog | time_fmt $date_layout }}</td>
+            <td>{{ $note.Author.FirstName }} {{ $note.Author.LastName }}</td>
+            <td><a href="/view_rev?id={{ $note.ID }}">view</a></td>
+            <td><a href="/view_rev?id={{ $note.ID }}&t=2">view2</a></td>
         </tr>
-        </form>
-    {{ end }}
+        {{ end }}
     </table>
 {{ end }}
 {{ if eq .note.RawEditor 0 }}

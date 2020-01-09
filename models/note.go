@@ -176,9 +176,10 @@ func (n *Note) Save() {
 			url,
 			author_id,
 			group_id,
-			permission) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
+			permission,
+			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 		tx, _ := DB.Begin()
-		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission)
+		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission, currentNote.RawEditor)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert note %v\n", e)
@@ -272,8 +273,22 @@ func GetNote(title string) (*Note) {
 	return &n
 }
 
-//GetNoteRevision - Get all revision of a note. Pass in identity whihc can bye note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
-func GetNoteRevision(noteIdentity interface{}) []Note {
+func GetNoteRevisionByID(id int64) *Note {
+	n := Note{
+		ID: id,
+	}
+	DB := GetDB(""); defer DB.Close()
+
+	if e := DB.QueryRow(`SELECT id, timestamp, flags, url, content, author_id, group_id, permission, raw_editor FROM note_revision WHERE id = $1`, id).Scan(&n.ID, &n.Datelog, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
+		log.Printf("ERROR can not get note revision - %v\n", e)
+	} else {
+		n.Update()
+	}
+	return &n
+}
+
+//GetNoteRevision - Get all revision of a note. Pass in identity which can be note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
+func GetNoteRevisions(noteIdentity interface{}) []Note {
 	o := []Note{}
 	var cNote *Note
 	noteID, ok := noteIdentity.(int64)
@@ -282,26 +297,27 @@ func GetNoteRevision(noteIdentity interface{}) []Note {
 	} else {
 		title, ok := noteIdentity.(string)
 		if !ok {
-			log.Printf("WARN GetNoteRevision does not have correct type. It needs to be an noteID or note title - \n")
+			log.Printf("WARN GetNoteRevisions does not have correct type. It needs to be an noteID or note title - \n")
 			return o
 		}
 		cNote = GetNote(title)
+		cNote.Update()
 	}
-	o = append(o, *cNote)
+	// o = append(o, *cNote)
 
 	noteID = cNote.ID
-	DB := GetDB("")
-	defer DB.Close()
+	DB := GetDB(""); defer DB.Close()
 
-	res, e := DB.Query(`SELECT timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1 ORDER BY timestamp DESC`, noteID)
+	res, e := DB.Query(`SELECT id, timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1 ORDER BY timestamp DESC LIMIT 200`, noteID)
 	if e != nil {
 		log.Fatalf("ERROR can not get note revision - %v\n", e)
 	}
 	for res.Next() {
 		n := Note{}
-		res.Scan(&n.Timestamp, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission)
+		res.Scan(&n.ID, &n.Timestamp, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission)
 		n.Title = cNote.Title
 		n.Datelog = cNote.Datelog
+		n.Update()
 		o = append(o, n)
 	}
 	return o

@@ -14,7 +14,7 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 {{ end }}
 </form><br>
 
-<A href="{{ .settings.BASE_URL }}">New</A> &nbsp;
+<A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
 <A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A> &nbsp;
 {{ if .note }}
     {{ if eq .page "noteview" }}
