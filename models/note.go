@@ -394,13 +394,13 @@ func SearchNote(keyword string) []Note {
 			if i == _l - 1 {
 				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%%%s%%") %s %s(url LIKE "%%%s%%")) ORDER BY timestamp DESC`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			} else {
-				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%s") %s %s(url LIKE "%%%s%%")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
+				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%%%s%%") %s %s(url LIKE "%%%s%%")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			}
 		}
 		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
 	q = fmt.Sprintf("%s LIMIT 200;", q)
-	// fmt.Println(q)
+	fmt.Println(q)
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
