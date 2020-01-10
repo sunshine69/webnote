@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"strconv"
 	"regexp"
 	"strings"
@@ -211,6 +212,23 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	revNoteID, _ := strconv.ParseInt(m.GetRequestValue(r, "rev_id", "0"), 10, 64)
+	n := m.GetNoteByID(noteID)
+	n1 := m.GetNoteRevisionByID(revNoteID)
+	nd := n1.Diff(n)
+	t, _ := template.New("diff").Parse(`<html>
+	<body>{{ .htmlText }}</body>
+	</html>
+	`)
+	if e := t.ExecuteTemplate(w, "diff", map[string]interface{} {
+		"htmlText": template.HTML(nd.String()),
+	} ); e != nil {
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+	}
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -240,6 +258,7 @@ func HandleRequests() {
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
 	router.Handle("/view", isAuthorized(DoViewNote)).Methods("GET")
 	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
+	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value

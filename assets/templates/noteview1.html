@@ -66,6 +66,7 @@
             </b>
         </TR>
         {{ $date_layout := .date_layout }}
+        {{ $currNoteID := .note.ID }}
         {{ range $idx, $note := .revisions }}
         <tr bgcolor="{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}';">
             <TD title="{{ $note.Title }}"><i>{{ $note.Title | truncatechars 50 }}</i></TD>
@@ -73,6 +74,7 @@
             <td>{{ $note.Author.FirstName }} {{ $note.Author.LastName }}</td>
             <td><a href="/view_rev?id={{ $note.ID }}">view</a></td>
             <td><a href="/view_rev?id={{ $note.ID }}&t=2">view2</a></td>
+            <td><a href="/view_diff?id={{ $currNoteID }}&rev_id={{ $note.ID }}" rel="popup">view diff</a></td>
         </tr>
         {{ end }}
     </table>

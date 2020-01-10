@@ -4,33 +4,13 @@
 <head>
   <title>{{ .title }}</title>
   <meta charset="UTF-8">
-
-  <style media="screen" type="text/css">
-	pre {
-        white-space: pre-wrap;       /* css-3 */
-        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-        white-space: -pre-wrap;      /* Opera 4-6 */
-        white-space: -o-pre-wrap;    /* Opera 7 */
-        word-wrap: break-word;       /* Internet Explorer 5.5+ */
-	}
-
-   #t1 {
-        -moz-tab-size: 2; /* Firefox */
-        -o-tab-size: 2; /* Opera 10.6-12.1 */
-        tab-size: 2;
-	}
-
-	#t2 {
-        -moz-tab-size: 4; /* Firefox */
-        -o-tab-size: 4; /* Opera 10.6-12.1 */
-        tab-size: 4;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="/assets/css/site.css">
 
 <!--  <script type="text/javascript" src='/media/js/tiny_mce/tiny_mce.js'></script> -->
 
 <script type="text/javascript" src="/assets/media/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src='/assets/media/js/ajax.js'></script>
+<script type="text/javascript" src='/assets/media/js/utils.js'></script>
     {{ if (eq .page "frontpage") }}
     <!-- <script type="text/javascript">user.current_pref.tinymce_init</script> -->
     {{ end }}

@@ -7,6 +7,7 @@ import (
 	"log"
 	"time"
 	"strconv"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 //Object - Generic Object which has some special fields to allow us to check permissions etc...
@@ -131,7 +132,39 @@ func NoteNew(in map[string]interface{}) (*Note) {
 	return &n
 }
 
-//Save a note. If new note then create on. If existing note then create a revisions before update.
+type NoteDiff struct {
+	Flags string
+	Content string
+	URL string
+}
+
+func (nd *NoteDiff) String() string {
+	return fmt.Sprintf("f: %s<br/>c: %s<br/>u: %s", nd.Flags, nd.Content, nd.URL)
+}
+
+//Diff - Compare two same title notes and find out the diff. If they are the same then return nil
+//Only compare Flags, Content and URL
+func (n *Note) Diff(n1 *Note) *NoteDiff {
+	nd := NoteDiff{}
+	if n.Flags == n1.Flags && n.Content == n1.Content && n.URL == n1.URL { return nil }
+
+	dmp := diffmatchpatch.New()
+	if n.Flags != n1.Flags {
+		diffs := dmp.DiffMain(n.Flags, n1.Flags, false)
+		nd.Flags = dmp.DiffPrettyHtml(diffs)
+	}
+	if n.Content != n1.Content {
+		diffs := dmp.DiffMain(n.Content, n1.Content, false)
+		nd.Content = dmp.DiffPrettyHtml(diffs)
+	}
+	if n.URL != n1.URL {
+		diffs := dmp.DiffMain(n.URL, n1.URL, false)
+		nd.URL = dmp.DiffPrettyHtml(diffs)
+	}
+	return &nd
+}
+
+//Save a note. If new note then create one. If existing note then create a revisions before update.
 func (n *Note) Save() {
 	currentNote := GetNote(n.Title)//This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
 	DB := GetDB("")
@@ -168,6 +201,7 @@ func (n *Note) Save() {
 		n.ID, _ = res.LastInsertId()
 		tx.Commit()
 	} else {//Insert into revision and update current
+		if n.Flags == currentNote.Flags && n.Content == currentNote.Content && n.URL == currentNote.URL {	return }
 		sql = `INSERT INTO note_revision(
 			note_id,
 			timestamp,

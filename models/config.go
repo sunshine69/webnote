@@ -237,7 +237,8 @@ func SetupAppDatabase() {
 		author_id integer,
 		group_id integer,
 		permission integer,
-		"raw_editor" integer default 0
+		"raw_editor" integer default 0,
+		diff_text text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS note_revision_idx ON note_revision(note_id, timestamp);
 
