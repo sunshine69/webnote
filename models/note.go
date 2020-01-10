@@ -201,7 +201,11 @@ func (n *Note) Save() {
 		n.ID, _ = res.LastInsertId()
 		tx.Commit()
 	} else {//Insert into revision and update current
-		if n.Flags == currentNote.Flags && n.Content == currentNote.Content && n.URL == currentNote.URL {	return }
+		if n.Flags == currentNote.Flags &&
+			n.Content == currentNote.Content &&
+			n.URL == currentNote.URL &&
+			n.Permission == currentNote.Permission &&
+			n.RawEditor == currentNote.RawEditor {	return }
 		sql = `INSERT INTO note_revision(
 			note_id,
 			timestamp,

@@ -120,9 +120,17 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	viewType := m.GetRequestValue(r, "t", "1")
 	tName := "noteview"  + viewType + ".html"
-
 	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := m.GetNoteByID(noteID)
+
+	if aNote.Permission < 5 {
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		if isAuth == nil || ! isAuth.(bool) {
+			log.Printf("ERROR - No session\n")
+			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			return
+		}
+	}
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
 		"page": "noteview",
@@ -245,7 +253,7 @@ func HandleRequests() {
 	//All routes handlers
 	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
-	router.Handle("/view", isAuthorized(DoViewNote)).Methods("GET")
+	router.HandleFunc("/view", DoViewNote).Methods("GET")
 	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
 	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
@@ -424,7 +432,6 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
-		// log.Printf("DEBUG isAuth %v\n", isAuth)
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
@@ -437,19 +444,33 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 
 func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Request, mapData *map[string]interface{}) {
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
-	user := m.GetUser(useremail)
-	uGroups := user.Groups
 	keyword := m.GetRequestValue(r, "keyword", "")
-	commonMapData := map[string]interface{}{
-		csrf.TemplateTag: csrf.TemplateField(r),
-		"keyword": keyword,
-		"settings": m.Settings,
-		"user": user,
-		"groups": uGroups,
-		"permission_list": m.PermissionList,
-		"date_layout": m.DateLayout,
-	}
 
+	var user *m.User
+	var uGroups []*m.Group
+	var commonMapData map[string]interface{}
+
+	if useremail != "" {
+		user = m.GetUser(useremail)
+		uGroups = user.Groups
+		commonMapData = map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+			"keyword": keyword,
+			"settings": m.Settings,
+			"user": user,
+			"groups": uGroups,
+			"permission_list": m.PermissionList,
+			"date_layout": m.DateLayout,
+		}
+	} else {
+		commonMapData = map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+			"keyword": keyword,
+			"settings": m.Settings,
+			"permission_list": m.PermissionList,
+			"date_layout": m.DateLayout,
+		}
+	}
 	for _k, _v := range(*mapData) {
 		commonMapData[_k] = _v
 	}
