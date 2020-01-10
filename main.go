@@ -104,17 +104,6 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ReadUserIP(r *http.Request) string {
-    IPAddress := r.Header.Get("X-Real-Ip")
-    if IPAddress == "" {
-        IPAddress = r.Header.Get("X-Forwarded-For")
-    }
-    if IPAddress == "" {
-		IPAddress = r.RemoteAddr
-    }
-    return IPAddress
-}
-
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	keyword := m.GetRequestValue(r, "keyword", "")
 	notes := m.SearchNote(keyword)
@@ -264,6 +253,13 @@ func HandleRequests() {
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
 
+	//kodi send. Dont need to authenticate via note app but its own (via IP)
+	router.Handle("/kodi/add",      app.KodiIsAuthorized(app.HandleAddToPlayList)).Methods("POST")
+	router.Handle("/kodi/play",     app.KodiIsAuthorized(app.HandlePlay)).Methods("POST")
+	router.Handle("/kodi/loadlist", app.KodiIsAuthorized(app.HandleLoadList)).Methods("POST")
+	router.Handle("/kodi/savelist", app.KodiIsAuthorized(app.HandleSaveList)).Methods("POST")
+	router.Handle("/kodi/playlist", app.KodiIsAuthorized(app.HandlePlayList)).Methods("POST")
+
 	srv := &http.Server{
         Addr:  ":" + ServerPort,
         // Good practice to set timeouts to avoid Slowloris attacks.
@@ -339,7 +335,7 @@ func main() {
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
 	trycount := m.GetSessionVal(r, "trycount", 0)
-	_userIP := ReadUserIP(r)
+	_userIP := m.ReadUserIP(r)
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	userIP := portPtn.ReplaceAllString(_userIP, "")
 	ses, _ := m.SessionStore.Get(r, "auth-session")
