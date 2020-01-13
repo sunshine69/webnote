@@ -48,27 +48,28 @@ a.bt{
   background: #000;
 }
 
-@media only screen and (max-width:480px) { 
+@media only screen and (max-width:480px) {
   .bt {
     width: 100%;
   }
-  
+
   a.bt{
     display: block;
     padding: 0;
   }
 }
 </style>
-  <script language="javascript">
+<script language="javascript">
 function castIchingTrigram() {
 
   var output = ""; // orig
   var output2 = ""; // change
   var hao_dong = "";
- 
+
+  subjectQuestion = window.prompt("Type your question in details: ")
   for (c=1; c<=6; c++) {
-    response = alert('Click to cast ' + c + ' line');
-    res = cast_line();
+    response = alert('Click to cast the line ' + c );
+    res = cast_line();//return the number of the non letter face of the three coins
 //alert(res);
     if (res == 0) { // Jin move
       output += "0";
@@ -79,14 +80,14 @@ function castIchingTrigram() {
       output += "1";
       output2 += "0"; // Move from jin to yang etc..
       hao_dong += c + "-";
-      
+
     } else {
       var _temp = res % 2;
       output += _temp;
       output2 += _temp;
-      
+
     }
-    
+
   }
   // remember count from bottom to top for the key
   var hao_to_que = {
@@ -99,27 +100,31 @@ function castIchingTrigram() {
     "000": "Khon",
     "110": "Doai"
   };
-  
+
   que_ha = hao_to_que[output.slice(0,3)];
   que_thuong = hao_to_que[output.slice(3)];
   que_ha_bien = hao_to_que[output2.slice(0,3)];
   que_thuong_bien = hao_to_que[output2.slice(3)];
 
-  var date_casted = new Date().toLocaleString();  
+  var date_casted = new Date().toLocaleString();
   var result_string = `
 
+<pre>${subjectQuestion}</pre>
+<hr/>
 Casted on ${date_casted} <br/>
+
 <hr>
 
 <table border=1>
 <tr><td>${que_thuong}</td><td> ==> </td><td>${que_thuong_bien}</td></tr>
-<tr><td>${que_ha}</td><td> ==> </td><td>${que_ha_bien}</td></tr>      
-          
+<tr><td>${que_ha}</td><td> ==> </td><td>${que_ha_bien}</td></tr>
+
 </table>
 <p>Hao dong: ${hao_dong}</p>
 
 `;
-  document.getElementById("display").innerHTML = result_string;
+
+document.getElementById("display").innerHTML = result_string;
 
 }
 
@@ -148,4 +153,3 @@ return "Not use it";
 <div align="center" id="display">&nbsp;</div>
 </body>
 </html>
-

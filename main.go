@@ -267,6 +267,10 @@ func HandleRequests() {
 	router.Handle("/kodi/loadlist", app.KodiIsAuthorized(app.HandleLoadList)).Methods("POST")
 	router.Handle("/kodi/savelist", app.KodiIsAuthorized(app.HandleSaveList)).Methods("POST")
 	router.Handle("/kodi/playlist", app.KodiIsAuthorized(app.HandlePlayList)).Methods("POST")
+	//Save bookmark
+	router.Handle("/savebookmark", isAuthorized(app.SaveBookMark)).Methods("GET")
+	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
+
 
 	srv := &http.Server{
         Addr:  ":" + ServerPort,
