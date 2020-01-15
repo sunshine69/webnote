@@ -2,12 +2,19 @@
 {{ template "head_menu" . }}<br><br>
 <form action="{{ .settings.BASE_URL }}/upload" method="POST" enctype="multipart/form-data">{{ .csrfField }}
 <input type="hidden" name="action" value="show_uploadform"/>
-You are: {{ .User }} <br/>
+You are: {{ .user }} <br/>
 Select file to upload - type name and decription then click Submit<br/><br>
 <table>
     <tr>
         <td title="if leave it empty the filename will be used">Attachement name:</td>
         <td><input type="text" value="" name="a1"/></td>
+        <td>
+            <select name="permission">
+            {{ range $permVal, $perm := .permission_list }}
+            <option value="{{ $permVal }}">{{ $perm }}</option>
+            {{ end }}
+            </select>
+        </td>
     </tr>
     <tr>
         <td>Description:</td>
@@ -22,6 +29,13 @@ Select file to upload - type name and decription then click Submit<br/><br>
     <tr>
         <td title="if leave it empty the filename will be used">Attachement name:</td>
         <td><input type="text" value="" name="a2"/></td>
+        <td>
+            <select name="permission">
+            {{ range $permVal, $perm := .permission_list }}
+            <option value="{{ $permVal }}">{{ $perm }}</option>
+            {{ end }}
+            </select>
+        </td>
     </tr>
     <tr>
         <td>Description:</td>
@@ -36,6 +50,13 @@ Select file to upload - type name and decription then click Submit<br/><br>
     <tr>
         <td title="if leave it empty the filename will be used">Attachement name:</td>
         <td><input type="text" value="" name="a3"/></td>
+        <td>
+            <select name="permission">
+            {{ range $permVal, $perm := .permission_list }}
+            <option value="{{ $permVal }}">{{ $perm }}</option>
+            {{ end }}
+            </select>
+        </td>
     </tr>
     <tr>
         <td>Description:</td>

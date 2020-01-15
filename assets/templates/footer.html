@@ -1,6 +1,8 @@
 {{ define "footer" }}
-<A href="">New</A>&nbsp;&nbsp;<A href="/logout">Logout</A>
-&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/show_uploadform">Upload files</A>
+<A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
+<A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A>&nbsp;
+<A href="/logout">Logout</A>
+&nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/upload">Upload files</A>
 &nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/list_attachment">List files</A>
 &nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/search?keyword={{ .keyword }}">Back to search result</a>
 {{ end }}

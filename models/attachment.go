@@ -1,6 +1,9 @@
 package models
 
 import (
+	"time"
+	"fmt"
+	"os"
 	"log"
 )
 
@@ -17,6 +20,15 @@ type Attachment struct {
 	Updated int64
 }
 
+func (a *Attachment) String() string {
+	txt :=  a.Name + " - " + a.Mimetype + "- Created by " + a.Author.FirstName + " " + a.Author.LastName + " on " + NsToTime(a.Created).Format(DateLayout)
+	return txt
+}
+
+func SearchAttachement(kw string) []*Attachment {
+	
+}
+
 func (a *Attachment) Update() {
 	a.Author = GetUserByID(a.AuthorID)
 	a.Group = GetGroupByID(a.GroupID)
@@ -27,6 +39,9 @@ func (a *Attachment) Save() {
 	defer DB.Close()
 	curAttachment := GetAttachement(a.Name)
 	if curAttachment == nil {
+		if a.Created == 0 { a.Created = time.Now().UnixNano() }
+		if a.Updated == 0 { a.Updated = time.Now().UnixNano() }
+		if a.AttachedFile == "" { a.AttachedFile = "assets/media/attachements/" + a.Name }
 		tx, _ := DB.Begin()
 		res, e := tx.Exec(`INSERT INTO attachment(
 			name,
@@ -111,4 +126,35 @@ func GetAttachementByID(id int64) *Attachment {
 	}
 	a.Update()
 	return &a
+}
+
+func DeleteAttachment(in interface{}) bool {
+	DB := GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	q := `DELETE FROM attachement WHERE `
+	val, ok := in.(string)
+	var e error
+	var fName string
+	if ok {
+		a := GetAttachement(val)
+		fName = a.Name
+		q = q + "name = $1;"
+		_, e = tx.Exec(q, val)
+	} else {
+		id := in.(int64)
+		a := GetAttachementByID(id)
+		fName = a.Name
+		q = q + "id = $1;"
+		_, e = tx.Exec(q, id)
+	}
+	if e != nil {
+		log.Printf("ERROR can not remove attachment - %v\n", e)
+		tx.Rollback()
+		return false
+	}
+	if e := os.Remove(fmt.Sprintf("assets/media/attachements/%s", fName) ); e != nil {
+		log.Printf("ERROR removing the file - %v\n", e)
+		return false
+	}
+	return true
 }

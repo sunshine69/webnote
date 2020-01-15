@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/url"
+	"io"
 	"html/template"
 	"strconv"
 	"regexp"
@@ -127,7 +129,8 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
-			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			from_uri := r.RequestURI
+			http.Redirect(w, r, "/login?from_uri=" + from_uri, http.StatusTemporaryRedirect)
 			return
 		}
 	}
@@ -226,6 +229,73 @@ func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DoUpload(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		CommonRenderTemplate("upload.html", &w, r, &map[string]interface{}{
+			"title": "Webnote - Upload attachment",
+			"page": "upload",
+			"msg":  "",
+		})
+	case "POST":
+		r.ParseMultipartForm(10 << 20)
+
+		useremail := m.GetSessionVal(r, "useremail", "").(string)
+		var user *m.User
+		if useremail == "" {
+			fmt.Fprintf(w, "ERROR")
+			return
+		}
+		user = m.GetUser(useremail)
+
+		var aList [3]*m.Attachment
+
+		for count := 1; count <= len(aList) ; count++ {
+			cStr := strconv.Itoa(count)
+			file, handler, err := r.FormFile("myFile" + cStr )
+			if err != nil {
+				fmt.Printf("Error Retrieving the File %v\n", err)
+				continue
+			}
+			defer file.Close()
+			fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+			fmt.Printf("File Size: %+v\n", handler.Size)
+			fmt.Printf("MIME Header: %s\n", handler.Header["Content-Type"])
+			aName := m.GetRequestValue(r, "a" + cStr, "")
+			aDesc := m.GetRequestValue(r, "desc" + cStr, "")
+			if aName == "" {
+				aName = handler.Filename
+			}
+			a := m.Attachment{
+				Name: aName,
+				Description: aDesc,
+				AttachedFile: "assets/media/attachments/" + handler.Filename,
+			}
+
+			f, err := os.OpenFile(a.AttachedFile, os.O_WRONLY|os.O_CREATE, 0666)
+			if err != nil {
+				log.Fatalf("ERROR can not open file to save attachement - %v\n", err)
+			}
+			defer f.Close()
+			io.Copy(f, file)
+
+			a.AuthorID = user.ID
+			a.GroupID = user.Groups[0].Group_id
+			a.Mimetype = fmt.Sprintf("+%v", handler.Header["Content-Type"])
+			_p, _ := strconv.Atoi( m.GetRequestValue(r, "permission", "1"))
+			a.Permission = int8(_p)
+			a.Save()
+			aList[count - 1] = &a
+		}
+		fmt.Fprintf(w, "OK Attachment created - +%v", aList)
+	}
+}
+
+func DoListAttachment(w http.ResponseWriter, r *http.Request) {
+	kw := m.GetRequestValue(r, "keyword", "")
+	
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -253,11 +323,15 @@ func HandleRequests() {
 	//All routes handlers
 	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
+	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func
 	router.HandleFunc("/view", DoViewNote).Methods("GET")
 	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
 	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
+	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
+	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
+
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
 
@@ -375,12 +449,14 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if isAuthenticated == nil || ! isAuthenticated.(bool) {
+			from_uri := m.GetRequestValue(r, "from_uri", "")
 			data := map[string]interface{}{
 				csrf.TemplateTag: csrf.TemplateField(r),
 				"title": "Webnote",
 				"page": "login",
 				"msg":  "",
 				"client_ip": userIP,
+				"from_uri": from_uri,
 			}
 			if err := m.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -416,7 +492,9 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			ses.Values["authenticated"] = true
 			m.SaveSessionVal(r, &w, "useremail", useremail)
 			ses.Save(r, w)
-			http.Redirect(w, r, "/", http.StatusFound)
+			from_uri := m.GetRequestValue(r, "from_uri", "")
+			from_uri = strings.TrimPrefix(from_uri, "/")
+			http.Redirect(w, r, "/" + from_uri, http.StatusFound)
 			m.SaveSessionVal(r, &w, "trycount", 0)
 			return
 		} else {
@@ -438,7 +516,8 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
-			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			uri := r.RequestURI
+			http.Redirect(w, r, "/login?from_uri=" + url.PathEscape(uri), http.StatusTemporaryRedirect)
 			return
 		}
 		// w.Header().Set("X-CSRF-Token", csrf.Token(r))

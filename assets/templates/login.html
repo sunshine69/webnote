@@ -3,6 +3,7 @@
 {{ .msg }}
 <form METHOD="POST" ACTION="/login">{{ .csrfField }}
     <input type="hidden" name="action" value="do_login"/>
+    <input type="hidden" name="from_uri" value="{{ .from_uri }}"/>
     <input type="hidden" name="path" value="{{ .path }}"/>
     <p>
         <font size="2"><strong>Your IP address is: {{ .client_ip }} and logged.<br>
