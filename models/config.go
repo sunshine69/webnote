@@ -267,6 +267,7 @@ func SetupAppDatabase() {
 		group_id integer ,
 		permission integer,
 		attached_file text,
+		file_size integer,
 		mimetype text,
 		created integer,
 		updated integer

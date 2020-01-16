@@ -1,6 +1,7 @@
-{ template "header" . }}
+{{ template "header" . }}
 <h2>Web note - Attachment list</h2>
 {{ template "head_menu" . }}
+<hr/>
 <table class="editable" border="1" cellpadding="3" cellspacing="3">
 <TR>
   <TD class="commands uneditable">name</TD>
@@ -12,6 +13,7 @@
   <td class="commands uneditable" colspan="4">&nbsp;</td>
 </TR>
 {{ $date_layout := .date_layout }}
+{{ $settings := .settings }}
 {{ range $idx, $attachment := .attachments }}
 <tr id="{{ $attachment.ID }}">
   <TD id='name'>{{ $attachment.Name }}</TD>
@@ -22,8 +24,8 @@
   <td>{{ $attachment.FileSize }}</td>
   <td class="commands uneditable"><a href="#" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a></td>
   <td class="commands uneditable"><a href="#" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
-  <td class="commands uneditable"><a href="{{ .settings.BASE_URL }}/streamfile&id={{ $attachment.id }}">view</a></td>
-  <td class="commands uneditable"><a href="{{ .settings.BASE_URL }}/sendfile&id={{ $attachment.id }}">download</a></td>
+  <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/streamfile&id={{ $attachment.ID }}">view</a></td>
+  <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/sendfile&id={{ $attachment.ID }}">download</a></td>
 </tr>
 {{ end }}
 </table>
@@ -33,7 +35,7 @@
 {{ if .note }}
 function do_add_attachment_to_note(obj) {
   if (confirm("Are you sure to link this attachment to note?")) {
-  var url = "/add_note_attachment&attachment_id="+obj.parentNode.id+"&note_id={{ .note.id }}";
+  var url = "/add_note_attachment&attachment_id="+obj.parentNode.id+"&note_id={{ .note.ID }}";
   AJAX.getText(url, function(response) {
     alert(response);
   }  )

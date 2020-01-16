@@ -293,7 +293,13 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := m.GetRequestValue(r, "keyword", "")
-	
+	aList := m.SearchAttachement(kw)
+	CommonRenderTemplate("list_attachment.html", &w, r, &map[string]interface{}{
+		"title": "Webnote - List attachements",
+		"page": "list_attachement",
+		"msg":  "",
+		"attachments": aList,
+	})
 }
 
 func HandleRequests() {

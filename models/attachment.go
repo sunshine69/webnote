@@ -15,6 +15,7 @@ type Attachment struct {
 	Author *User
 	Group *Group
 	AttachedFile string
+	FileSize int64
 	Mimetype string
 	Created int64
 	Updated int64
@@ -26,7 +27,40 @@ func (a *Attachment) String() string {
 }
 
 func SearchAttachement(kw string) []*Attachment {
-	
+	DB := GetDB(""); defer DB.Close()
+	var o []*Attachment
+
+	q := fmt.Sprintf(`SELECT
+		id,
+		name,
+		description,
+		author_id,
+		group_id,
+		permission,
+		attached_file,
+		file_size,
+		mimetype,
+		created,
+		updated
+		FROM attachment WHERE name LIKE '%%%s%%' OR attached_file LIKE '%%%s%%'
+		ORDER BY updated desc LIMIT 200;`, kw, kw)
+	rows, e := DB.Query(q)
+	if e != nil {
+		log.Printf("ERROR search attachement - %v\n", e)
+		return o
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		a := Attachment{}
+		if e := rows.Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+			log.Printf("ERROR search attachement, scanning %v\n", e)
+			continue
+		}
+		a.Update()
+		o = append(o, &a)
+	}
+	return o
 }
 
 func (a *Attachment) Update() {
@@ -35,8 +69,7 @@ func (a *Attachment) Update() {
 }
 
 func (a *Attachment) Save() {
-	DB := GetDB("")
-	defer DB.Close()
+	DB := GetDB(""); defer DB.Close()
 	curAttachment := GetAttachement(a.Name)
 	if curAttachment == nil {
 		if a.Created == 0 { a.Created = time.Now().UnixNano() }
