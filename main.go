@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/url"
 	"io"
 	"html/template"
 	"strconv"
@@ -129,7 +128,8 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
-			from_uri := r.RequestURI
+			from_uri := r.URL.RequestURI()
+			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/login?from_uri=" + from_uri, http.StatusTemporaryRedirect)
 			return
 		}
@@ -455,7 +455,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if isAuthenticated == nil || ! isAuthenticated.(bool) {
-			from_uri := m.GetRequestValue(r, "from_uri", "")
+			from_uri := r.URL.RequestURI()
+			from_uri = strings.TrimPrefix(from_uri, "/login?from_uri=")
 			data := map[string]interface{}{
 				csrf.TemplateTag: csrf.TemplateField(r),
 				"title": "Webnote",
@@ -523,7 +524,9 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 		if isAuth == nil || ! isAuth.(bool) {
 			log.Printf("ERROR - No session\n")
 			uri := r.RequestURI
-			http.Redirect(w, r, "/login?from_uri=" + url.PathEscape(uri), http.StatusTemporaryRedirect)
+			// uri = url.PathEscape(uri)
+			uri = strings.TrimPrefix(uri, "/")
+			http.Redirect(w, r, "/login?from_uri=" + uri, http.StatusTemporaryRedirect)
 			return
 		}
 		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
