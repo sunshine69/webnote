@@ -1,6 +1,7 @@
 package main
 
 import (
+	"path"
 	"io"
 	"html/template"
 	"strconv"
@@ -24,6 +25,18 @@ var ServerPort, SSLKey, SSLCert string
 func init() {
 	SSLKey = m.GetConfig("ssl_key", "")
 	SSLCert = m.GetConfig("ssl_cert", "")
+}
+
+func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *m.User {
+	isAuth := m.GetSessionVal(r, "authenticated", nil)
+	if isAuth == nil || ! isAuth.(bool) {
+		return nil
+	}
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	if useremail == "" {
+		return nil
+	}
+	return m.GetUser(useremail)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -50,8 +63,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	msg := "OK note saved"
-	useremail := m.GetSessionVal(r, "useremail", "").(string)
-	user := m.GetUser(useremail)
+	user := GetCurrentUser(&w, r)
 
 	r.ParseForm()
 	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
@@ -107,7 +119,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	keyword := m.GetRequestValue(r, "keyword", "")
-	notes := m.SearchNote(keyword)
+	notes := m.SearchNote(keyword, GetCurrentUser(&w, r))
 
 	CommonRenderTemplate("search_result.html", &w, r, &map[string]interface{}{
 		"title": "Webnote - Search result",
@@ -147,8 +159,7 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 	noteIDStr := m.GetRequestValue(r, "id", "0")
 	msg := "OK"
 	if noteIDStr != "0" {
-		useremail := m.GetSessionVal(r, "useremail", "").(string)
-		user := m.GetUser(useremail)
+		user := GetCurrentUser(&w, r)
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
 		aNote := m.GetNoteByID(noteID)
 		if m.CheckPerm(aNote.Object, user.ID, "d") {
@@ -238,14 +249,11 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			"msg":  "",
 		})
 	case "POST":
-		useremail := m.GetSessionVal(r, "useremail", "").(string)
-		var user *m.User
-		if useremail == "" {
+		user := GetCurrentUser(&w, r)
+		if user == nil {
 			http.Error(w, "ERROR", http.StatusForbidden)
 			return
 		}
-		user = m.GetUser(useremail)
-
 		var aList [3]*m.Attachment
 		//Not sure we have set to 4g but if we enable next line we can not get a file with 2.7g in size
 		//Also chrome does not upload properly. Only FF upload completed for big file but at the end golang return something that makes ff thinks it is error. Enable go routine to copy dos not fix.
@@ -290,7 +298,10 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 
 			a.AuthorID = user.ID
 			a.GroupID = user.Groups[0].Group_id
-			a.Mimetype = fmt.Sprintf("+%v", handler.Header["Content-Type"])
+			mimetype := fmt.Sprintf("%s", handler.Header["Content-Type"])
+			mimetype = strings.ReplaceAll(mimetype, "[", "")
+			mimetype = strings.ReplaceAll(mimetype, "]", "")
+			a.Mimetype = mimetype
 			_p, _ := strconv.Atoi( m.GetRequestValue(r, "permission", "1"))
 			a.Permission = int8(_p)
 			a.Save()
@@ -309,7 +320,8 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := m.GetRequestValue(r, "keyword", "")
-	aList := m.SearchAttachement(kw)
+	u := GetCurrentUser(&w, r)
+	aList := m.SearchAttachement(kw, u)
 	CommonRenderTemplate("list_attachment.html", &w, r, &map[string]interface{}{
 		"title": "Webnote - List attachements",
 		"page": "list_attachement",
@@ -322,13 +334,46 @@ func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
 	aIDStr := m.GetRequestValue(r, "id", "")
 	if aIDStr == "" { return }
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
-	if res := m.DeleteAttachment(aID); !res {
+	u := GetCurrentUser(&w, r)
+	a := m.GetAttachementByID(aID)
+	if e := a.DeleteAttachment(aID, u); e != nil {
+		log.Println(e)
 		http.Error(w, "Can not delete attachment", http.StatusOK)
 		return
 	}
 	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
 	if is_ajax == "1" {
 		fmt.Fprintf(w, "Deleted attachement ID %d", aID)
+	}
+}
+
+func DoStreamfile(w http.ResponseWriter, r *http.Request) {
+	aIDStr := m.GetRequestValue(r, "id", "")
+	if aIDStr == "" {
+		http.Error(w, "No aID provided", http.StatusBadRequest)
+		return
+	}
+	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
+	a := m.GetAttachementByID(aID)
+	u := GetCurrentUser(&w, r)
+	if pok := m.CheckPerm(a.Object, u.ID, "r"); ! pok { http.Error(w, "Permission denied", http.StatusBadRequest); return }
+
+	file, err := os.Open(a.AttachedFile)
+	if err != nil {
+		http.Error(w, "ERROR", http.StatusInternalServerError)
+		fmt.Println(err)
+		return
+	}
+	// stream straight to client(browser)
+	w.Header().Set("Content-type", a.Mimetype)
+	action := m.GetRequestValue(r, "action", "")
+
+	if action == "download" {
+		w.Header().Set("Content-Disposition", "attachment; filename=" + path.Base(a.AttachedFile) )
+		http.ServeFile(w, r, a.AttachedFile)
+
+	} else {
+		http.ServeContent(w, r, "playing", time.Time{}, file)
 	}
 }
 
@@ -368,6 +413,8 @@ func HandleRequests() {
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
+	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
+
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
 
@@ -504,7 +551,6 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		r.ParseForm()
 		useremail := r.FormValue("username")
-
 		password := r.FormValue("password")
 
 		var user *m.User
@@ -566,15 +612,13 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 }
 
 func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Request, mapData *map[string]interface{}) {
-	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	user := GetCurrentUser(w, r)
 	keyword := m.GetRequestValue(r, "keyword", "")
 
-	var user *m.User
 	var uGroups []*m.Group
 	var commonMapData map[string]interface{}
 
-	if useremail != "" {
-		user = m.GetUser(useremail)
+	if user != nil {
 		uGroups = user.Groups
 		commonMapData = map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),

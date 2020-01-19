@@ -393,7 +393,7 @@ func (n *Note) Delete() {
 	}
 }
 
-func SearchNote(keyword string) []Note {
+func SearchNote(keyword string, u *User) []Note {
 	keyword = strings.TrimSpace(keyword)
 	splitPtn := regexp.MustCompile(`[\s]+[\&\+][\s]+`)
 	var q string
@@ -450,8 +450,10 @@ func SearchNote(keyword string) []Note {
 	for res.Next() {
 		n := Note{}
 		res.Scan(&n.ID, &n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
-		n.Update()
-		o = append(o, n)
+		if pok := CheckPerm(n.Object, u.ID, "r"); pok {
+			n.Update()
+			o = append(o, n)
+		}
 	}
 	return o
 }

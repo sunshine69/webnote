@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"log"
+	"errors"
 )
 
 type Attachment struct {
@@ -26,7 +27,7 @@ func (a *Attachment) String() string {
 	return txt
 }
 
-func SearchAttachement(kw string) []*Attachment {
+func SearchAttachement(kw string, u *User) []*Attachment {
 	DB := GetDB(""); defer DB.Close()
 	var o []*Attachment
 
@@ -57,8 +58,10 @@ func SearchAttachement(kw string) []*Attachment {
 			log.Printf("ERROR search attachement, scanning %v\n", e)
 			continue
 		}
-		a.Update()
-		o = append(o, &a)
+		if pok:= CheckPerm(a.Object, u.ID, "r"); pok {
+			a.Update()
+			o = append(o, &a)
+		}
 	}
 	return o
 }
@@ -163,8 +166,11 @@ func GetAttachementByID(id int64) *Attachment {
 	return &a
 }
 
-func DeleteAttachment(in interface{}) bool {
+func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 	DB := GetDB(""); defer DB.Close()
+	if ! CheckPerm(a.Object, u.ID, "d") {
+		return errors.New("Permission denied")
+	}
 	tx, _ := DB.Begin()
 	q := `DELETE FROM attachment WHERE `
 	val, ok := in.(string)
@@ -183,15 +189,15 @@ func DeleteAttachment(in interface{}) bool {
 		_, e = tx.Exec(q, id)
 	}
 	if e != nil {
-		log.Printf("ERROR can not remove attachment - %v\n", e)
+		etxt := fmt.Sprintf("ERROR can not remove attachment - %v\n", e)
 		tx.Rollback()
-		return false
+		return errors.New(etxt)
 	}
 	if e := os.Remove(UpLoadPath + fName); e != nil {
-		log.Printf("ERROR removing the file - %v\n", e)
+		etxt := fmt.Sprintf("ERROR removing the file - %v\n", e)
 		tx.Rollback()
-		return false
+		return errors.New(etxt)
 	}
 	tx.Commit()
-	return true
+	return nil
 }
