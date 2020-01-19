@@ -1,36 +1,71 @@
 {{ define "list_note_attachment" }}
-{{ if gt (len .note.Attachments) 0 }}
-<p>Attachment list</p>
-<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
+{{ if .attachments }}
+<hr/>
+<table class="editable" border="1" cellpadding="3" cellspacing="3">
 <TR>
-  <TD>Name</TD>
-  <td>Description</td>
-  <td>Download</td>
-  <td>Time stamp</td>
-  <td>Unlink</td>
+  <TD class="commands uneditable">name</TD>
+  <td class="commands uneditable">description</td>
+  <td class="commands uneditable">group</td>
+  <td class="commands uneditable">permission</td>
+  <td class="commands uneditable">TS</td>
+  <td>size</td>
+  <td class="commands uneditable" colspan="4">&nbsp;</td>
 </TR>
 {{ $date_layout := .date_layout }}
-{{ range $a := .note.Attachments }}
-  <tr>
-    <TD title="Click to view or play"><a href="{{ .settings.BASE_URL }}/streamfile?id={{ $a.ID }}">{{ $a.name }}</a>
-    </TD>
-    <td>
-      {{ $a.Description }}
-    </td>
-    <TD title="Click to download file">
-      <a href="{{ .settings.BASE_URL }}/sendfile?id={{ $a.ID }}">{{ $a.Name }}</a>
-    </TD>
-    <td>
-      {{ $a.Updated | time_fmt $date_layout }}
-    </td>
-    <td title="Click to unlink this attachement with the note">
-      <a href="#" id="{{ $a.ID }}" onclick="do_delete_note_attachment(this);return false;" >Unlink</a>
-    </td>
-  </tr>
+{{ $settings := .settings }}
+{{ $note := .note }}
+{{ range $idx, $attachment := .attachments }}
+<tr id="{{ $attachment.ID }}">
+  <TD id='name'>{{ $attachment.Name }}</TD>
+  <td id='desc'>{{ $attachment.Description }}</td>
+  <td id='group'>{{ $attachment.Group.Name }}</td>
+  <td id='permission'>{{ $attachment.Permission }}</td>
+  <td class="commands uneditable">{{ $attachment.Updated|time_fmt $date_layout }}</td>
+  <td>{{ $attachment.FileSize }}</td>
+  {{ if $note  }}
+  <td class="commands uneditable">
+      <a href="/add_attachment_to_note" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a>
+
+  </td>
+  {{ end }}
+  <td class="commands uneditable"><a href="/delete_attachment" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
+  <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/streamfile?id={{ $attachment.ID }}&action=stream">view</a></td>
+  <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/streamfile?id={{ $attachment.ID }}&action=download">download</a></td>
+</tr>
 {{ end }}
 </table>
-{{ end }}
+<br>
+<a href="{{ .settings.BASE_URL }}/upload">Upload new attachment</a>
 <script language="JavaScript">
+{{ if .note }}
+function do_add_attachment_to_note(obj) {
+  if (confirm("Are you sure to link this attachment to note?")) {
+  var url = "/add_attachment_to_note?is_ajax=1&attachment_id="+obj.parentNode.id+"&note_id={{ .note.ID }}";
+  AJAX.getText(url, function(response) {
+    alert(response);
+  })
+}}
+{{ end }}
+
+function do_delete_attachment(obj) {
+  if (confirm("Are you sure remove this attachment?")) {
+  var url = "/delete_attachment?is_ajax=1&id="+obj.parentNode.id;
+   AJAX.getText(url, function(response) {
+    alert(response);
+  }  )
+}}
+
+/*
+InlineEditor.elementChanged = function( theElement, oldVal, newVal )
+    {
+//    mySavingIndicator( theElement );
+      var url = "$config.get('app', 'APP_BASE_URL')?action=save_attachment&id="+theElement.parent.id.value+"&field="+theElement.id+"&value="+newVal;
+      AJAX.getText( url, function( response ){
+  //  clearMySavingIndicator( theElement );
+          alert( 'Did the save work? ' + response );
+      }); // end ajax callback function
+    };  // end elementChanged
+*/
 function do_delete_note_attachment(obj) {
   if (confirm("Are you sure to delete link this attachment to this note?")) {
     var url = "/delete_note_attachment?id={{ .note.ID }}&attachment_id="+ obj.id ;
@@ -39,5 +74,5 @@ function do_delete_note_attachment(obj) {
 	    }  )
 	    } }
 </script>
-<a href="{{ .settings.BASE_URL }}/list_attachment?id={{ .note.ID }}">Add attachment</a>
+{{ end }}
 {{ end }}

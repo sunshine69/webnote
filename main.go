@@ -320,14 +320,24 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := m.GetRequestValue(r, "keyword", "")
+	noteIDStr := m.GetRequestValue(r, "note_id", "")
+	var aNote *m.Note
+	if noteIDStr != "" {
+		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
+		aNote = m.GetNoteByID(noteID)
+	}
+	fmt.Println(aNote)
 	u := GetCurrentUser(&w, r)
 	aList := m.SearchAttachement(kw, u)
-	CommonRenderTemplate("list_attachment.html", &w, r, &map[string]interface{}{
+	data := map[string]interface{}{
 		"title": "Webnote - List attachements",
 		"page": "list_attachement",
 		"msg":  "",
 		"attachments": aList,
-	})
+	}
+	if aNote != nil { data["note"] = aNote }
+	CommonRenderTemplate("list_attachment.html", &w, r, &data)
+	
 }
 
 func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
@@ -378,7 +388,7 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoAddAttachmentToNote(w http.ResponseWriter, r *http.Request) {
-	
+
 }
 
 func HandleRequests() {
