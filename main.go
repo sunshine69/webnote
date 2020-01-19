@@ -377,6 +377,10 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DoAddAttachmentToNote(w http.ResponseWriter, r *http.Request) {
+	
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -414,6 +418,7 @@ func HandleRequests() {
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
+	router.Handle("/add_attachment_to_note", isAuthorized(DoAddAttachmentToNote)).Methods("GET")
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
