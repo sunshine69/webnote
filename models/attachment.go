@@ -171,10 +171,31 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 	if ! CheckPerm(a.Object, u.ID, "d") {
 		return errors.New("Permission denied")
 	}
+	//Check if it has links to note
+	rows, e := DB.Query(`SELECT
+		n.id,
+		n.title
+		FROM note_attachment AS na, note AS n
+		WHERE na.note_id = n.id
+		AND na.attachment_id = $1
+	`, a.ID)
+	if e != nil { return e }
+	noteList := []*Note{}
+	for rows.Next() {
+		n := Note{}
+		if e := rows.Scan(&n.ID, &n.Title); e != nil {
+			log.Printf("ERROR scan in delete attachment %v\n", e)
+			continue
+		}
+		noteList = append(noteList, &n)
+	}
+	if len(noteList) > 0 {
+		msg := fmt.Sprintf("ERROR. This attachment is in use by the following notes as links - %v\n", noteList)
+		return errors.New(msg)
+	}
 	tx, _ := DB.Begin()
 	q := `DELETE FROM attachment WHERE `
 	val, ok := in.(string)
-	var e error
 	var fName string
 	if ok {
 		a := GetAttachement(val)

@@ -146,13 +146,15 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
+	data := map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
 		"page": "noteview",
 		"msg":  "",
 		"note": aNote,
 		"revisions": m.GetNoteRevisions(aNote.ID),
-	})
+	}
+	if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
+	CommonRenderTemplate(tName, &w, r, &data)
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
@@ -318,15 +320,18 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DoListAttachment(w http.ResponseWriter, r *http.Request) {
-	kw := m.GetRequestValue(r, "keyword", "")
+func GetCurrentNote(r *http.Request) *m.Note {
 	noteIDStr := m.GetRequestValue(r, "note_id", "")
-	var aNote *m.Note
 	if noteIDStr != "" {
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		aNote = m.GetNoteByID(noteID)
+		return m.GetNoteByID(noteID)
 	}
-	fmt.Println(aNote)
+	return nil
+}
+
+func DoListAttachment(w http.ResponseWriter, r *http.Request) {
+	kw := m.GetRequestValue(r, "keyword", "")
+	aNote := GetCurrentNote(r)
 	u := GetCurrentUser(&w, r)
 	aList := m.SearchAttachement(kw, u)
 	data := map[string]interface{}{
@@ -337,7 +342,6 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	}
 	if aNote != nil { data["note"] = aNote }
 	CommonRenderTemplate("list_attachment.html", &w, r, &data)
-	
 }
 
 func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
@@ -347,8 +351,8 @@ func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
 	u := GetCurrentUser(&w, r)
 	a := m.GetAttachementByID(aID)
 	if e := a.DeleteAttachment(aID, u); e != nil {
-		log.Println(e)
-		http.Error(w, "Can not delete attachment", http.StatusOK)
+		msg := fmt.Sprintf("ERROR Can not delete attachment - %v",e)
+		http.Error(w, msg, http.StatusOK)
 		return
 	}
 	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
@@ -387,8 +391,27 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DoAddAttachmentToNote(w http.ResponseWriter, r *http.Request) {
-
+func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
+	action := m.GetRequestValue(r, "action", "")
+	u := GetCurrentUser(&w, r)
+	n := GetCurrentNote(r)
+	attachmentIDStr := m.GetRequestValue(r, "attachment_id", "")
+	if attachmentIDStr == "" { return }
+	attachmentID, _ := strconv.ParseInt(attachmentIDStr, 10, 64)
+	if action == "unlink" {
+		if e := n.UnlinkAttachment(attachmentID, u); e != nil {
+			msg := fmt.Sprintf("ERROR unlink attachment to note - %v\n", e)
+			fmt.Fprintf(w, msg)
+			return
+		}
+	} else{
+		if e := n.LinkAttachment(attachmentID, u); e != nil {
+			log.Printf("ERROR link attachment to note - %v\n", e)
+			fmt.Fprintf(w, "ERROR")
+			return
+		}
+	}
+	fmt.Fprintf(w, "OK")
 }
 
 func HandleRequests() {
@@ -428,7 +451,8 @@ func HandleRequests() {
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
-	router.Handle("/add_attachment_to_note", isAuthorized(DoAddAttachmentToNote)).Methods("GET")
+	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
+	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")

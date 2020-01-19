@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"regexp"
 	"fmt"
 	"strings"
@@ -47,15 +48,64 @@ func (n *Note) Update() {
 	n.GetNoteAttachments()
 }
 
-func (n *Note) GetNoteAttachments() []*Attachment {
+func (n *Note) UnlinkAttachment(aID int64, u *User) error {
+	if pok := CheckPerm(n.Object, u.ID, "w"); !pok {
+		return errors.New("Permission denied")
+	}
+	a := GetAttachementByID(aID)
+	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
+		return errors.New("Permission denied")
+	}
+	DB := GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	q := `DELETE FROM note_attachment WHERE
+		user_id = $1 AND
+		note_id = $2 AND
+		attachment_id = $3
+		`
+	if _, e := tx.Exec(q, u.ID, n.ID, a.ID); e != nil {
+		tx.Rollback()
+		return e
+	}
+	tx.Commit()
+	return nil
+}
+
+func (n *Note) LinkAttachment(aID int64, u *User) error {
+	if pok := CheckPerm(n.Object, u.ID, "w"); !pok {
+		return errors.New("Permission denied")
+	}
+	a := GetAttachementByID(aID)
+	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
+		return errors.New("Permission denied")
+	}
+	DB := GetDB(""); defer DB.Close()
+	tx, _ := DB.Begin()
+	q := `INSERT INTO note_attachment(
+		user_id,
+		note_id,
+		attachment_id,
+		timestamp)
+		VALUES($1, $2, $3, $4)`
+	if _, e := tx.Exec(q, u.ID, n.ID, a.ID, time.Now().UnixNano()); e != nil {
+		tx.Rollback()
+		return e
+	}
+	tx.Commit()
+	return nil
+}
+
+func (n *Note) GetNoteAttachments() {
 	DB := GetDB(""); defer DB.Close()
 	rows, e := DB.Query(`SELECT
+		a.id,
 		a.name,
 		a.description,
 		a.author_id,
 		a.group_id,
 		a.permission,
 		a.attached_file,
+		a.file_size,
 		a.mimetype,
 		a.created,
 		a.updated
@@ -73,13 +123,13 @@ func (n *Note) GetNoteAttachments() []*Attachment {
 
 	for rows.Next() {
 		a := Attachment{}
-		if e := rows.Scan(&a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+		if e := rows.Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
 			log.Fatalf("ERROR GetNoteAttachments can not fetch attachments - %v\n", e)
 		}
 		a.Update()
 		o = append(o, &a)
 	}
-	return o
+	n.Attachments = o
 }
 
 //NoteNew
@@ -438,7 +488,7 @@ func SearchNote(keyword string, u *User) []Note {
 		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
 	q = fmt.Sprintf("%s LIMIT 200;", q)
-	fmt.Println(q)
+	// fmt.Println(q)
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
