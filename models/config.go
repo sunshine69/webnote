@@ -15,6 +15,10 @@ import (
 	"fmt"
 )
 
+const MaxUploadSizeInMemory = 4 * 1024 * 1024 // 4 MB
+const MaxUploadSize = 4 * 1024 * 1024 * 1024
+const UpLoadPath = "uploads/"
+
 //DateLayout - global
 var DateLayout string
 

@@ -22,8 +22,8 @@
   <td id='permission'>{{ $attachment.Permission }}</td>
   <td class="commands uneditable">{{ $attachment.Updated|time_fmt $date_layout }}</td>
   <td>{{ $attachment.FileSize }}</td>
-  <td class="commands uneditable"><a href="#" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a></td>
-  <td class="commands uneditable"><a href="#" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
+  <td class="commands uneditable"><a href="/add_attachment_to_note" onclick="do_add_attachment_to_note(this.parentNode);return false;">add</a></td>
+  <td class="commands uneditable"><a href="/delete_attachment" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
   <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/streamfile&id={{ $attachment.ID }}">view</a></td>
   <td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/sendfile&id={{ $attachment.ID }}">download</a></td>
 </tr>
@@ -35,7 +35,7 @@
 {{ if .note }}
 function do_add_attachment_to_note(obj) {
   if (confirm("Are you sure to link this attachment to note?")) {
-  var url = "/add_note_attachment&attachment_id="+obj.parentNode.id+"&note_id={{ .note.ID }}";
+  var url = "/add_attachment_to_note?is_ajax=1&attachment_id="+obj.parentNode.id+"&note_id={{ .note.ID }}";
   AJAX.getText(url, function(response) {
     alert(response);
   }  )
@@ -44,7 +44,7 @@ function do_add_attachment_to_note(obj) {
 
 function do_delete_attachment(obj) {
   if (confirm("Are you sure remove this attachment?")) {
-  var url = "/delete_attachment&id="+obj.parentNode.id;
+  var url = "/delete_attachment?is_ajax=1&id="+obj.parentNode.id;
    AJAX.getText(url, function(response) {
     alert(response);
   }  )

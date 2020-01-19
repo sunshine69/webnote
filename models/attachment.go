@@ -74,7 +74,7 @@ func (a *Attachment) Save() {
 	if curAttachment == nil {
 		if a.Created == 0 { a.Created = time.Now().UnixNano() }
 		if a.Updated == 0 { a.Updated = time.Now().UnixNano() }
-		if a.AttachedFile == "" { a.AttachedFile = "assets/media/attachements/" + a.Name }
+		if a.AttachedFile == "" { a.AttachedFile = UpLoadPath + a.Name }
 		tx, _ := DB.Begin()
 		res, e := tx.Exec(`INSERT INTO attachment(
 			name,
@@ -83,10 +83,11 @@ func (a *Attachment) Save() {
 			group_id,
 			permission,
 			attached_file,
+			file_size,
 			mimetype,
 			created,
 			updated)
-			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.Mimetype, a.Created, a.Updated)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.FileSize, a.Mimetype, a.Created, a.Updated)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert attachment - %v\n", e)
@@ -102,10 +103,11 @@ func (a *Attachment) Save() {
 			group_id = $4,
 			permission = $5,
 			attached_file = $6,
-			mimetype = $7,
-			created = $8,
-			updated = $9
-			WHERE name = $10`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.Mimetype, a.Created, a.Updated, a.Name)
+			file_size = $7,
+			mimetype = $8,
+			created = $9,
+			updated = $10
+			WHERE name = $11`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.FileSize, a.Mimetype, a.Created, a.Updated, a.Name)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not update attachment - %v\n", e)
@@ -164,7 +166,7 @@ func GetAttachementByID(id int64) *Attachment {
 func DeleteAttachment(in interface{}) bool {
 	DB := GetDB(""); defer DB.Close()
 	tx, _ := DB.Begin()
-	q := `DELETE FROM attachement WHERE `
+	q := `DELETE FROM attachment WHERE `
 	val, ok := in.(string)
 	var e error
 	var fName string
@@ -185,9 +187,11 @@ func DeleteAttachment(in interface{}) bool {
 		tx.Rollback()
 		return false
 	}
-	if e := os.Remove(fmt.Sprintf("assets/media/attachements/%s", fName) ); e != nil {
+	if e := os.Remove(UpLoadPath + fName); e != nil {
 		log.Printf("ERROR removing the file - %v\n", e)
+		tx.Rollback()
 		return false
 	}
+	tx.Commit()
 	return true
 }

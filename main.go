@@ -238,17 +238,22 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			"msg":  "",
 		})
 	case "POST":
-		r.ParseMultipartForm(10 << 20)
-
 		useremail := m.GetSessionVal(r, "useremail", "").(string)
 		var user *m.User
 		if useremail == "" {
-			fmt.Fprintf(w, "ERROR")
+			http.Error(w, "ERROR", http.StatusForbidden)
 			return
 		}
 		user = m.GetUser(useremail)
 
 		var aList [3]*m.Attachment
+		//Not sure we have set to 4g but if we enable next line we can not get a file with 2.7g in size
+		//Also chrome does not upload properly. Only FF upload completed for big file but at the end golang return something that makes ff thinks it is error. Enable go routine to copy dos not fix.
+		// r.Body = http.MaxBytesReader(w, r.Body, m.MaxUploadSize)
+		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
+			http.Error(w, "FILE TOO BIG", http.StatusBadRequest)
+			return
+		}
 
 		for count := 1; count <= len(aList) ; count++ {
 			cStr := strconv.Itoa(count)
@@ -269,15 +274,19 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			a := m.Attachment{
 				Name: aName,
 				Description: aDesc,
-				AttachedFile: "assets/media/attachments/" + handler.Filename,
+				AttachedFile: m.UpLoadPath + handler.Filename,
+				FileSize: handler.Size,
 			}
 
 			f, err := os.OpenFile(a.AttachedFile, os.O_WRONLY|os.O_CREATE, 0666)
 			if err != nil {
 				log.Fatalf("ERROR can not open file to save attachement - %v\n", err)
 			}
-			defer f.Close()
-			io.Copy(f, file)
+			copyFile := func(f *os.File, file io.Reader) {
+				io.Copy(f, file)
+				f.Close()
+			}
+			copyFile(f, file)
 
 			a.AuthorID = user.ID
 			a.GroupID = user.Groups[0].Group_id
@@ -287,7 +296,14 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			a.Save()
 			aList[count - 1] = &a
 		}
-		fmt.Fprintf(w, "OK Attachment created - +%v", aList)
+		fmt.Fprintf(w, `<html><body><pre>OK Attachment created - +%v</pre>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="/upload">More uploads</a></li>
+			<li><a href="/list_attachment">List files</a></li>
+		</ul>
+		</body></html>`, aList)
+		return
 	}
 }
 
@@ -300,6 +316,20 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 		"msg":  "",
 		"attachments": aList,
 	})
+}
+
+func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
+	aIDStr := m.GetRequestValue(r, "id", "")
+	if aIDStr == "" { return }
+	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
+	if res := m.DeleteAttachment(aID); !res {
+		http.Error(w, "Can not delete attachment", http.StatusOK)
+		return
+	}
+	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
+	if is_ajax == "1" {
+		fmt.Fprintf(w, "Deleted attachement ID %d", aID)
+	}
 }
 
 func HandleRequests() {
@@ -337,7 +367,7 @@ func HandleRequests() {
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
-
+	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
 
@@ -441,7 +471,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		if ! strings.Contains(blIP, _ip[0]){
 			m.SetConfig("blacklist_ips", blIP + "," + _ip[0])
 		}
-		fmt.Fprintf(w, "Account locked")
+		http.Error(w, "Account locked", http.StatusForbidden)
 		//To remove the lock use command below on the terminal - adjust the val properly. And clear the browser cookie as well
 		//ql -db testwebnote.db  'update appconfig set val = "" where key = "blacklist_ips"'
 		return
@@ -513,7 +543,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				currentBlackList := m.GetConfig("blacklist_ips", "")
 				m.SetConfig("blacklist_ips", currentBlackList + "," + userIP)
 			}
-			fmt.Fprintf(w, "Failed login")
+			http.Error(w, "Failed login", http.StatusForbidden)
+			return
 		}
 	}
 }
