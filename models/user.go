@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 	"strconv"
 	"log"
@@ -59,23 +60,23 @@ func (u *User) Update() {
 func (u *User) SetGroup(gnames ...string) {
 	DB := GetDB(""); defer DB.Close()
 	userID := u.ID
-
 	for _, gname := range(gnames) {
 		g := GetGroup(gname)
+		if g != nil{
+			if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.Group_id).Scan(&g.Group_id); e != nil {
+				log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
 
-		if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.Group_id).Scan(&g.Group_id); e != nil {
-			log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
+				tx, _ := DB.Begin()
+				res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, $2)`, userID, g.Group_id)
+				if e != nil {
+					tx.Rollback()
+					log.Fatalf("ERROR SetGroup can not set group to user - %v\n", e)
+				}
+				tx.Commit()
 
-			tx, _ := DB.Begin()
-			res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, $2)`, userID, g.Group_id)
-			if e != nil {
-				tx.Rollback()
-				log.Fatalf("ERROR SetGroup can not set group to user - %v\n", e)
+				id, _ := res.LastInsertId()
+				log.Printf("INFO Insert one row to user_group - ID %d - , user ID %d\n", id, userID)
 			}
-			tx.Commit()
-
-			id, _ := res.LastInsertId()
-			log.Printf("INFO Insert one row to user_group - ID %d - , user ID %d\n", id, userID)
 		}
 	}
 }

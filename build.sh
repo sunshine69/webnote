@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Orange pi is 7, but x96 is 8
+export GOARM=7
+export GOARCH=arm
+
 go build --tags "json1 fts5 secure_delete" -ldflags='-s -w'
 
 CDIR=$(pwd)

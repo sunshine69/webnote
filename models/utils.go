@@ -1,6 +1,7 @@
 package models
 
 import (
+	"bufio"
 	"io/ioutil"
 	"bytes"
 	"image/png"
@@ -202,6 +203,36 @@ func GetQueryValue(r *http.Request, key ...string) string {
 	return val[0]
 }
 
+func AddUser(in map[string]interface{}) {
+	reader := bufio.NewReader(os.Stdin)
+	useremail := GetMapByKey(in, "username", "").(string)
+	password := GetMapByKey(in, "password", "").(string)
+	group := GetMapByKey(in, "group", "").(string)
+
+	if useremail == "" {
+		fmt.Printf("\nEnter user email: ")
+		useremail, _ = reader.ReadString('\n')
+		useremail = strings.Replace(useremail, "\n", "", -1)
+	}
+	if password == "" {
+		fmt.Printf("\nEnter user password: ")
+		passwordByte, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+		password = string(passwordByte)
+	}
+	if group == "" {
+		fmt.Printf("\nEnter user group (default|family|friend): ")
+		group, _ = reader.ReadString('\n')
+		group = strings.Replace(group, "\n", "", -1)
+	}
+	user := UserNew(map[string]interface{} {
+		"Email": useremail,
+	})
+	user.Save()
+	user.SetGroup(group)
+	user.SetUserPassword(password)
+	SetUserOTP(useremail)
+}
+
 func SetAdminPassword() {
 	u := GetUser(Settings.ADMIN_EMAIL)
 	fmt.Printf("please type in the password (mandatory): ")
@@ -209,8 +240,8 @@ func SetAdminPassword() {
 	u.SetUserPassword(string(password))
 }
 
-func SetAdminOTP() {
-	u := GetUser(Settings.ADMIN_EMAIL)
+func SetUserOTP(username string) {
+	u := GetUser(username)
 	Issuer := "inxuanthuy.com"
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:    Issuer,
@@ -235,6 +266,10 @@ func SetAdminOTP() {
 	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
 	u.TotpPassword = key.Secret()
 	u.Save()
+}
+
+func SetAdminOTP() {
+	SetUserOTP(Settings.ADMIN_EMAIL)
 }
 
 func ReadUserIP(r *http.Request) string {

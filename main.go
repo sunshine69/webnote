@@ -152,6 +152,12 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/login?from_uri=" + from_uri, http.StatusTemporaryRedirect)
 			return
 		}
+		u := GetCurrentUser(&w, r)
+		if ! m.CheckPerm(aNote.Object, u.ID, "r") {
+			log.Printf("ERROR - No Permission\n")
+			fmt.Fprintf(w, "Permission denied")
+			return
+		}
 	}
 	data := map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
@@ -502,6 +508,10 @@ func main() {
     port := flag.String("p", "", "Port")
 	base_url := flag.String("baseurl", "", "baseurl")
 	cmd := flag.String("cmd", "", "Command utils to manage config")
+	//Adduser data command
+	useremail := flag.String("email", "", "User email")
+	userpassword := flag.String("password", "", "User password")
+	usergroup := flag.String("group", "", "User Group. Any of default|family|friend")
 
 	flag.Parse()
 
@@ -527,6 +537,12 @@ func main() {
 			m.SetAdminPassword()
 		case "set_admin_otp":
 			m.SetAdminOTP()
+		case "add_user":
+			m.AddUser(map[string]interface{} {
+				"username": *useremail,
+				"password": *userpassword,
+				"group": *usergroup,
+			})
 		}
 	} else {//Server mode
 		if *sessionKey == "" {

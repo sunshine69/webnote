@@ -111,7 +111,6 @@ func CreateAdminUser() {
 	u.Save()
 	u.SaltLength = 16
 	u.SetUserPassword("1qa2ws")
-	log.Printf("DEBUG user object before calling SetGroup %v\n", *u)
 	u.SetGroup("default", "family", "friend")
 }
 
@@ -360,7 +359,7 @@ func CheckPerm(obj Object, UserID int64, Action string) (bool) {
 
 		if (obj.Permission == 4) {return true} //Logged in user can do anything except deletion
 
-		var groupIDMap map[int8]string
+		groupIDMap := make(map[int8]string)
 		for _, g := range(user.Groups) {
 			groupIDMap[g.Group_id] = g.Name
 		}
