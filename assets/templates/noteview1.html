@@ -1,27 +1,32 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
-<br><br>
-<table rules="rows,cols" align='center' border="1" cellpadding="2" cellspacing="2">
+<br><br>{{ .csrfField }}
+<table rules="rows,cols" align='center' border="0" cellpadding="2" cellspacing="2">
     <TR>
-        <TD></TD>
-        <TD contenteditable="true" colspan="2" id="title" onChange="isModified=true;">{{ .note.Title }}</TD>
+        <TD>&nbsp;</TD>
+        <TD title="note title" contenteditable="true" colspan="2" id="title" onChange="isModified=true;"><strong>{{ .note.Title }}</strong></TD>
     </TR>
     <tr>
-        <TD></TD>
-        <td>{{ .note.Datelog | time_fmt .date_layout }}<td contenteditable="false" id="flags">{{ .note.Flags }}</td>
+        <TD>&nbsp;</TD>
+        <td title="date logged"><i>{{ .note.Datelog | time_fmt .date_layout }}</i></td>
+        <td contenteditable="false" id="flags">{{ .note.Flags }}</td>
     </tr>
-    <tr>
+    <tr>{{ if eq .note.RawEditor 0 }}
         <TD valign="top" onclick="enable_edit(this);" title="Click me or any left area below me and click the next content area to enable edit the note content. Click again to save and switch to view"><u><i>edit</i></u></TD>
+        {{ else }}
+        <td>&nbsp;</td>
+        {{ end }}
         <td colspan="2"><div id="content" contenteditable="false">{{ if eq .note.RawEditor 0 }}{{ .note.Content | raw_html }}{{ else }}{{ .note.Content | md2html }}{{ end }}<div></td>
     </tr>
     <tr>
-        <TD><i>links:</i></TD>
-        <td colspan="2" contenteditable="true" id='url'>{{ .note.URL }}</td>
+        <TD>&nbsp;</TD>
+        <td title="links url" colspan="2" contenteditable="true" id='url'>{{ .note.URL }}</td>
     </tr>
     <tr>
-        <TD>
+        <td>&nbsp;</td>
+        <TD colspan="2">
         {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
-            <select id="ngroup" onChange="isModified=true;">
+            <select id="ngroup" onChange="isModified=true;"  title="groups list">
             {{ $ngroup := "" }}
             {{ if .note.Group }}
                 {{ $ngroup = .note.Group.Name }}
@@ -33,10 +38,9 @@
             {{ end }}
             </select>
         {{ end }}
-        </td>
-        <td colspan=1>
-            {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
-            <select name="permission">
+        &nbsp;&nbsp;
+        {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
+            <select name="permission" title="permissions list">
             {{ $note := .note }}
             {{ range $permVal, $perm := .permission_list }}
             <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
@@ -127,7 +131,8 @@ function do_save(o) {
     var title = _title.innerHTML;
     var _url = document.getElementById("url");
     var url = _url.innerHTML;// the replace below to trip tag <br> at the end
-    params = "is_ajax=1&id={{ .note.ID }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
+    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+    params = "gorilla.csrf.Token=" + csrfToken + "&is_ajax=1&id={{ .note.ID }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
     var _ngroup = document.getElementById("ngroup");
     if (_ngroup) params += "&ngroup=" + _ngroup.value;
     var _perm = document.getElementById("permission");

@@ -3,7 +3,7 @@
 <br/>
 <form method="POST" action="{{ .settings.BASE_URL }}/savenote" name="note" id="note">{{ .csrfField }}
 <input type="hidden" name="id" value="{{ .note.ID }}"/>
-<table cellpadding="1" align="center" cellspacing="1" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
+<table cellpadding="2" align="center" cellspacing="2" border="0"  style="outline-color : #555555; outline-style : groove; outline-width : 1px;">
     <tr>
         <TD><i>Title</i></TD>
         <td colspan="3"><input type="text" name="title" value="{{ .note.Title }}" size="65"/></td>

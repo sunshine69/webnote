@@ -119,13 +119,20 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	keyword := m.GetRequestValue(r, "keyword", "")
+	u := GetCurrentUser(&w, r)
+	var attachments []*m.Attachment
+	if u != nil {
+		attachments = m.SearchAttachement(keyword, u)
+	} else {
+		attachments = []*m.Attachment{}
+	}
 	notes := m.SearchNote(keyword, GetCurrentUser(&w, r))
-
 	CommonRenderTemplate("search_result.html", &w, r, &map[string]interface{}{
 		"title": "Webnote - Search result",
 		"page": "search_result",
 		"msg":  "",
 		"notes": notes,
+		"attachments": attachments,
 	})
 }
 

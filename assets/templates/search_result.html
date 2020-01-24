@@ -60,21 +60,22 @@ function process_selected(o) {
 </script>
 <br>
 {{ if gt (len .notes) 0 }}
-<table rules="rows,cols" border="1" cellpadding="3" cellspacing="3">
-	<TR bgcolor="blue">
-		<b>
-		<TD>title</TD>
-		<TD>datelog</TD>
-		<td>author</td>
-		<td>&nbsp;</td>
-		<td colspan=2><select name="selected_menu" onchange="if (this.selectedIndex) process_selected(this);">
+<table cellpadding="2" cellspacing="2">
+	<TR bgcolor="#66ff99">
+		<th>title</th>
+		<th>datelog</th>
+		<th>author</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th><select name="selected_menu" onchange="if (this.selectedIndex) process_selected(this);">
 			<option value="">With selected:</option>
 			<option value="Set flags">Set flags</option>
 			<option value="Set permision">Set permission</option>
 			<option value="Delete">Delete</option>
 			<option value="Run sql">Run SQL</option>
-			</select></td>
-		<td><input name="select_all" type="checkbox" onclick="select_all(this);"/></td>
+			</select></th>
+		<th><input name="select_all" type="checkbox" onclick="select_all(this);"/></th>
 		</b>
 	</TR>
 	{{ range $idx, $note := .notes }}
@@ -99,18 +100,19 @@ No notes found
 	{{ if gt (len .attachments) 0 }}
 		<hr>
 		<table class="editable" border="1" cellpadding="3" cellspacing="3">
-		<TR bgcolor="blue">
+		<TR bgcolor="#66ff99">
 		<TD class="commands uneditable">name</TD><td class="commands uneditable">description</td><td class="commands uneditable">group</td><td class="commands uneditable">permission</td><td class="commands uneditable">TS</td><td class="commands uneditable">delete</td><td class="commands uneditable">link/download</td>
 		</TR>
+		{{ $settings := .settings }}
 		{{ range $idx, $att := .attachments }}
 			<tr id="{{ $att.ID }}">
-			<TD id='name' title="{{ $att.Name }}"><i>{{ truncatechars $att.Name 50 }}</i></TD>
+			<TD id='name' title="{{ $att.Name }}"><i>{{ $att.Name | truncatechars 50 }}</i></TD>
 			<td id='desc'>{{ $att.Description }}</td>
 			<td id='group'>{{ $att.Group.Name }}</td>
 			<td id='permission'>{{ $att.Permission }}</td>
 			<td class="commands uneditable">{{ $att.Updated | time_fmt $date_layout }}</td>
 			<td class="commands uneditable"><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
-			<td class="commands uneditable"><a href="{{ .settings.BASE_URL }}/sendfile?id={{ $att.ID }}">view/download</a></td>
+			<td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/sendfile?id={{ $att.ID }}">view/download</a></td>
 			</tr>
 			<!-- end range attachements -->
 		{{ end }}
