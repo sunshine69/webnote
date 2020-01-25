@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/arschles/go-bindata-html-template v0.0.0-20170123182818-839a6918b9ff
 	github.com/gorilla/csrf v1.6.2
+	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.0
 	github.com/json-iterator/go v1.1.9

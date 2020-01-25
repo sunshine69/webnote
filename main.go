@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/csrf"
 	m "github.com/sunshine69/webnote-go/models"
 	"github.com/sunshine69/webnote-go/app"
@@ -487,8 +488,7 @@ func HandleRequests() {
         WriteTimeout: time.Second * 15,
         ReadTimeout:  time.Second * 15,
         IdleTimeout:  time.Second * 60,
-		Handler: router, // Pass our instance of gorilla/mux in.
-
+		Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
     }
 	if SSLKey != "" {
 		log.Printf("Start SSL/TLS server on port %s\n", ServerPort)

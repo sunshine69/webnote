@@ -54,17 +54,21 @@ for(var i=0;i<count;i++){
     <tr>
         <TD>
             {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
-            {{ $ngroup := "" }}
-            <select name="ngroup">
-            {{ if .note.Group }}
-                {{ $ngroup = .note.Group.Name }}
+                {{ $ngroup := "" }}
+                <select name="ngroup">
+                {{ if .note.Group }}
+                    {{ $ngroup = .note.Group.Name }}
+                {{ else }}
+                    {{ $ngroup = "default" }}
+                {{ end }}
+                {{ range $idx, $gr := .groups }}
+                    <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
+                {{ end }}
+                </select>
             {{ else }}
-                {{ $ngroup = "default" }}
-            {{ end }}
-            {{ range $idx, $gr := .groups }}
-                <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
-            {{ end }}
-            </select>
+                {{ if .note.Group }}
+                <input type="hidden" name="ngroup" value="{{ .note.Group.Name }}">
+                {{ end }}
             {{ end }}
         </td>
         <td>
@@ -75,6 +79,8 @@ for(var i=0;i<count;i++){
                 <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
                 {{ end }}
                 </select>
+            {{ else }}
+                <input type="hidden" name="permission" value="{{.note.Permission}}" >
             {{ end }}
 <!-- Reminder <input type="checkbox" name="reminder" {% if note.reminder_ticks and note.reminder_ticks|is_gt:0 %} checked="true" {% endif %} value=""/> -->
         </td>
