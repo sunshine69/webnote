@@ -46,10 +46,11 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	raw_editor, _ := strconv.Atoi(m.GetRequestValue(r, "raw_editor", "1"))
 
 	var aNote *m.Note
+	u := GetCurrentUser(&w, r)
 	if noteID == 0 {
 		aNote = m.NoteNew(map[string]interface{}{
 			"ID": noteID,
-			"group_id": int8(1),
+			"group_id": u.Groups[0].Group_id,
 			"raw_editor": int8(raw_editor),
 		})
 	} else {

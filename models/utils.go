@@ -207,7 +207,7 @@ func AddUser(in map[string]interface{}) {
 	reader := bufio.NewReader(os.Stdin)
 	useremail := GetMapByKey(in, "username", "").(string)
 	password := GetMapByKey(in, "password", "").(string)
-	group := GetMapByKey(in, "group", "").(string)
+	groupStr := GetMapByKey(in, "group", "").(string)
 
 	if useremail == "" {
 		fmt.Printf("\nEnter user email: ")
@@ -219,16 +219,18 @@ func AddUser(in map[string]interface{}) {
 		passwordByte, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
 		password = string(passwordByte)
 	}
-	if group == "" {
-		fmt.Printf("\nEnter user group (default|family|friend): ")
-		group, _ = reader.ReadString('\n')
-		group = strings.Replace(group, "\n", "", -1)
+	if groupStr == "" {
+		fmt.Printf("\nEnter user group separated by coma (default|family|friend): ")
+		groupStr, _ = reader.ReadString('\n')
+		groupStr = strings.Replace(groupStr, "\n", "", -1)
 	}
+	groups := strings.Split(groupStr, ",")
+
 	user := UserNew(map[string]interface{} {
 		"Email": useremail,
 	})
 	user.Save()
-	user.SetGroup(group)
+	user.SetGroup(groups...)
 	user.SetUserPassword(password)
 	SetUserOTP(useremail)
 }

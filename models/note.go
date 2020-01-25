@@ -255,7 +255,8 @@ func (n *Note) Save() {
 			n.Content == currentNote.Content &&
 			n.URL == currentNote.URL &&
 			n.Permission == currentNote.Permission &&
-			n.RawEditor == currentNote.RawEditor {	return }
+			n.RawEditor == currentNote.RawEditor &&
+			n.GroupID == currentNote.GroupID {	return }
 		sql = `INSERT INTO note_revision(
 			note_id,
 			timestamp,
