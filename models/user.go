@@ -217,7 +217,13 @@ func GetUser(email string) (*User) {
 	return &u
 }
 
-func (n *User) String() string {return n.FirstName + " " + n.LastName}
+func (n *User) String() string {
+	if n.FirstName != "" || n.LastName != "" {
+		return n.FirstName + " " + n.LastName
+	} else {
+		return n.Email
+	}
+}
 
 //VerifyLogin -
 func VerifyLogin(username, password, otp string) (*User) {
