@@ -37,6 +37,10 @@
                 <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
             {{ end }}
             </select>
+        {{ else }}
+            {{ if .note.Group }}
+            <input id="ngroup" type="hidden" name="ngroup" value="{{ .note.Group.Name }}">
+            {{ end }}
         {{ end }}
         &nbsp;&nbsp;
         {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
@@ -46,6 +50,8 @@
             <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
             {{ end }}
             </select>
+        {{ else }}
+            <input id="permission" type="hidden" name="permission" value="{{.note.Permission}}" >
         {{ end }}
         </td>
     </tr>
