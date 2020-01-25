@@ -82,7 +82,7 @@ function process_selected(o) {
 	<tr bgcolor="{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}" onMouseOver="this.bgColor='#E0FFE0';" onMouseOut="this.bgColor='{{ cycle $idx "#FFFFFF"  "#F8F8F8" }}';">
 		<TD title="{{ $note.Title }}"><i>{{ $note.Title | truncatechars 50 }}</i></TD>
 		<td>{{ $note.Datelog | time_fmt $date_layout }}</td>
-		<td>{{ $note.Author.FirstName }} {{ $note.Author.LastName}}</td>
+		<td>{{ $note.Author }}</td>
 		<td><a href="/view?id={{ $note.ID }}&keyword={{ $keyword }}">view</a></td>
 		<td><a href="/view?id={{ $note.ID }}&keyword={{ $keyword }}&t=2">view2</a></td>
 		<td><a href="/?id={{ $note.ID }}&keyword={{ $keyword }}">edit</a></td>

@@ -369,8 +369,8 @@ func CheckPerm(obj Object, UserID int64, Action string) (bool) {
 				if (Action == "r") {
 					return true
 				}
-				return false
 			}
+			return false
 		}
 		//From now on user has a group that this object is in
 		if (obj.Permission >= 2) {return true}// group rw granted

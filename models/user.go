@@ -169,6 +169,7 @@ func GetUserByID(id int64) (*User) {
 		id as user_id,
 		f_name,
 		l_name,
+		email,
 		address,
 		passwd,
 		h_phone,
@@ -181,7 +182,7 @@ func GetUserByID(id int64) (*User) {
 		pref_id,
 		totp_passwd,
 		salt_length
-		FROM user WHERE id = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
+		FROM user WHERE id = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
 		log.Printf("INFO - Can not find user ID '%d' - %v\n", id, e)
 		return nil
 	}
@@ -197,6 +198,7 @@ func GetUser(email string) (*User) {
 		id as user_id,
 		f_name,
 		l_name,
+		email,
 		address,
 		passwd,
 		h_phone,
@@ -209,7 +211,7 @@ func GetUser(email string) (*User) {
 		pref_id,
 		totp_passwd,
 		salt_length
-		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
+		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.TotpPassword, &u.SaltLength); e != nil {
 		log.Printf("INFO - Can not find user email '%s' - %v\n", email, e)
 		return nil
 	}
