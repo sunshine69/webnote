@@ -22,6 +22,7 @@ import (
 )
 
 var ServerPort, SSLKey, SSLCert string
+var EnableCompression *string
 
 func init() {
 	SSLKey = m.GetConfig("ssl_key", "")
@@ -482,14 +483,29 @@ func HandleRequests() {
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
 
 
+	// srv := &http.Server{
+    //     Addr:  ":" + ServerPort,
+    //     // Good practice to set timeouts to avoid Slowloris attacks.
+    //     WriteTimeout: time.Second * 15,
+    //     ReadTimeout:  time.Second * 15,
+    //     IdleTimeout:  time.Second * 60,
+	// 	Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
+	// }
+
 	srv := &http.Server{
-        Addr:  ":" + ServerPort,
-        // Good practice to set timeouts to avoid Slowloris attacks.
-        WriteTimeout: time.Second * 15,
-        ReadTimeout:  time.Second * 15,
-        IdleTimeout:  time.Second * 60,
-		Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
-    }
+		Addr:  ":" + ServerPort,
+		// Good practice to set timeouts to avoid Slowloris attacks.
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
+	}
+	if *EnableCompression == "yes" {
+		srv.Handler = handlers.CompressHandler(router)
+	} else {
+		srv.Handler = router
+	}
+
 	if SSLKey != "" {
 		log.Printf("Start SSL/TLS server on port %s\n", ServerPort)
 		log.Fatal(srv.ListenAndServeTLS(SSLCert, SSLKey))
@@ -512,6 +528,7 @@ func main() {
 	useremail := flag.String("email", "", "User email")
 	userpassword := flag.String("password", "", "User password")
 	usergroup := flag.String("group", "", "User Group. Any of default|family|friend")
+	EnableCompression = flag.String("comp", "", "Enable server compression. Dont use it for https")
 
 	flag.Parse()
 
