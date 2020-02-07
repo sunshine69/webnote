@@ -275,7 +275,8 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 		var aList [3]*m.Attachment
 		//Not sure we have set to 4g but if we enable next line we can not get a file with 2.7g in size
 		//Also chrome does not upload properly. Only FF upload completed for big file but at the end golang return something that makes ff thinks it is error. Enable go routine to copy dos not fix.
-		// r.Body = http.MaxBytesReader(w, r.Body, m.MaxUploadSize)
+		//r.Body = http.MaxBytesReader(w, r.Body, m.MaxUploadSize)
+		//UD. Looks like it is still using memory. If memory is too low upload fails
 		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
 			http.Error(w, "FILE TOO BIG", http.StatusBadRequest)
 			return
