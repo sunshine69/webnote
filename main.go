@@ -278,7 +278,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 		//r.Body = http.MaxBytesReader(w, r.Body, m.MaxUploadSize)
 		//UD. Looks like it is still using memory. If memory is too low upload fails
 		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
-			http.Error(w, "FILE TOO BIG", http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -310,7 +310,11 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 				log.Fatalf("ERROR can not open file to save attachement - %v\n", err)
 			}
 			copyFile := func(f *os.File, file io.Reader) {
-				io.Copy(f, file)
+				bWritten, e := io.Copy(f, file)
+				if e != nil {
+					log.Printf("ERROR Copied %d and got error %v\n", bWritten, e)
+					return
+				}
 				f.Close()
 			}
 			copyFile(f, file)
@@ -484,21 +488,11 @@ func HandleRequests() {
 	router.Handle("/savebookmark", isAuthorized(app.SaveBookMark)).Methods("GET")
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
 
-
-	// srv := &http.Server{
-    //     Addr:  ":" + ServerPort,
-    //     // Good practice to set timeouts to avoid Slowloris attacks.
-    //     WriteTimeout: time.Second * 15,
-    //     ReadTimeout:  time.Second * 15,
-    //     IdleTimeout:  time.Second * 60,
-	// 	Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
-	// }
-
 	srv := &http.Server{
 		Addr:  ":" + ServerPort,
 		// Good practice to set timeouts to avoid Slowloris attacks.
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
+		WriteTimeout: time.Second * 15000,
+		ReadTimeout:  time.Second * 15000,
 		IdleTimeout:  time.Second * 60,
 		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
 	}
