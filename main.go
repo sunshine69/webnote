@@ -450,7 +450,8 @@ func HandleRequests() {
 		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
 	)
 	csrf.Secure(true)
-	router.Use(CSRF)
+	log.Printf("DEBUG temporary disable csrf %v\n", CSRF)
+	// router.Use(CSRF)
 
 	staticFS := http.FileServer(http.Dir("./assets"))
 	//Not sure why this line wont work but the one after that works for serving static
