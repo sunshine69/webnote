@@ -330,6 +330,9 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			a.Save()
 			aList[count - 1] = &a
 		}
+		//Cleanup temp files
+		r.MultipartForm.RemoveAll()
+
 		fmt.Fprintf(w, `<html><body><pre>OK Attachment created - +%v</pre>
 		<ul>
 			<li><a href="/">Home</a></li>
