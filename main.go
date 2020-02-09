@@ -439,6 +439,7 @@ func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
 	CSRF_TOKEN := m.MakePassword(32)
+	csrf.MaxAge(4 * 3600)
 	CSRF := csrf.Protect(
 		[]byte(CSRF_TOKEN),
 		// instruct the browser to never send cookies during cross site requests
