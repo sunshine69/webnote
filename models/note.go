@@ -16,7 +16,7 @@ import (
 type Object struct {
 	Permission int8
 	AuthorID int64
-	GroupID int8
+	GroupID int64
 }
 
 //Note -
@@ -173,7 +173,7 @@ func NoteNew(in map[string]interface{}) (*Note) {
 
 	n.AuthorID = GetMapByKey(in, "author_id", int64(0)).(int64)
 
-	n.GroupID = GetMapByKey(in, "group_id", int8(1)).(int8)
+	n.GroupID = GetMapByKey(in, "group_id", int64(1)).(int64)
 
 	n.Permission = GetMapByKey(in, "permission", int8(1)).(int8)
 	n.RawEditor = GetMapByKey(in, "raw_editor", int8(0)).(int8)

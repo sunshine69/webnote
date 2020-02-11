@@ -242,6 +242,16 @@ func SetAdminPassword() {
 	u.SetUserPassword(string(password))
 }
 
+func SetAdminEmail(email string) {
+	if (email == ""){
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Printf("\nEnter user email: ")
+		email, _ := reader.ReadString('\n')
+		email = strings.Replace(email, "\n", "", -1)
+	}
+	SetConfig("admin_email", email)
+}
+
 func SetUserOTP(username string) {
 	u := GetUser(username)
 	Issuer := "inxuanthuy.com"

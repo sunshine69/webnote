@@ -35,11 +35,11 @@ func (u *User) Update() {
 	}
 	DB := GetDB(""); defer DB.Close()
 	rows, e := DB.Query(`SELECT
-		g.group_id,
+		g.id,
 		g.name,
 		g.description
 	FROM user_group AS ug, ngroup AS g
-	WHERE ug.group_id = g.group_id
+	WHERE ug.group_id = g.id
 	AND ug.user_id = $1`, u.ID)
 	if e != nil {
 		log.Fatalf("ERROR %v\n", e)
@@ -48,7 +48,7 @@ func (u *User) Update() {
 
 	for rows.Next() {
 		gr := Group{}
-		if e := rows.Scan(&gr.Group_id, &gr.Name, &gr.Description); e != nil {
+		if e := rows.Scan(&gr.ID, &gr.Name, &gr.Description); e != nil {
 			log.Fatalf("ERROR user Update. Can not query group - %v\n", e)
 		}
 		u.Groups = append(u.Groups, &gr)
@@ -62,11 +62,11 @@ func (u *User) SetGroup(gnames ...string) {
 	for _, gname := range(gnames) {
 		g := GetGroup(gname)
 		if g != nil{
-			if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.Group_id).Scan(&g.Group_id); e != nil {
+			if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.ID).Scan(&g.ID); e != nil {
 				log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
 
 				tx, _ := DB.Begin()
-				res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, $2)`, userID, g.Group_id)
+				res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, $2)`, userID, g.ID)
 				if e != nil {
 					tx.Rollback()
 					log.Fatalf("ERROR SetGroup can not set group to user - %v\n", e)

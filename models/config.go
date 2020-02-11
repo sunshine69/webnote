@@ -89,7 +89,7 @@ func InitConfig() {
 	WebNoteUser = GetConfig("webnote_user")
 	Settings = &AppSettings{
 		BASE_URL: GetConfig("base_url"),
-		ADMIN_EMAIL: "msh.computing@gmail.com",
+		ADMIN_EMAIL: GetConfig("admin_email"),
 	}
 	PermissionList = &map[int8]string{
 		0: "only owner",
@@ -106,7 +106,7 @@ func CreateAdminUser() {
 	u := UserNew(map[string]interface{} {
 		"FirstName": "Admin",
 		"LastName": "Admin",
-		"Email": "msh.computing@gmail.com",
+		"Email": GetConfig("admin_email"),
 	})
 	u.Save()
 	u.SaltLength = 16
@@ -138,6 +138,7 @@ func SetupDefaultConfig() {
 		"date_layout": "02-01-2006 15:04:05 MST",
 		//note_revision to keep
 		"revision_to_keep": "1000",
+		"admin_email": "admin@admin.com",
 	}
 	for key, val := range(configSet) {
 		fmt.Printf("Inserting %s - %s\n", key, val)
@@ -224,7 +225,7 @@ func SetupAppDatabase() {
 		"timestamp" integer,
 		"time_spent" integer,
 		"author_id" integer NOT NULL,
-		"group_id" integer NOT NULL REFERENCES "ngroup" ("id"),
+		"group_id" integer NOT NULL REFERENCES "ngroup" ("ID"),
 		"permission" integer NOT NULL,
 		"raw_editor" integer default 0
 	);
@@ -299,16 +300,14 @@ func SetupAppDatabase() {
 
 	CREATE TABLE IF NOT EXISTS ngroup (
 		id integer NOT NULL PRIMARY KEY,
-		group_id integer,
 		name text,
 		description text
 	);
 	CREATE UNIQUE INDEX IF NOT EXISTS groupidx ON ngroup(name);
-	CREATE UNIQUE INDEX IF NOT EXISTS groupididx ON ngroup(group_id);
 	DELETE FROM ngroup;
-	INSERT INTO ngroup(group_id, name, description) VALUES(1, "default", "default group");
-	INSERT INTO ngroup(group_id, name, description) VALUES(2, "family", "family group");
-	INSERT INTO ngroup(group_id, name, description) VALUES(3, "friend", "friend group");
+	INSERT INTO ngroup(name, description) VALUES("default", "default group");
+	INSERT INTO ngroup(name, description) VALUES("family", "family group");
+	INSERT INTO ngroup(name, description) VALUES("friend", "friend group");
 
 	CREATE TABLE IF NOT EXISTS user_group (
 		id integer NOT NULL PRIMARY KEY,
@@ -359,9 +358,9 @@ func CheckPerm(obj Object, UserID int64, Action string) (bool) {
 
 		if (obj.Permission == 4) {return true} //Logged in user can do anything except deletion
 
-		groupIDMap := make(map[int8]string)
+		groupIDMap := make(map[int64]string)
 		for _, g := range(user.Groups) {
-			groupIDMap[g.Group_id] = g.Name
+			groupIDMap[g.ID] = g.Name
 		}
 		if _, ok := groupIDMap[obj.GroupID]; !ok {
 			//user has no group which matches with this object group

@@ -50,7 +50,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	if noteID == 0 {
 		aNote = m.NoteNew(map[string]interface{}{
 			"ID": noteID,
-			"group_id": u.Groups[0].Group_id,
+			"group_id": u.Groups[0].ID,
 			"raw_editor": int8(raw_editor),
 		})
 	} else {
@@ -89,7 +89,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			"raw_editor": raw_editor, //If checked return string 1, otherwise empty string
 			"permission": permission,
 			"author_id": user.ID,
-			"group_id": ngroup.Group_id,
+			"group_id": ngroup.ID,
 			},
 		)
 		aNote.Save()
@@ -102,7 +102,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			aNote.URL = r.FormValue("url")
 			aNote.RawEditor = raw_editor //If checked return string 1, otherwise empty string
 			aNote.Permission = permission
-			aNote.GroupID = ngroup.Group_id
+			aNote.GroupID = ngroup.ID
 			aNote.Save()
 		} else {
 			msg = "Permission denied."
@@ -273,10 +273,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		var aList [3]*m.Attachment
-		//Not sure we have set to 4g but if we enable next line we can not get a file with 2.7g in size
-		//Also chrome does not upload properly. Only FF upload completed for big file but at the end golang return something that makes ff thinks it is error. Enable go routine to copy dos not fix.
-		//r.Body = http.MaxBytesReader(w, r.Body, m.MaxUploadSize)
-		//UD. Looks like it is still using memory. If memory is too low upload fails
+
 		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -320,7 +317,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			copyFile(f, file)
 
 			a.AuthorID = user.ID
-			a.GroupID = user.Groups[0].Group_id
+			a.GroupID = user.Groups[0].ID
 			mimetype := fmt.Sprintf("%s", handler.Header["Content-Type"])
 			mimetype = strings.ReplaceAll(mimetype, "[", "")
 			mimetype = strings.ReplaceAll(mimetype, "]", "")
@@ -528,8 +525,28 @@ func main() {
 	//Adduser data command
 	useremail := flag.String("email", "", "User email")
 	userpassword := flag.String("password", "", "User password")
-	usergroup := flag.String("group", "", "User Group. Any of default|family|friend")
+	usergroup := flag.String("group", "", "User Group. Any of default|family|friend or coma separated ")
 	EnableCompression = flag.String("comp", "", "Enable server compression. Dont use it for https")
+
+	flag.Usage = func() {
+		flag.PrintDefaults()
+		msg := `
+		Quick start
+		To setup initial database use option '-db path-to-your-new-db.db -key path-to-ssl-key -cert path-to-cert-file -p port -setup'
+
+		Next run remove the option -setup
+		The default admin email to login is admin@admin.com. To change this use option '-cmd set_admin_email'
+
+		The command after -cmd can be: set_admin_password, set_admin_otp, add_user
+		You have to run set_admin_otp to get the OTP QR image produced in the current directory and use it for admin login.
+
+		If a user is blacklisted form an IP (account lock) run sqlite3 path-to-your-db
+		Then run this sql 'DELETE FROM appconfig WHERE key="blacklist_ips";'
+
+		Try to select * from appconfig to see what key you can do. The whitelist_ip is a list of IP that user does not need to use OTP to login.
+		`
+		fmt.Fprintf(os.Stderr, msg)
+	}
 
 	flag.Parse()
 
@@ -555,6 +572,8 @@ func main() {
 			m.SetAdminPassword()
 		case "set_admin_otp":
 			m.SetAdminOTP()
+		case "set_admin_email":
+			m.SetAdminEmail()
 		case "add_user":
 			m.AddUser(map[string]interface{} {
 				"username": *useremail,
