@@ -205,9 +205,9 @@ func GetQueryValue(r *http.Request, key ...string) string {
 
 func AddUser(in map[string]interface{}) {
 	reader := bufio.NewReader(os.Stdin)
-	useremail := GetMapByKey(in, "username", "").(string)
-	password := GetMapByKey(in, "password", "").(string)
-	groupStr := GetMapByKey(in, "group", "").(string)
+	useremail := GetMapByKey(in, "Email", "").(string)
+	password := GetMapByKey(in, "Password", "").(string)
+	groupStr := GetMapByKey(in, "Group", "").(string)
 
 	if useremail == "" {
 		fmt.Printf("\nEnter user email: ")
@@ -252,11 +252,15 @@ func SetAdminEmail(email string) {
 	SetConfig("admin_email", email)
 }
 
-func SetUserOTP(username string) {
+func SetUserOTP(username string) *bytes.Buffer {
 	u := GetUser(username)
-	Issuer := "inxuanthuy.com"
+	Issuer := Settings.BASE_URL
+	if Issuer == "" {
+		Issuer =  strings.Split(u.Email, `@`)[1]
+	}
+	log.Printf("DEBUG Issuer string %s\n", Issuer)
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:    Issuer,
+		Issuer: Issuer,
 		AccountName: u.Email,
 	})
 	if err != nil {
@@ -278,6 +282,7 @@ func SetUserOTP(username string) {
 	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
 	u.TotpPassword = key.Secret()
 	u.Save()
+	return &buf
 }
 
 func SetAdminOTP() {

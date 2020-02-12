@@ -435,6 +435,59 @@ func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "OK")
 }
 
+func DoEditUser(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		CommonRenderTemplate("edituser.html", &w, r, &map[string]interface{}{
+			"title": "Webnote - Edit User",
+			"page": "edituser",
+		})
+	case "POST":
+		action := m.GetRequestValue(r, "submit", "")
+		log.Printf("DEBUG action is %s\n", action)
+		cUser := GetCurrentUser(&w, r)
+		userEmail := m.GetRequestValue(r, "email", "")
+		password := m.GetRequestValue(r, "cur_password")
+		newPassword := m.GetRequestValue(r, "password")
+		userData := map[string]interface{} {
+			"FirstName": m.GetRequestValue(r, "f_name", ""),
+			"LastName": m.GetRequestValue(r, "l_name", ""),
+			"Email": m.GetRequestValue(r, "email"),
+			"HomePhone": m.GetRequestValue(r, "h_phone"),
+			"WorkPhone": m.GetRequestValue(r, "w_phone"),
+			"MobilePhone": m.GetRequestValue(r, "m_phone"),
+			"ExtraInfo": m.GetRequestValue(r, "extra_info"),
+			"Address": m.GetRequestValue(r, "address"),
+			"Password": newPassword,
+			"GroupNames": m.GetRequestValue(r, "group_names", "default"),
+		}
+		if cUser.Email != userEmail {
+			//We are updating other user, not current user. We need to be admin to do so
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
+				log.Printf("ERROR Permission denied. Only admin has right to update other user\n")
+				fmt.Fprintf(w, "Permission denied")
+				return
+			}
+		}
+		//Checking admin password to confirm
+		if ! m.VerifyHash(password, cUser.PasswordHash, int(cUser.SaltLength)) {
+			log.Printf("ERROR Permission denied. Old/Admin password provided incorrect\n")
+			fmt.Fprintf(w, "Permission denied")
+			return
+		}
+		switch action{
+		case "Add/Edit User":
+			user := m.UserNew(userData)
+			fmt.Fprintf(w, "OK user detail updated for %s. You need to generate TOP QR code using previous form", user.Email)
+		case "Generate new OTP QR image":
+			user := m.GetUser(userEmail)
+			pngImageBuff := m.SetUserOTP(user.Email)
+			w.Write(pngImageBuff.Bytes())
+			return
+		}
+	}
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -476,6 +529,9 @@ func HandleRequests() {
 	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
+	//User management
+	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
+
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
@@ -573,7 +629,7 @@ func main() {
 		case "set_admin_otp":
 			m.SetAdminOTP()
 		case "set_admin_email":
-			m.SetAdminEmail()
+			m.SetAdminEmail("")
 		case "add_user":
 			m.AddUser(map[string]interface{} {
 				"username": *useremail,
@@ -740,7 +796,6 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	for _k, _v := range(*mapData) {
 		commonMapData[_k] = _v
 	}
-
 	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}

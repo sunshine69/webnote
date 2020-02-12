@@ -97,6 +97,8 @@ func UserNew(in map[string]interface{}) (*User) {
 	n.SaltLength = GetMapByKey(in, "SaltLength", int8(defaultSaltLength)).(int8)
 	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
 
+	Password := GetMapByKey(in, "Password", MakePassword(12)).(string)
+	n.SetUserPassword(Password)
 	return &n
 }
 

@@ -1,0 +1,79 @@
+{{ template "header" . }}
+{{ template "head_menu" . }}
+<br/>
+<hr>
+
+<fieldset>
+<legend>Search User</legend>
+<table rules="rows,cols" border="0" cellpadding="1" cellspacing="1">
+    <tr>
+        <td>Key word: <input type="text" id="keyword" name="keyword"/></td>
+        <td><input type="button" name="submit" value="search" onclick="doSearchUser();" /></td>
+    </tr>
+</table>
+</fieldset>
+
+<form action="{{ .settings.BASE_URL }}/edituser" method="POST">{{ .csrfField }}
+<br/>
+<hr>
+<fieldset>
+<legend>User Details:</legend>
+<table rules="rows,cols" border="0" cellpadding="3" cellspacing="3">
+<TR>
+    <TD>First Name</TD><td><input type="text" name='f_name' value="{{ .user.FirstName }}"/></td>
+</TR>
+<TR>
+    <TD>Last Name</TD><td><input type="text" name='l_name' value="{{ .user.LastName }}"/></td>
+</TR>
+<TR>
+    <TD><font color=red><b>Email*: </b></font></TD>
+    <td><input type="text" name='email' value="{{ .user.Email }}"/></td>
+</TR>
+<TR>
+    <TD>Current or Admin Password*: </TD>
+    <td><input type="password" name='cur_password' value=""/></td>
+</TR>
+<TR>
+    <TD>New Password*: </TD>
+    <td><input type="password" name='password' value=""/></td>
+</TR>
+<TR>
+    <TD title="coma separated group name">Groups list*: </TD>
+    <td><input type="text" name='group_names' value="default"/></td>
+</TR>
+<TR>
+    <TD>Home phone</TD>
+    <td><input type="text" name='h_phone' value="{{ .user.HomePhone }}"/></td>
+</TR>
+<TR>
+    <TD>Address</TD>
+    <td><input type="text" name='address' value="{{ .user.Address }}"/></td>
+</TR>
+<TR>
+    <TD>Work phone</TD>
+    <td><input type="text" name='w_phone' value="{{ .user.WorkPhone }}"/></td>
+</TR>
+<TR>
+    <TD>Cell phone</TD>
+    <td><input type="text" name='m_phone' value="{{ .user.MobilePhone }}"/></td>
+</TR>
+<TR>
+    <TD>Extra Infomation</TD>
+    <td><input type="text" name='extra_info' value="{{ .user.ExtraInfo }}"/></td>
+</TR>
+<TR>
+    <TD>
+        <input type="submit" name="submit" value="Add/Edit User"/>
+        <input type="submit" name="submit" value="Generate new OTP QR image"/>
+    </TD>
+    <td>
+        <input type="reset" name="reset" value="reset"/>
+        <input type="submit" name="delete" value="Delete User"/>
+    </td>
+</TR>
+</table>
+</fieldset>
+</form><br><br>
+{{ template "footer" . }}
+</body>
+</html>
