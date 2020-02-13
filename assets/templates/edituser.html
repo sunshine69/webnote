@@ -2,45 +2,47 @@
 {{ template "head_menu" . }}
 <br/>
 <hr>
-<script language="javascript">
-    function doSearchUser() {
-        var kw = document.getElementById("keyword").value
-        var url = "/searchuser?is_ajax=1&kw="+kw;
-        AJAX.getText(url, function(response){
-            try {
-                founduser = JSON.parse(response)
-            }   catch (e) {
-                if (e instanceof SyntaxError) {
-                    console.log(e, true);
-                } else {
-                    console.log(e, false);
+{{ if eq .user.Email .settings.ADMIN_EMAIL }}
+    <script language="javascript">
+        function doSearchUser() {
+            var kw = document.getElementById("keyword").value
+            var url = "/searchuser?is_ajax=1&kw="+kw;
+            AJAX.getText(url, function(response){
+                try {
+                    founduser = JSON.parse(response)
+                }   catch (e) {
+                    if (e instanceof SyntaxError) {
+                        console.log(e, true);
+                    } else {
+                        console.log(e, false);
+                    }
+                    founduser = null
                 }
-                founduser = null
-            }
-            if (founduser){
-                document.getElementsByName("f_name")[0].value = founduser.FirstName;
-                document.getElementsByName("l_name")[0].value = founduser.LastName;
-                document.getElementsByName("email")[0].value = founduser.Email;
-                document.getElementsByName("group_names")[0].value = founduser.GroupNames;
-                document.getElementsByName("h_phone")[0].value = founduser.HomePhone;
-                document.getElementsByName("w_phone")[0].value = founduser.WorkPhone;
-                document.getElementsByName("m_phone")[0].value = founduser.MobilePhone;
-                document.getElementsByName("extra_info")[0].value = founduser.ExtraInfo;
-            } else {
-                alert("User not found or some errors.")
-            }
-        })
-    }
-</script>
-<fieldset>
-<legend>Search User</legend>
-<table rules="rows,cols" border="0" cellpadding="1" cellspacing="1">
-    <tr>
-        <td>Key word: <input type="text" name="keyword" id="keyword" value=""/></td>
-        <td><input type="button" name="submit" value="search" onclick="doSearchUser();" /></td>
-    </tr>
-</table>
-</fieldset>
+                if (founduser){
+                    document.getElementsByName("f_name")[0].value = founduser.FirstName;
+                    document.getElementsByName("l_name")[0].value = founduser.LastName;
+                    document.getElementsByName("email")[0].value = founduser.Email;
+                    document.getElementsByName("group_names")[0].value = founduser.GroupNames;
+                    document.getElementsByName("h_phone")[0].value = founduser.HomePhone;
+                    document.getElementsByName("w_phone")[0].value = founduser.WorkPhone;
+                    document.getElementsByName("m_phone")[0].value = founduser.MobilePhone;
+                    document.getElementsByName("extra_info")[0].value = founduser.ExtraInfo;
+                } else {
+                    alert("User not found or some errors.")
+                }
+            })
+        }
+    </script>
+    <fieldset>
+    <legend>Search User</legend>
+    <table rules="rows,cols" border="0" cellpadding="1" cellspacing="1">
+        <tr>
+            <td>Key word: <input type="text" name="keyword" id="keyword" value=""/></td>
+            <td><input type="button" name="submit" value="search" onclick="doSearchUser();" /></td>
+        </tr>
+    </table>
+    </fieldset>
+{{ end }}
 
 <form id="edituser" action="{{ .settings.BASE_URL }}/edituser" method="POST">{{ .csrfField }}
 <br/>
@@ -103,29 +105,33 @@
 </table>
 </fieldset>
 <br/><br/>
-<hr>
-<fieldset>
-<legend>Add new groups:</legend>
-<table rules="rows,cols" border="0" cellpadding="3" cellspacing="3">
-    <tr>
-        <td title="coma separated list of new group names">Group name(s)*: </td>
-        <td><input type="text" name="new_group_names" value=""/></td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <input type="submit" name="submit" value="Add Groups"/>
-        </td>
-    </tr>
-    {{ if eq .user.Email .settings.ADMIN_EMAIL }}
-    <tr>
-        <td colspan="2">
-            ALl groups as of now: {{ .allgroups }}
-        </td>
-    </tr>
-    {{ end }}
-</table>
-</fieldset>
-</form>
+
+{{ if eq .user.Email .settings.ADMIN_EMAIL }}
+    <hr>
+    <fieldset>
+    <legend>Add new groups:</legend>
+    <table rules="rows,cols" border="0" cellpadding="3" cellspacing="3">
+        <tr>
+            <td title="coma separated list of new group names">Group name(s)*: </td>
+            <td><input type="text" name="new_group_names" value=""/></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" name="submit" value="Add Groups"/>
+            </td>
+        </tr>
+        {{ if eq .user.Email .settings.ADMIN_EMAIL }}
+        <tr>
+            <td colspan="2">
+                ALl groups as of now: {{ .allgroups }}
+            </td>
+        </tr>
+        {{ end }}
+    </table>
+    </fieldset>
+    </form>
+{{ end }}
+
 {{ template "footer" . }}
 </body>
 </html>
