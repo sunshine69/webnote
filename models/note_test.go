@@ -26,7 +26,7 @@ func TestNote(t *testing.T) {
 	mySavedNote.Save()
 	mySavedNote = GetNote("New note 1")
 	log.Printf("Saved note: %v\n", mySavedNote)
-	ov := GetNoteRevision(mySavedNote.ID)
+	ov := GetNoteRevisions(mySavedNote.ID)
 	fmt.Println(ov)
 	nbyID := GetNoteByID(mySavedNote.ID)
 	fmt.Printf("Note Author: %v\n", nbyID.Author )
@@ -35,8 +35,9 @@ func TestNote(t *testing.T) {
 
 func TestSearchNote(t *testing.T) {
 	os.Setenv("DBPATH", "testwebnote.db")
-	r := SearchNote("New")
+	u := GetUserByID(1)
+	r := SearchNote("New", u)
 	fmt.Println(r)
-	r = SearchNote("kodi + -log & !date")
+	r = SearchNote("kodi + -log & !date", u)
 	fmt.Println(r)
 }

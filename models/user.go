@@ -27,12 +27,14 @@ type User struct {
 	PrefID int8
 	TotpPassword string
 }
-//Update -
-func (u *User) Update() {
+//update - Only be called from the GetUserXXX which complete the user object with external objects, references etc.
+func (u *User) update() {
+	log.Printf("DEBUG GroupNames: %s\n", u.GroupNames)
 	if u.GroupNames != "" {
 		for _, group := range( strings.Split(u.GroupNames, ",") ) {
 			if group == "" { continue }
 			group = strings.TrimSpace(group)
+			log.Printf("INFO add user %v to group %s\n", u, group)
 			u.SetGroup(group)
 		}
 	}
@@ -52,7 +54,7 @@ func (u *User) Update() {
 	for rows.Next() {
 		gr := Group{}
 		if e := rows.Scan(&gr.ID, &gr.Name, &gr.Description); e != nil {
-			log.Fatalf("ERROR user Update. Can not query group - %v\n", e)
+			log.Fatalf("ERROR user update. Can not query group - %v\n", e)
 		}
 		u.Groups = append(u.Groups, &gr)
 		gNames = append(gNames, gr.Name)
@@ -84,7 +86,7 @@ func (u *User) SetGroup(gnames ...string) {
 	}
 }
 
-//UserNew -
+//UserNew - It will Call Save
 func UserNew(in map[string]interface{}) (*User) {
 	n := User{}
 	n.FirstName = GetMapByKey(in, "FirstName", "").(string)
@@ -97,15 +99,12 @@ func UserNew(in map[string]interface{}) (*User) {
 	n.ExtraInfo = GetMapByKey(in, "ExtraInfo", "").(string)
 	n.Address = GetMapByKey(in, "Address", "").(string)
 	// n.TotpPassword = GetMapByKey(in, "TotpPassword", "").(string)
-	defaultSaltLength, _ := strconv.Atoi(GetConfig("salt_length", "12"))
-	n.SaltLength = GetMapByKey(in, "SaltLength", int8(defaultSaltLength)).(int8)
+	n.SaltLength = GetMapByKey(in, "SaltLength", int8(12)).(int8)
 	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
 
 	n.Save()
 	Password := GetMapByKey(in, "Password", "").(string)
 	if Password != "" { n.SetUserPassword(Password) }
-	n.Update()
-
 	return &n
 }
 
@@ -132,8 +131,12 @@ func (n *User) Save() {
 			attempt_count,
 			last_login,
 			pref_id,
-			salt_length) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);`
-		res, e := tx.Exec(sql, n.FirstName, n.LastName, n.Email, n.Address, n.PasswordHash, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.TotpPassword, n.SaltLength)
+			salt_length,
+			passwd,
+			totp_passwd) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15);`
+		res, e := tx.Exec(sql, n.FirstName, n.LastName, n.Email, n.Address, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.SaltLength, n.PasswordHash, n.TotpPassword)
+		//There seems to be a race condition/bug in sqlite3 driver when dealing with type. If we set passwd not null default "", somehow at a stage golang sqlite see the next fields 'salt_length' after is of type text rather than integer and when scanning causing error.
+		//We have to insert it in the passwd and all other empty string to avoid null.
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert user - %v\n", e)
@@ -164,11 +167,10 @@ func (n *User) Save() {
 	}
 	tx.Commit()
 	//Refresh user object from udpated db
-	n = GetUserByID(n.ID)
-	n.Update()
+	n.update()
 }
 
-//GetUserByID -
+//GetUserByID - always return an up-to-date user object in full, it will call .update() to update data not directly from database
 func GetUserByID(id int64) (*User) {
 	DB := GetDB("")
 	defer DB.Close()
@@ -180,6 +182,8 @@ func GetUserByID(id int64) (*User) {
 		email,
 		address,
 		passwd,
+		salt_length,
+		totp_passwd,
 		h_phone,
 		w_phone,
 		m_phone,
@@ -187,16 +191,16 @@ func GetUserByID(id int64) (*User) {
 		last_attempt,
 		attempt_count,
 		last_login,
-		pref_id,
-		salt_length
-		FROM user WHERE id = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.SaltLength); e != nil {
+		pref_id
+		FROM user WHERE id = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.SaltLength, &u.TotpPassword, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID); e != nil {
 		log.Printf("INFO - Can not find user ID '%d' - %v\n", id, e)
 		return nil
 	}
-	u.Update()
+	u.update()
 	return &u
 }
 
+//GetUser - by email always return an up-to-date user object in full, it will call .update() to update data not directly from database
 func GetUser(email string) (*User) {
 	DB := GetDB("")
 	defer DB.Close()
@@ -208,6 +212,8 @@ func GetUser(email string) (*User) {
 		email,
 		address,
 		passwd,
+		salt_length,
+		totp_passwd,
 		h_phone,
 		w_phone,
 		m_phone,
@@ -215,13 +221,12 @@ func GetUser(email string) (*User) {
 		last_attempt,
 		attempt_count,
 		last_login,
-		pref_id,
-		salt_length
-		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID, &u.SaltLength); e != nil {
+		pref_id
+		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.SaltLength, &u.TotpPassword, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID); e != nil {
 		log.Printf("INFO - Can not find user email '%s' - %v\n", email, e)
 		return nil
 	}
-	u.Update()
+	u.update()
 	return &u
 }
 
@@ -260,14 +265,16 @@ func (u *User) SetUserPassword(p string) {
 	DB := GetDB(""); defer DB.Close()
 	tx, _ := DB.Begin()
 	sql := `UPDATE user SET
-			passwd = $1
-			WHERE email = $2`
-	_, e := tx.Exec(sql, PasswordHash, u.Email)
+			passwd = $1,
+			salt_length = $2
+			WHERE email = $3`
+	_, e := tx.Exec(sql, PasswordHash, u.SaltLength, u.Email)
 	if e != nil {
 		tx.Rollback()
-		log.Fatalf("ERROR can not update user %v\n", e)
+		log.Fatalf("ERROR SetUserPassword can not update user %v\n", e)
 	}
 	tx.Commit()
+	u.PasswordHash = PasswordHash
 }
 
 func (u *User) SaveUserOTP() {
@@ -279,7 +286,7 @@ func (u *User) SaveUserOTP() {
 		_, e := tx.Exec(sql, u.TotpPassword, u.Email)
 	if e != nil {
 		tx.Rollback()
-		log.Fatalf("ERROR can not update user %v\n", e)
+		log.Fatalf("ERROR SaveUserOTP can not update user %v\n", e)
 	}
 	tx.Commit()
 }

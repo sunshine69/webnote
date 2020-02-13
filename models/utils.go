@@ -83,6 +83,7 @@ func ComputeHash(plainText string , salt []byte) (string) {
 }
 
 func VerifyHash(password string, passwordHashString string, saltLength int) bool {
+	// log.Printf("DEBUG VerifyHash input pass: %s - Hash %s s_len %d\n", password, passwordHashString, saltLength)
 	passwordHash, _ := base64.StdEncoding.DecodeString(passwordHashString)
 	saltBytes := []byte(passwordHash[len(passwordHash) - saltLength:len(passwordHash)])
 	result := ComputeHash(password, saltBytes)
