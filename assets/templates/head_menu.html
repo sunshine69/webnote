@@ -29,8 +29,6 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
         <a href="{{ .settings.BASE_URL }}/delete?id={{ .note.ID }}" onClick="return ask_me('delete');">Delete</a>
     {{ end }}
 {{ end }}
-<a href="{{ .settings.BASE_URL }}/edituser">My account</a>
-
 &nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/upload">Upload files</A>
 &nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/list_attachment">List files</A>
 &nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/search?keyword={{ .keyword }}">Back to search result</a> &nbsp;&nbsp;
