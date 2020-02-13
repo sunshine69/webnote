@@ -15,7 +15,7 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </form><br>
 
 <A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
-<A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A> &nbsp;
+<A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A>
 {{ if .note }}
     {{ if eq .page "noteview" }}
         <a href="{{ .settings.BASE_URL }}/?id={{ .note.ID }}">Edit</a>
@@ -35,7 +35,7 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 {{ if .user }}
 <DIV align="right" style="color : #b4bfff; display : inline;">Hi {{ .user }}<span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
 {{ if eq .user.Email .settings.ADMIN_EMAIL }}
-<a href="{{ .settings.BASE_URL }}/edituser">User Management</A>
+<a href="{{ .settings.BASE_URL }}/edituser">User Management</a>
 {{ end }}
 </DIV>
 {{ end }}
