@@ -10,7 +10,6 @@ func TestMisc(t *testing.T) {
 	// SetupDefaultConfig()
 	// SetupAppDatabase()
 	g := Group{
-		Group_id: int8(4),
 		Name: "newgroup",
 	}
 	g.Save()

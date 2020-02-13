@@ -8,6 +8,7 @@ import (
 )
 
 func TestUser(t *testing.T) {
+	os.Remove("testwebnote.db")
 	os.Setenv("DBPATH", "testwebnote.db")
 	SetupDefaultConfig()
 	SetupAppDatabase()
@@ -21,10 +22,10 @@ func TestUser(t *testing.T) {
 	fmt.Printf("User ID: %d - Email: %s\n", u.ID, u.Email)
 	u1 := GetUser("msh.computing@gmail.com")
 	u2 := GetUserByID(u1.ID)
-	log.Printf("Get user by id: %v\n", u2)
-	u1.SaltLength = 16
-	u1.SetUserPassword("1qa2ws")
-	if ! VerifyHash("1qa2ws", u1.PasswordHash, int(u1.SaltLength)) {
+	u2.SaltLength = 16
+	u2.SetUserPassword("1qa2ws")
+	log.Printf("Get user by id: %v - s ln %d - pHash %s\n", u2, u2.SaltLength, u2.PasswordHash)
+	if ! VerifyHash("1qa2ws", u2.PasswordHash, int(u2.SaltLength)) {
 		t.Fatalf("ERROR VerifyHash\n")
 	}
 	log.Println(VerifyLogin("msh.computing@gmail.com", "1qa2ws", ""))

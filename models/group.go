@@ -21,7 +21,7 @@ func (g *Group) Save() {
 		res, e := tx.Exec(`insert into ngroup(
 			name,
 			description
-			) values($1, $2, $3)`, g.Name, g.Description)
+			) values($1, $2)`, g.Name, g.Description)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not insert group %s - %v\n", g.Name, e)
@@ -62,7 +62,7 @@ func GetGroupByID(id int64) *Group {
 func GetAllGroups() []*Group {
 	DB := GetDB(""); defer DB.Close()
 	rows, _ := DB.Query(`SELECT
-		ID,
+		id,
 		name,
 		description
 	FROM ngroup g`)

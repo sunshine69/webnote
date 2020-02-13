@@ -12,7 +12,6 @@ function select_all(obj) {
 		cbs[i].checked = cval;
 	}
 }
-
 function on_selected_run_sql(sql='') {
 	var msg = "Info. Table name: webnote_note\nField: title, content, url flags, econtent as text, group_id ";
 	if (sql == '')	sql = prompt(msg + "\nEnter the sql statement. Only work Update / Delete statement", 'UPDATE webnote_note set ');
@@ -58,7 +57,7 @@ function process_selected(o) {
 	o.selectedIndex = 0;
 }
 </script>
-<br>
+<br/><br/>
 {{ if gt (len .notes) 0 }}
 <table cellpadding="2" cellspacing="2">
 	<TR bgcolor="#66ff99">

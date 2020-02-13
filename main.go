@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/csrf"
+	"github.com/json-iterator/go"
 	m "github.com/sunshine69/webnote-go/models"
 	"github.com/sunshine69/webnote-go/app"
 )
@@ -435,6 +436,100 @@ func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "OK")
 }
 
+func DoEditUser(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		allGroups := []string{}
+		for _, gn := range(m.GetAllGroups()) {
+			allGroups = append(allGroups, gn.Name)
+		}
+		CommonRenderTemplate("edituser.html", &w, r, &map[string]interface{}{
+			"title": "Webnote - Edit User",
+			"page": "edituser",
+			"allgroups": strings.Join(allGroups, ","),
+		})
+	case "POST":
+		action := m.GetRequestValue(r, "submit", "")
+		cUser := GetCurrentUser(&w, r)
+		userEmail := m.GetRequestValue(r, "email", "")
+		password := m.GetRequestValue(r, "cur_password")
+		newPassword := m.GetRequestValue(r, "password")
+		userData := map[string]interface{} {
+			"FirstName": m.GetRequestValue(r, "f_name", ""),
+			"LastName": m.GetRequestValue(r, "l_name", ""),
+			"Email": m.GetRequestValue(r, "email"),
+			"HomePhone": m.GetRequestValue(r, "h_phone"),
+			"WorkPhone": m.GetRequestValue(r, "w_phone"),
+			"MobilePhone": m.GetRequestValue(r, "m_phone"),
+			"ExtraInfo": m.GetRequestValue(r, "extra_info"),
+			"Address": m.GetRequestValue(r, "address"),
+			"Password": newPassword,
+			"GroupNames": m.GetRequestValue(r, "group_names", "default"),
+		}
+		if cUser.Email != userEmail {
+			//We are updating other user, not current user. We need to be admin to do so
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
+				log.Printf("ERROR Permission denied. Only admin has right to update other user\n")
+				fmt.Fprintf(w, "Permission denied")
+				return
+			}
+		}
+		//Checking admin password to confirm
+		if ! m.VerifyHash(password, cUser.PasswordHash, int(cUser.SaltLength)) {
+			log.Printf("ERROR Permission denied. Old/Admin password provided incorrect\n")
+			fmt.Fprintf(w, "Permission denied")
+			return
+		}
+		switch action{
+		case "Add/Edit User":
+			user := m.UserNew(userData)
+			fmt.Fprintf(w, "OK user detail updated for %s. You need to generate TOP QR code using previous form", user.Email)
+		case "Generate new OTP QR image":
+			user := m.GetUser(userEmail)
+			pngImageBuff := m.SetUserOTP(user.Email)
+			w.Write(pngImageBuff.Bytes())
+			return
+		case "Add Groups":
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
+				log.Printf("ERROR Permission denied. Only admin has right to add more groups\n")
+				fmt.Fprintf(w, "Permission denied")
+				return
+			} else {
+				groups := strings.Split(m.GetRequestValue(r, "new_group_names"), `,`)
+				for _, gn := range(groups) {
+					gn = strings.TrimSpace(gn)
+					newGroup := m.Group{
+						Name: gn,
+					}
+					newGroup.Save()
+				}
+				fmt.Fprintf(w, "Groups added %s", groups)
+			}
+			return
+		}
+	}
+}
+
+func DoSearchUser(w http.ResponseWriter, r *http.Request) {
+	u := GetCurrentUser(&w, r)
+	if u.Email != m.Settings.ADMIN_EMAIL {
+		fmt.Fprint(w, "Permission denied")
+		return
+	}
+	kw := m.GetRequestValue(r, "kw", "")
+	foundUsers := m.SearchUser(kw)
+	if len(foundUsers) == 0 {
+		fmt.Fprint(w, "No user found")
+		return
+	}
+	foundUser := foundUsers[0]
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	o, e := json.MarshalToString(foundUser)
+	if e != nil { log.Printf("ERROR can not create json %v\n", e); return }
+	fmt.Fprintf(w, o)
+	return
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -450,7 +545,6 @@ func HandleRequests() {
 		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
 	)
 	csrf.Secure(true)
-	// log.Printf("DEBUG temporary disable csrf %v\n", CSRF)
 	router.Use(CSRF)
 
 	staticFS := http.FileServer(http.Dir("./assets"))
@@ -476,6 +570,10 @@ func HandleRequests() {
 	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
+	//User management
+	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
+	router.Handle("/searchuser", isAuthorized(DoSearchUser)).Methods("GET")
+
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
@@ -740,7 +838,6 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	for _k, _v := range(*mapData) {
 		commonMapData[_k] = _v
 	}
-
 	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}

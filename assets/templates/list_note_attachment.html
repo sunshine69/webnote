@@ -60,7 +60,6 @@
 </table>
 <br>
 {{ end }}
-<a href="{{ .settings.BASE_URL }}/upload">Upload files</a>
 {{ if .note }}
 <script language="JavaScript">
 function do_add_attachment_to_note(obj) {
@@ -76,7 +75,7 @@ function do_delete_note_attachment(obj) {
       AJAX.getText(url, function(response) {
           alert(response);
 	    }  )
-	    } }
+	    }}
 </script>
 &nbsp;<a href="/list_attachment?note_id={{ .note.ID }}">Add Attachment</a>
 {{ end }}

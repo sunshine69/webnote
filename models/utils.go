@@ -83,6 +83,7 @@ func ComputeHash(plainText string , salt []byte) (string) {
 }
 
 func VerifyHash(password string, passwordHashString string, saltLength int) bool {
+	// log.Printf("DEBUG VerifyHash input pass: %s - Hash %s s_len %d\n", password, passwordHashString, saltLength)
 	passwordHash, _ := base64.StdEncoding.DecodeString(passwordHashString)
 	saltBytes := []byte(passwordHash[len(passwordHash) - saltLength:len(passwordHash)])
 	result := ComputeHash(password, saltBytes)
@@ -205,9 +206,9 @@ func GetQueryValue(r *http.Request, key ...string) string {
 
 func AddUser(in map[string]interface{}) {
 	reader := bufio.NewReader(os.Stdin)
-	useremail := GetMapByKey(in, "username", "").(string)
-	password := GetMapByKey(in, "password", "").(string)
-	groupStr := GetMapByKey(in, "group", "").(string)
+	useremail := GetMapByKey(in, "Email", "").(string)
+	password := GetMapByKey(in, "Password", "").(string)
+	groupStr := GetMapByKey(in, "Group", "").(string)
 
 	if useremail == "" {
 		fmt.Printf("\nEnter user email: ")
@@ -238,7 +239,8 @@ func AddUser(in map[string]interface{}) {
 func SetAdminPassword() {
 	u := GetUser(Settings.ADMIN_EMAIL)
 	fmt.Printf("please type in the password (mandatory): ")
-    password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	// log.Printf("DEBUG pass %s\n", string(password))
 	u.SetUserPassword(string(password))
 }
 
@@ -252,11 +254,14 @@ func SetAdminEmail(email string) {
 	SetConfig("admin_email", email)
 }
 
-func SetUserOTP(username string) {
+func SetUserOTP(username string) *bytes.Buffer {
 	u := GetUser(username)
-	Issuer := "inxuanthuy.com"
+	Issuer := Settings.BASE_URL
+	if Issuer == "" {
+		Issuer =  strings.Split(u.Email, `@`)[1]
+	}
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:    Issuer,
+		Issuer: Issuer,
 		AccountName: u.Email,
 	})
 	if err != nil {
@@ -278,6 +283,8 @@ func SetUserOTP(username string) {
 	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
 	u.TotpPassword = key.Secret()
 	u.Save()
+	u.SaveUserOTP()
+	return &buf
 }
 
 func SetAdminOTP() {
@@ -294,3 +301,4 @@ func ReadUserIP(r *http.Request) string {
     }
     return IPAddress
 }
+

@@ -107,11 +107,11 @@ func CreateAdminUser() {
 		"FirstName": "Admin",
 		"LastName": "Admin",
 		"Email": GetConfig("admin_email"),
+		"Password": "1qa2ws",
+		"SaltLength": int8(16),
+		"GroupNames": "default,family,friend",
 	})
-	u.Save()
-	u.SaltLength = 16
-	u.SetUserPassword("1qa2ws")
-	u.SetGroup("default", "family", "friend")
+	log.Printf("INFOR - Creat new user %v - id %d\n", u, u.ID)
 }
 
 //SetupDefaultConfig - Setup/reset default configuration set
