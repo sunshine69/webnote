@@ -116,6 +116,13 @@
             <input type="submit" name="submit" value="Add Groups"/>
         </td>
     </tr>
+    {{ if eq .user.Email .settings.ADMIN_EMAIL }}
+    <tr>
+        <td colspan="2">
+            ALl groups as of now: {{ .allgroups }}
+        </td>
+    </tr>
+    {{ end }}
 </table>
 </fieldset>
 </form>

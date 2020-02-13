@@ -439,9 +439,14 @@ func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
 func DoEditUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		allGroups := []string{}
+		for _, gn := range(m.GetAllGroups()) {
+			allGroups = append(allGroups, gn.Name)
+		}
 		CommonRenderTemplate("edituser.html", &w, r, &map[string]interface{}{
 			"title": "Webnote - Edit User",
 			"page": "edituser",
+			"allgroups": strings.Join(allGroups, ","),
 		})
 	case "POST":
 		action := m.GetRequestValue(r, "submit", "")
