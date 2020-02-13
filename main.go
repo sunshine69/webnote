@@ -573,7 +573,7 @@ func main() {
 		case "set_admin_otp":
 			m.SetAdminOTP()
 		case "set_admin_email":
-			m.SetAdminEmail()
+			m.SetAdminEmail("")
 		case "add_user":
 			m.AddUser(map[string]interface{} {
 				"username": *useremail,
