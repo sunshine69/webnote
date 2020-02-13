@@ -444,7 +444,6 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 		})
 	case "POST":
 		action := m.GetRequestValue(r, "submit", "")
-		log.Printf("DEBUG action is %s\n", action)
 		cUser := GetCurrentUser(&w, r)
 		userEmail := m.GetRequestValue(r, "email", "")
 		password := m.GetRequestValue(r, "cur_password")
@@ -484,6 +483,23 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			pngImageBuff := m.SetUserOTP(user.Email)
 			w.Write(pngImageBuff.Bytes())
 			return
+		case "Add Groups":
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
+				log.Printf("ERROR Permission denied. Only admin has right to add more groups\n")
+				fmt.Fprintf(w, "Permission denied")
+				return
+			} else {
+				groups := strings.Split(m.GetRequestValue(r, "new_group_names"), `,`)
+				for _, gn := range(groups) {
+					gn = strings.TrimSpace(gn)
+					newGroup := m.Group{
+						Name: gn,
+					}
+					newGroup.Save()
+				}
+				fmt.Fprintf(w, "Groups added %s", groups)
+			}
+			return
 		}
 	}
 }
@@ -503,7 +519,6 @@ func HandleRequests() {
 		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
 	)
 	csrf.Secure(true)
-	// log.Printf("DEBUG temporary disable csrf %v\n", CSRF)
 	router.Use(CSRF)
 
 	staticFS := http.FileServer(http.Dir("./assets"))

@@ -39,7 +39,7 @@
 </TR>
 <TR>
     <TD title="coma separated group name">Groups list*: </TD>
-    <td><input type="text" name='group_names' value="default"/></td>
+    <td><input type="text" name='group_names' value="{{ .user.GroupNames }}"/></td>
 </TR>
 <TR>
     <TD>Home phone</TD>
@@ -73,7 +73,23 @@
 </TR>
 </table>
 </fieldset>
-</form><br><br>
+<br/><br/>
+<hr>
+<fieldset>
+<legend>Add new groups:</legend>
+<table rules="rows,cols" border="0" cellpadding="3" cellspacing="3">
+    <tr>
+        <td title="coma separated list of new group names">Group name(s)*: </td>
+        <td><input type="text" name="new_group_names" value=""/></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type="submit" name="submit" value="Add Groups"/>
+        </td>
+    </tr>
+</table>
+</fieldset>
+</form>
 {{ template "footer" . }}
 </body>
 </html>

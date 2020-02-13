@@ -238,7 +238,8 @@ func AddUser(in map[string]interface{}) {
 func SetAdminPassword() {
 	u := GetUser(Settings.ADMIN_EMAIL)
 	fmt.Printf("please type in the password (mandatory): ")
-    password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	// log.Printf("DEBUG pass %s\n", string(password))
 	u.SetUserPassword(string(password))
 }
 
@@ -258,7 +259,6 @@ func SetUserOTP(username string) *bytes.Buffer {
 	if Issuer == "" {
 		Issuer =  strings.Split(u.Email, `@`)[1]
 	}
-	log.Printf("DEBUG Issuer string %s\n", Issuer)
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer: Issuer,
 		AccountName: u.Email,
@@ -282,6 +282,7 @@ func SetUserOTP(username string) *bytes.Buffer {
 	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
 	u.TotpPassword = key.Secret()
 	u.Save()
+	u.SaveUserOTP()
 	return &buf
 }
 
