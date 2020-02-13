@@ -36,6 +36,8 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 <DIV align="right" style="color : #b4bfff; display : inline;">Hi {{ .user }}<span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
 {{ if eq .user.Email .settings.ADMIN_EMAIL }}
 <a href="{{ .settings.BASE_URL }}/edituser">User Management</a>
+{{ else }}
+<a href="{{ .settings.BASE_URL }}/edituser">Account Management</a>
 {{ end }}
 </DIV>
 {{ end }}
