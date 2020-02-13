@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/csrf"
+	"github.com/json-iterator/go"
 	m "github.com/sunshine69/webnote-go/models"
 	"github.com/sunshine69/webnote-go/app"
 )
@@ -504,6 +505,26 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DoSearchUser(w http.ResponseWriter, r *http.Request) {
+	u := GetCurrentUser(&w, r)
+	if u.Email != m.Settings.ADMIN_EMAIL {
+		fmt.Fprint(w, "Permission denied")
+		return
+	}
+	kw := m.GetRequestValue(r, "kw", "")
+	foundUsers := m.SearchUser(kw)
+	if len(foundUsers) == 0 {
+		fmt.Fprint(w, "No user found")
+		return
+	}
+	foundUser := foundUsers[0]
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	o, e := json.MarshalToString(foundUser)
+	if e != nil { log.Printf("ERROR can not create json %v\n", e); return }
+	fmt.Fprintf(w, o)
+	return
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -546,6 +567,7 @@ func HandleRequests() {
 	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	//User management
 	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
+	router.Handle("/searchuser", isAuthorized(DoSearchUser)).Methods("GET")
 
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value

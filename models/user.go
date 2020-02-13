@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 	"strconv"
 	"log"
@@ -29,7 +30,6 @@ type User struct {
 }
 //update - Only be called from the GetUserXXX which complete the user object with external objects, references etc.
 func (u *User) update() {
-	log.Printf("DEBUG GroupNames: %s\n", u.GroupNames)
 	if u.GroupNames != "" {
 		for _, group := range( strings.Split(u.GroupNames, ",") ) {
 			if group == "" { continue }
@@ -289,4 +289,40 @@ func (u *User) SaveUserOTP() {
 		log.Fatalf("ERROR SaveUserOTP can not update user %v\n", e)
 	}
 	tx.Commit()
+}
+
+func SearchUser(kw string) []*User {
+	DB := GetDB(""); defer DB.Close()
+	q := fmt.Sprintf(`SELECT
+		id,
+		f_name,
+		l_name,
+		email,
+		address,
+		passwd,
+		salt_length,
+		totp_passwd,
+		h_phone,
+		w_phone,
+		m_phone,
+		extra_info,
+		last_attempt,
+		attempt_count,
+		last_login,
+		pref_id
+		FROM user WHERE email like "%%%s%%"`, kw)
+	res, e := DB.Query(q)
+	if e != nil {
+		log.Fatalf("ERROR SearchUser query - %v\n", e)
+	}
+	o := []*User{}
+	for res.Next() {
+		n := User{}
+		res.Scan(&n.ID, &n.FirstName, &n.LastName, &n.Email, &n.Address, &n.PasswordHash, &n.SaltLength, &n.TotpPassword, &n.HomePhone, &n.WorkPhone, &n.MobilePhone, &n.ExtraInfo, &n.LastAttempt, &n.AttemptCount, &n.LastLogin, &n.PrefID)
+
+		n.update()
+		o = append(o, &n)
+
+	}
+	return o
 }
