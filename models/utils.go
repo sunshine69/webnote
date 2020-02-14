@@ -323,7 +323,7 @@ func ZipEncript(filePath ...string) string {
 	absDest, _ := filepath.Abs(dest)
 
 	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
-	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + "  " + srcName)
+	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + " " + srcName)
 	// fmt.Println(cmd.String())
 	_, err := cmd.CombinedOutput()
 	if err != nil {

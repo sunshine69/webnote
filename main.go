@@ -574,9 +574,11 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 				return
 			case "Encrypt with zip":
 				key := m.ZipEncript(a.AttachedFile, a.AttachedFile + ".zip")
+				os.Remove(a.AttachedFile)
 				a.AttachedFile = a.AttachedFile + ".zip"
 				a.Save()
 				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
+				return
 			}
 		} else {
 			fmt.Fprint(w, "Permission denied")
