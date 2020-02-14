@@ -100,7 +100,7 @@ No notes found
 		<hr>
 		<table class="editable" border="1" cellpadding="3" cellspacing="3">
 		<TR bgcolor="#66ff99">
-		<TD class="commands uneditable">name</TD><td class="commands uneditable">description</td><td class="commands uneditable">group</td><td class="commands uneditable">permission</td><td class="commands uneditable">TS</td><td class="commands uneditable">delete</td><td class="commands uneditable">link/download</td>
+		<TD>name</TD><td>description</td><td>group</td><td>permission</td><td>TS</td><td>delete</td><td>link/download</td>
 		</TR>
 		{{ $settings := .settings }}
 		{{ range $idx, $att := .attachments }}
@@ -109,9 +109,9 @@ No notes found
 			<td id='desc'>{{ $att.Description }}</td>
 			<td id='group'>{{ $att.Group.Name }}</td>
 			<td id='permission'>{{ $att.Permission }}</td>
-			<td class="commands uneditable">{{ $att.Updated | time_fmt $date_layout }}</td>
-			<td class="commands uneditable"><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
-			<td class="commands uneditable"><a href="{{ $settings.BASE_URL }}/sendfile?id={{ $att.ID }}">view/download</a></td>
+			<td>{{ $att.Updated | time_fmt $date_layout }}</td>
+			<td><a href="#" onclick="do_delete_att(this.parentNode);return false;">delete</a></td>
+			<td><a href="{{ $settings.BASE_URL }}/sendfile?id={{ $att.ID }}">view/download</a></td>
 			</tr>
 			<!-- end range attachements -->
 		{{ end }}
