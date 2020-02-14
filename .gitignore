@@ -1,5 +1,6 @@
 webnote-go
 uploads/*
+*.bak
 # Binaries for programs and plugins
 *.exe
 *.*~

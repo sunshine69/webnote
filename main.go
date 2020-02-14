@@ -392,7 +392,22 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
 	a := m.GetAttachementByID(aID)
 	u := GetCurrentUser(&w, r)
-	if pok := m.CheckPerm(a.Object, u.ID, "r"); ! pok { http.Error(w, "Permission denied", http.StatusBadRequest); return }
+
+	if a.Permission < 5 {
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		if isAuth == nil || ! isAuth.(bool) {
+			log.Printf("ERROR - No session\n")
+			from_uri := r.URL.RequestURI()
+			from_uri = strings.TrimPrefix(from_uri, "/")
+			http.Redirect(w, r, "/login?from_uri=" + from_uri, http.StatusTemporaryRedirect)
+			return
+		}
+		if ! m.CheckPerm(a.Object, u.ID, "r") {
+			log.Printf("ERROR - No Permission user %s - attachment name: %s\n", u, a.Name)
+			fmt.Fprintf(w, "Permission denied")
+			return
+		}
+	}
 
 	file, err := os.Open(a.AttachedFile)
 	if err != nil {
@@ -530,6 +545,46 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
+	_aID := m.GetRequestValue(r, "id")
+	aID, _ := strconv.ParseInt(_aID, 10, 64)
+	a := m.GetAttachementByID(aID)
+	switch r.Method {
+	case "GET":
+		CommonRenderTemplate("editattachment.html", &w, r, &map[string]interface{}{
+			"title": "Webnote - Edit Attachment",
+			"page": "editattachment",
+			"attachment": a,
+		})
+	case "POST":
+		user := GetCurrentUser(&w, r)
+		if m.CheckPerm(a.Object, user.ID, "w")  {
+			action := m.GetRequestValue(r, "submit")
+			a.Name = m.GetRequestValue(r, "a_name")
+			a.Description = m.GetRequestValue(r, "a_desc")
+			_perm, _ := strconv.Atoi(m.GetRequestValue(r, "permission"))
+			a.Permission = int8(_perm)
+			g := m.GetGroup(m.GetRequestValue(r, "ngroup"))
+			a.GroupID = g.ID
+
+			switch action {
+			case "Edit Attachment":
+				a.Save()
+				fmt.Fprint(w, "OK Attachment updated")
+				return
+			case "Encrypt with zip":
+				key := m.ZipEncript(a.AttachedFile, a.AttachedFile + ".zip")
+				a.AttachedFile = a.AttachedFile + ".zip"
+				a.Save()
+				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
+			}
+		} else {
+			fmt.Fprint(w, "Permission denied")
+			return
+		}
+	}
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -566,8 +621,9 @@ func HandleRequests() {
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
+	router.Handle("/edit_attachment", isAuthorized(DoEditAttachment)).Methods("GET", "POST")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
-	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
+	router.HandleFunc("/streamfile", DoStreamfile).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	//User management

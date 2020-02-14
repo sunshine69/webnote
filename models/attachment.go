@@ -130,12 +130,13 @@ func GetAttachement(aName string) *Attachment {
 		author_id  ,
 		group_id  ,
 		permission ,
-		attached_file ,
+		attached_file,
+		file_size,
 		mimetype ,
 		created ,
 		updated
 		FROM attachment
-		WHERE name = $1`, aName).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+		WHERE name = $1`, aName).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
 			log.Printf("WARN No attachement %s found - %v\n", aName, e)
 			return nil
 	}
@@ -154,11 +155,12 @@ func GetAttachementByID(id int64) *Attachment {
 		group_id,
 		permission,
 		attached_file,
+		file_size,
 		mimetype,
 		created,
 		updated
 		FROM attachment
-		WHERE id = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.Mimetype, &a.Created, &a.Updated); e != nil {
+		WHERE id = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
 			log.Printf("WARN No attachement ID %d found - %v\n", id, e)
 			return nil
 	}
@@ -214,11 +216,13 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 		tx.Rollback()
 		return errors.New(etxt)
 	}
-	if e := os.Remove(UpLoadPath + fName); e != nil {
-		etxt := fmt.Sprintf("ERROR removing the file - %v\n", e)
-		tx.Rollback()
-		return errors.New(etxt)
-	}
 	tx.Commit()
+	var _id int64
+	if e := DB.QueryRow(`SELECT id from attachment WHERE attached_file = $1`, a.AttachedFile).Scan(&_id); e != nil { //No more attachment reference to this AttachedFile. Remove the file
+		if e := os.Remove(UpLoadPath + fName); e != nil {
+			etxt := fmt.Sprintf("ERROR removing the file - %v\n", e)
+			return errors.New(etxt)
+		}
+	}
 	return nil
 }

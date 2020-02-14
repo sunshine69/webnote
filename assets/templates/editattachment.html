@@ -1,0 +1,79 @@
+{{ template "header" . }}
+{{ template "head_menu" . }}
+<br/>
+<hr>
+
+<form id="edituser" action="{{ .settings.BASE_URL }}/edit_attachment" method="POST">{{ .csrfField }}
+<br/>
+<hr>
+<fieldset>
+<input type="hidden" name="id" value="{{ .attachment.ID }}" />
+<legend>Attachment Details:</legend>
+<table rules="rows,cols" border="0" cellpadding="3" cellspacing="3">
+<TR>
+    <TD>Name: </TD><td><input type="text" name='a_name' value="{{ .attachment.Name }}" size="36"/></td>
+</TR>
+<tr>
+    <td>File Path: </td>
+    <td>{{ .attachment.AttachedFile }}</td>
+</tr>
+<TR>
+    <TD>TS: </TD><td>{{ .attachment.Updated|time_fmt .date_layout }}</td>
+</TR>
+<TR>
+    <TD>Size: </TD><td>{{ .attachment.FileSize }}</td>
+</TR>
+<TR>
+    <TD>Description: </TD><td><textarea name='a_desc' value="{{ .attachment.Description }}" cols="30" rows="15" ></textarea>
+    </td>
+</TR>
+
+<tr>
+    <TD colspan="2">
+    {{ if or (eq .attachment.AuthorID .user.ID) (eq .attachment.AuthorID 0) }}
+        <select name="ngroup" id="ngroup" onChange="isModified=true;"  title="groups list">
+        {{ $ngroup := "" }}
+        {{ if .attachment.Group }}
+            {{ $ngroup = .attachment.Group.Name }}
+        {{ else }}
+            {{ $ngroup = "default" }}
+        {{ end }}
+        {{ range $idx, $gr := .groups }}
+            <option value="{{ $gr.Name }}" {{ if eq $ngroup $gr.Name }} selected="selected" {{ end }}>{{ $gr.Name }}</option>
+        {{ end }}
+        </select>
+    {{ else }}
+        {{ if .attachment.Group }}
+        <input id="ngroup" type="hidden" name="ngroup" value="{{ .attachment.Group.Name }}">
+        {{ end }}
+    {{ end }}
+    &nbsp;&nbsp;
+    {{ if or (eq .attachment.AuthorID .user.ID) (eq .attachment.AuthorID 0) }}
+        <select name="permission" title="permissions list">
+        {{ $attachment := .attachment }}
+        {{ range $permVal, $perm := .permission_list }}
+        <option value="{{ $permVal }}" {{ if eq $permVal $attachment.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
+        {{ end }}
+        </select>
+    {{ else }}
+        <input id="permission" type="hidden" name="permission" value="{{.attachment.Permission}}" >
+    {{ end }}
+    </td>
+</tr>
+
+<TR>
+    <TD>
+        <input type="submit" name="submit" value="Edit Attachment"/>
+        <input type="reset" name="reset" value="Reset"/>
+        <input type="submit" name="submit" value="Encrypt with zip"/>
+    </td>
+</TR>
+</table>
+</fieldset>
+</form>
+
+<br/><br/>
+
+{{ template "footer" . }}
+</body>
+</html>
