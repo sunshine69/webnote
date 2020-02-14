@@ -530,6 +530,36 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
+	_aID := m.GetRequestValue(r, "id")
+	aID, _ := strconv.ParseInt(_aID, 10, 64)
+	a := m.GetAttachementByID(aID)
+	switch r.Method {
+	case "GET":
+		CommonRenderTemplate("editattachment.html", &w, r, &map[string]interface{}{
+			"title": "Webnote - Edit Attachment",
+			"page": "editattachment",
+			"attachment": a,
+		})
+	case "POST":
+		user := GetCurrentUser(&w, r)
+		if m.CheckPerm(a.Object, user.ID, "w")  {
+			a.Name = m.GetRequestValue(r, "a_name")
+			a.Description = m.GetRequestValue(r, "a_desc")
+			_perm, _ := strconv.Atoi(m.GetRequestValue(r, "permission"))
+			a.Permission = int8(_perm)
+			g := m.GetGroup(m.GetRequestValue(r, "ngroup"))
+			a.GroupID = g.ID
+			a.Save()
+			fmt.Fprint(w, "OK Attachment updated")
+			return
+		} else {
+			fmt.Fprint(w, "Permission denied")
+			return
+		}
+	}
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -566,6 +596,7 @@ func HandleRequests() {
 	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
+	router.Handle("/edit_attachment", isAuthorized(DoEditAttachment)).Methods("GET", "POST")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	router.Handle("/streamfile", isAuthorized(DoStreamfile)).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")

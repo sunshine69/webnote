@@ -35,6 +35,7 @@
   <td><a href="/delete_attachment" onclick="do_delete_attachment(this.parentNode);return false;">delete</a></td>
   <td><a href="{{ $settings.BASE_URL }}/streamfile?id={{ $attachment.ID }}&action=stream">view</a></td>
   <td><a href="{{ $settings.BASE_URL }}/streamfile?id={{ $attachment.ID }}&action=download">download</a></td>
+  <td><a href="{{ $settings.BASE_URL }}/edit_attachment?id={{ $attachment.ID }}">edit</a></td>
 </tr>
 {{ end }}
 <script>
@@ -45,17 +46,6 @@
       alert(response);
     }  )
   }}
-  /*
-  InlineEditor.elementChanged = function( theElement, oldVal, newVal )
-      {
-  //    mySavingIndicator( theElement );
-        var url = "$config.get('app', 'APP_BASE_URL')?action=save_attachment&id="+theElement.parent.id.value+"&field="+theElement.id+"&value="+newVal;
-        AJAX.getText( url, function( response ){
-    //  clearMySavingIndicator( theElement );
-            alert( 'Did the save work? ' + response );
-        }); // end ajax callback function
-      };  // end elementChanged
-  */
 </script>
 </table>
 <br>
