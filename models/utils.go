@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"image/png"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"fmt"
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/ssh/terminal"
@@ -302,3 +304,30 @@ func ReadUserIP(r *http.Request) string {
     return IPAddress
 }
 
+func ZipEncript(filePath ...string) string {
+	src, dest, key := filePath[0], "", ""
+	argCount := len(filePath)
+	if argCount > 1 {
+		dest = filePath[1]
+	} else {
+		dest = src + ".zip"
+	}
+	if argCount > 2 {
+		key = filePath[2]
+	} else {
+		key = MakePassword(42)
+	}
+	os.Remove(dest)
+	srcDir := filepath.Dir(src)
+	srcName := filepath.Base(src)
+	absDest, _ := filepath.Abs(dest)
+
+	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
+	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + "  " + srcName)
+	// fmt.Println(cmd.String())
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return key
+}
