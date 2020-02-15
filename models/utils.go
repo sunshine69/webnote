@@ -331,3 +331,11 @@ func ZipEncript(filePath ...string) string {
 	}
 	return key
 }
+
+func Ternary(cond bool, first, second interface{}) interface{} {
+	if cond {
+		return first
+	} else {
+		return second
+	}
+}
