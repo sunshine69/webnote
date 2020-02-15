@@ -282,7 +282,7 @@ func SetUserOTP(username string) *bytes.Buffer {
 	ioutil.WriteFile(filename, buf.Bytes(), 0600)
 	fmt.Printf("PNG QR encoded file name %s has been generated in the current folder\n", filename)
 	// Now Validate that the user's successfully added the passcode.
-	fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
+	// fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())
 	u.TotpPassword = key.Secret()
 	u.Save()
 	u.SaveUserOTP()
@@ -323,11 +323,39 @@ func ZipEncript(filePath ...string) string {
 	absDest, _ := filepath.Abs(dest)
 
 	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
-	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + "  " + srcName)
-	// fmt.Println(cmd.String())
+	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + " " + srcName)
 	_, err := cmd.CombinedOutput()
 	if err != nil {
+		fmt.Println(cmd.String())
 		log.Fatal(err)
 	}
 	return key
+}
+
+func ZipDecrypt(filePath ...string) error {
+	argCount := len(filePath)
+	if argCount < 2 { return fmt.Errorf("ERROR Must supply file name and key") }
+	src, key := filePath[0], filePath[1]
+
+	srcDir := filepath.Dir(src)
+	srcName := filepath.Base(src)
+
+	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
+	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/unzip -P '" +  key + "' " + srcName)
+
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(cmd.String())
+		log.Printf("ERROR ZipDecrypt %v\n", err)
+		return fmt.Errorf("ERROR command unzip return error")
+	}
+	return nil
+}
+
+func Ternary(cond bool, first, second interface{}) interface{} {
+	if cond {
+		return first
+	} else {
+		return second
+	}
 }

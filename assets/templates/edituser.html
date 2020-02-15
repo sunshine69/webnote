@@ -27,6 +27,14 @@
                     document.getElementsByName("w_phone")[0].value = founduser.WorkPhone;
                     document.getElementsByName("m_phone")[0].value = founduser.MobilePhone;
                     document.getElementsByName("extra_info")[0].value = founduser.ExtraInfo;
+                    if (founduser.AttemptCount > 3) {
+                        var uForm = document.getElementById("edituser");
+                        var btn = document.createElement("BUTTON")
+                        btn.innerHTML = "Unlock Account"
+                        btn.name = "submit"
+                        btn.value = "Unlock Account"
+                        uForm.appendChild(btn)
+                    }
                 } else {
                     alert("User not found or some errors.")
                 }

@@ -62,6 +62,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		"page": "frontpage",
 		"msg":  "",
 		"note": aNote,
+		"first_time_login": m.GetSessionVal(r, "first_time_login", "no").(string),
 	})
 }
 
@@ -521,6 +522,12 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "Groups added %s", groups)
 			}
 			return
+		case "Unlock Account":
+			user := m.UserNew(userData)
+			user.AttemptCount = 1
+			user.Save()
+			fmt.Fprintf(w, "Account %s is unlocked", user.Email)
+			return
 		}
 	}
 }
@@ -574,9 +581,22 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 				return
 			case "Encrypt with zip":
 				key := m.ZipEncript(a.AttachedFile, a.AttachedFile + ".zip")
+				os.Remove(a.AttachedFile)
 				a.AttachedFile = a.AttachedFile + ".zip"
 				a.Save()
 				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
+				return
+			case "Decrypt with zip":
+				key := m.GetRequestValue(r, "zipkey", "")
+				if e := m.ZipDecrypt(a.AttachedFile, key); e == nil {
+					os.Remove(a.AttachedFile)
+					a.AttachedFile = strings.TrimSuffix(a.AttachedFile, ".zip")
+					a.Save()
+					fmt.Fprintf(w, "OK Attachment decrypted. File '%s'", a.AttachedFile)
+				} else {
+					fmt.Fprintf(w, "%v", e)
+				}
+				return
 			}
 		} else {
 			fmt.Fprint(w, "Permission denied")
@@ -756,28 +776,28 @@ func main() {
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
-	trycount := m.GetSessionVal(r, "trycount", 0)
+	trycount := m.GetSessionVal(r, "trycount", 0).(int)
 	_userIP := m.ReadUserIP(r)
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	userIP := portPtn.ReplaceAllString(_userIP, "")
 	ses, _ := m.SessionStore.Get(r, "auth-session")
 
-	blIP := m.GetConfig("blacklist_ips", "")
+	currentBlackList := m.GetConfig("blacklist_ips", "")
 
-	if trycount.(int) > 3 || (strings.Contains(blIP, userIP)) {
-		ses.Values = make(map[interface{}]interface{}, 1)
+	if trycount >= 30 {
+		currentBlackList = currentBlackList + "," + userIP
+		m.SetConfig("blacklist_ips", currentBlackList)
+	}
+	if strings.Contains(currentBlackList, userIP) {
+		ses.Values = make(map[interface{}]interface{}, 1)//Empty session values
 		ses.Save(r, w)
-		_ip := strings.Split(_userIP, ":")
-		if ! strings.Contains(blIP, _ip[0]){
-			m.SetConfig("blacklist_ips", blIP + "," + _ip[0])
-		}
 		http.Error(w, "Account locked", http.StatusForbidden)
 		//To remove the lock use command below on the terminal - adjust the val properly. And clear the browser cookie as well
 		//ql -db testwebnote.db  'update appconfig set val = "" where key = "blacklist_ips"'
 		return
 	}
 
-	trycount = trycount.(int) + 1
+	trycount = trycount + 1
 	m.SaveSessionVal(r, &w, "trycount", trycount)
 
 	isAuthenticated := m.GetSessionVal(r, "authenticated", nil)
@@ -799,7 +819,9 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
-			fmt.Fprintf(w, "Already logged in")
+			from_uri := m.GetRequestValue(r, "from_uri", "")
+			from_uri = strings.TrimPrefix(from_uri, "/")
+			http.Redirect(w, r, "/" + from_uri, http.StatusFound)
 		}
 	case "POST":
 		r.ParseForm()
@@ -808,40 +830,29 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 		var user *m.User
 
-		// whitelistIP := m.GetConfigSave("white_list_ips", "192.168.0.0/24, 127.0.0.1/8")
-		whitelistIP := m.GetConfigSave("white_list_ips", "")
-		if ! m.CheckUserIPInWhiteList(userIP, whitelistIP){
-			totop := r.FormValue("totp_number")
-			log.Printf("INFO user input totp %s\n", totop)
-			if totop == "" {
-				user = nil
-			} else{
-				user = m.VerifyLogin(useremail, password, totop)
-			}
-		} else {
-			log.Printf("INFO user IP whitelisted, ignore OTP - ip %s - list: %s\n", userIP, whitelistIP)
-			user = m.VerifyLogin(useremail, password, "")
-		}
+		totop := r.FormValue("totp_number")
+		log.Printf("INFO user input totp %s\n", totop)
+		user, err := m.VerifyLogin(useremail, password, totop, userIP)
 		ses, _ := m.SessionStore.Get(r, "auth-session")
 		if user != nil {
+			if strings.Contains(user.ExtraInfo, " First Time Login ") {
+				ses.Values["first_time_login"] = "yes"
+				user.ExtraInfo = strings.ReplaceAll(user.ExtraInfo, " First Time Login ", ""); user.Save()
+			}
 			log.Printf("INFO Verified user %v\n", user)
 			ses.Values["authenticated"] = true
-			m.SaveSessionVal(r, &w, "useremail", useremail)
+			ses.Values["trycount"] = 0
+			ses.Values["useremail"] = useremail
 			ses.Save(r, w)
 			from_uri := m.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/" + from_uri, http.StatusFound)
-			m.SaveSessionVal(r, &w, "trycount", 0)
 			return
 		} else {
-			log.Printf("INFO Failed To Verify user %s\n", useremail)
+			log.Printf("INFO Failed To Verify user %s - %s\n", useremail, err.Error())
 			ses.Values["authenticated"] = false
-			m.SaveSessionVal(r, &w, "useremail", "")
+			ses.Values["useremail"] = ""
 			ses.Save(r, w)
-			if trycount.(int) >= 3 {
-				currentBlackList := m.GetConfig("blacklist_ips", "")
-				m.SetConfig("blacklist_ips", currentBlackList + "," + userIP)
-			}
 			http.Error(w, "Failed login", http.StatusForbidden)
 			return
 		}

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"time"
 	"fmt"
 	"strings"
 	"strconv"
@@ -89,19 +90,22 @@ func (u *User) SetGroup(gnames ...string) {
 //UserNew - It will Call Save
 func UserNew(in map[string]interface{}) (*User) {
 	n := User{}
+	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
 	n.FirstName = GetMapByKey(in, "FirstName", "").(string)
 	n.LastName = GetMapByKey(in, "LastName", "").(string)
 	n.Email = GetMapByKey(in, "Email", "").(string)
 	n.Address = GetMapByKey(in, "Address", "").(string)
+	// n.PasswordHash = GetMapByKey(in, "PasswordHash", "").(string)
+	n.SaltLength = GetMapByKey(in, "SaltLength", int8(12)).(int8)
 	n.HomePhone = GetMapByKey(in, "HomePhone", "").(string)
 	n.WorkPhone = GetMapByKey(in, "WorkPhone", "").(string)
 	n.MobilePhone = GetMapByKey(in, "MobilePhone", "").(string)
 	n.ExtraInfo = GetMapByKey(in, "ExtraInfo", "").(string)
-	n.Address = GetMapByKey(in, "Address", "").(string)
+	n.LastAttempt = GetMapByKey(in, "LastAttempt", int64(0)).(int64)
+	n.AttemptCount = GetMapByKey(in, "AttemptCount", int8(0)).(int8)
+	n.LastLogin = GetMapByKey(in, "LastLogin", int64(0)).(int64)
+	n.PrefID = GetMapByKey(in, "PrefID", int8(0)).(int8)
 	// n.TotpPassword = GetMapByKey(in, "TotpPassword", "").(string)
-	n.SaltLength = GetMapByKey(in, "SaltLength", int8(12)).(int8)
-	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
-
 	n.Save()
 	Password := GetMapByKey(in, "Password", "").(string)
 	if Password != "" { n.SetUserPassword(Password) }
@@ -158,7 +162,20 @@ func (n *User) Save() {
 			pref_id = $11,
 			salt_length = $12
 			WHERE email = $13`
-		_, e := tx.Exec(sql, n.FirstName, n.LastName, n.Address, n.HomePhone, n.WorkPhone, n.MobilePhone, n.ExtraInfo, n.LastAttempt, n.AttemptCount, n.LastLogin, n.PrefID, n.SaltLength, n.Email)
+		_, e := tx.Exec(sql,
+			Ternary(n.FirstName != "", n.FirstName, currentUser.FirstName).(string),
+			Ternary(n.LastName != "", n.LastName, currentUser.LastName).(string),
+			Ternary(n.Address != "", n.Address, currentUser.Address).(string),
+			Ternary(n.HomePhone != "", n.HomePhone, currentUser.HomePhone).(string),
+			Ternary(n.WorkPhone != "", n.WorkPhone, currentUser.WorkPhone).(string),
+			Ternary(n.MobilePhone != "", n.MobilePhone, currentUser.MobilePhone).(string),
+			Ternary(n.ExtraInfo != "", n.ExtraInfo, currentUser.ExtraInfo).(string),
+			Ternary(n.LastAttempt != 0, n.LastAttempt, currentUser.LastAttempt).(int64),
+			Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount).(int8),
+			Ternary(n.LastLogin != 0, n.LastLogin, currentUser.LastLogin).(int64),
+			Ternary(n.PrefID != 0, n.PrefID, currentUser.PrefID).(int8),
+			Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength).(int8),
+			n.Email)
 		if e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR can not update user %v\n", e)
@@ -239,24 +256,44 @@ func (n *User) String() string {
 }
 
 //VerifyLogin -
-func VerifyLogin(username, password, otp string) (*User) {
+func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 	user := GetUser(username)
+
 	if user != nil {
+		user.LastAttempt = time.Now().UnixNano()
+		if user.AttemptCount > 3 { user.Save(); return nil, fmt.Errorf("Max attempts reached") }
+		user.AttemptCount = user.AttemptCount + 1
 		if user.SaltLength == 0 {
 			saltLengthStr := GetConfigSave("salt_length", "12")
 			saltLength, _ := strconv.Atoi(saltLengthStr)
 			user.SaltLength = int8(saltLength)
 		}
 		if ! VerifyHash(password, user.PasswordHash, int(user.SaltLength)) {
-			return nil
+			user.Save()
+			return nil, fmt.Errorf("Fail Password")
 		}
-		if otp != "" {
-			if ! totp.Validate(otp, user.TotpPassword) { return nil }
+		if user.LastLogin == 0 {
+			user.LastLogin = time.Now().UnixNano(); user.AttemptCount = 0; user.ExtraInfo = user.ExtraInfo + " First Time Login "
+			user.Save()
+			return user, nil
+		}
+
+		whitelistIP := GetConfigSave("white_list_ips", "")
+		if (! CheckUserIPInWhiteList(userIP, whitelistIP)) {
+			if ! totp.Validate(otp, user.TotpPassword) {
+				user.Save()
+				return nil, fmt.Errorf("Fail OTP")
+			}
 		}
 	} else {
-		return nil
+		return nil, fmt.Errorf("User does not exist")
 	}
-	return user
+	if user != nil{
+		user.AttemptCount = 0
+		user.LastLogin = time.Now().UnixNano()
+		user.Save()
+	}
+	return user, nil
 }
 
 func (u *User) SetUserPassword(p string) {
