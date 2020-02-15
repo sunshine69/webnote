@@ -586,6 +586,17 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 				a.Save()
 				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
 				return
+			case "Decrypt with zip":
+				key := m.GetRequestValue(r, "zipkey", "")
+				if e := m.ZipDecrypt(a.AttachedFile, key); e == nil {
+					os.Remove(a.AttachedFile)
+					a.AttachedFile = strings.TrimSuffix(a.AttachedFile, ".zip")
+					a.Save()
+					fmt.Fprintf(w, "OK Attachment decrypted. File '%s'", a.AttachedFile)
+				} else {
+					fmt.Fprintf(w, "%v", e)
+				}
+				return
 			}
 		} else {
 			fmt.Fprint(w, "Permission denied")
