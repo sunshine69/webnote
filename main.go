@@ -615,17 +615,43 @@ func HandleRequests() {
 	// router := StaticRouter()
 	CSRF_TOKEN := m.MakePassword(32)
 	csrf.MaxAge(4 * 3600)
-	CSRF := csrf.Protect(
-		[]byte(CSRF_TOKEN),
-		// instruct the browser to never send cookies during cross site requests
-		csrf.SameSite(csrf.SameSiteStrictMode),
-		csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
-		// csrf.RequestHeader("X-CSRF-Token"),
-		// csrf.FieldName("authenticity_token"),
-		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
-	)
-	csrf.Secure(true)
-	router.Use(CSRF)
+
+	// CSRF := csrf.Protect(
+	// 	[]byte(CSRF_TOKEN),
+	// 	// instruct the browser to never send cookies during cross site requests
+	// 	csrf.SameSite(csrf.SameSiteStrictMode),
+	// 	csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+	// 	// csrf.RequestHeader("X-CSRF-Token"),
+	// 	// csrf.FieldName("authenticity_token"),
+	// 	// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
+	// )
+	// csrf.Secure(true)
+	// router.Use(CSRF)
+	//By pass csrf for /view See https://stackoverflow.com/questions/53271241/disable-csrf-on-json-api-calls
+	protectionMiddleware := func(handler http.Handler) http.Handler {
+		protectionFn := csrf.Protect(
+			[]byte(CSRF_TOKEN),
+			// instruct the browser to never send cookies during cross site requests
+			csrf.SameSite(csrf.SameSiteStrictMode),
+			csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+			// csrf.RequestHeader("X-CSRF-Token"),
+			// csrf.FieldName("authenticity_token"),
+			// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
+			csrf.Secure(false),
+		)
+
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Use some kind of condition here to see if the router should use
+			// the CSRF protection. For the sake of this example, we'll check
+			// the path prefix.
+			if !strings.HasPrefix(r.URL.Path, "/view") {
+				protectionFn(handler).ServeHTTP(w, r)
+				return
+			}
+			handler.ServeHTTP(w, r)
+		})
+	}
+
 
 	staticFS := http.FileServer(http.Dir("./assets"))
 	//Not sure why this line wont work but the one after that works for serving static
@@ -678,9 +704,9 @@ func HandleRequests() {
 		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
 	}
 	if *EnableCompression == "yes" {
-		srv.Handler = handlers.CompressHandler(router)
+		srv.Handler = handlers.CompressHandler(protectionMiddleware(router))
 	} else {
-		srv.Handler = router
+		srv.Handler = protectionMiddleware(router)
 	}
 
 	if SSLKey != "" {
