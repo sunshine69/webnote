@@ -639,7 +639,7 @@ func HandleRequests() {
 	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
 	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func
-	router.HandleFunc("/view", DoViewNote).Methods("GET")
+	router.HandleFunc("/view", DoViewNote).Methods("GET", "POST")
 	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
 	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
