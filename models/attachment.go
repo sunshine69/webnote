@@ -226,3 +226,9 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 	}
 	return nil
 }
+
+//ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
+func ScanAttachment(dir string) []*Attachment {
+	// dir = Ternary(dir == "", "uploads", dir).(string)
+	return []*Attachment {nil}
+}

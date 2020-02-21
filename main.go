@@ -164,15 +164,20 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	data := map[string]interface{}{
-		"title": "Webnote - " + aNote.Title,
-		"page": "noteview",
-		"msg":  "",
-		"note": aNote,
-		"revisions": m.GetNoteRevisions(aNote.ID),
+	if viewType != "3" {
+		data := map[string]interface{}{
+			"title": "Webnote - " + aNote.Title,
+			"page": "noteview",
+			"msg":  "",
+			"note": aNote,
+			"revisions": m.GetNoteRevisions(aNote.ID),
+		}
+		if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
+		CommonRenderTemplate(tName, &w, r, &data)
+	} else {//if is 3 then we send raw note content as response
+		fmt.Fprintf(w, aNote.Content)
+		return
 	}
-	if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
-	CommonRenderTemplate(tName, &w, r, &data)
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
@@ -754,6 +759,8 @@ func main() {
 				"password": *userpassword,
 				"group": *usergroup,
 			})
+		case "scan_attachment":
+			m.ScanAttachment("uploads")
 		}
 	} else {//Server mode
 		if *sessionKey == "" {
@@ -838,6 +845,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			if strings.Contains(user.ExtraInfo, " First Time Login ") {
 				ses.Values["first_time_login"] = "yes"
 				user.ExtraInfo = strings.ReplaceAll(user.ExtraInfo, " First Time Login ", ""); user.Save()
+			} else {
+				ses.Values["first_time_login"] = "no"
 			}
 			log.Printf("INFO Verified user %v\n", user)
 			ses.Values["authenticated"] = true
