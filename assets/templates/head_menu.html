@@ -33,12 +33,16 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 &nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/list_attachment">List files</A>
 &nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/search?keyword={{ .keyword }}">Back to search result</a> &nbsp;&nbsp;
 {{ if .user }}
-<DIV align="right" style="color : #b4bfff; display : inline;">Hi {{ .user }}<span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
-{{ if eq .user.Email .settings.ADMIN_EMAIL }}
-<a href="{{ .settings.BASE_URL }}/edituser">User Management</a>
-{{ else }}
-<a href="{{ .settings.BASE_URL }}/edituser">Account Management</a>
+    <DIV align="right" style="color : #b4bfff; display : inline;">Hi {{ .user }}<span title="Your groups: {{ .user.Groups }}"><i>{{ .session.user }}:{{ .session.authenticated }} </i></span>
+    {{ if eq .user.Email .settings.ADMIN_EMAIL }}
+        <a href="{{ .settings.BASE_URL }}/edituser">User Management</a>
+    {{ else }}
+        <a href="{{ .settings.BASE_URL }}/edituser">Account Management</a>
+    {{ end }}
+        </DIV>
 {{ end }}
-</DIV>
+{{ if eq .page "list_attachement" }}
+    <div title="Auto scan the uploads folder and update/add new attchments for all files within."><a href="{{ .settings.BASE_URL }}/auto_scan_attachment">Scan & Update Attachment</a></div>
 {{ end }}
+
 {{ end }}

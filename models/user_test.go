@@ -28,7 +28,7 @@ func TestUser(t *testing.T) {
 	if ! VerifyHash("1qa2ws", u2.PasswordHash, int(u2.SaltLength)) {
 		t.Fatalf("ERROR VerifyHash\n")
 	}
-	log.Println(VerifyLogin("msh.computing@gmail.com", "1qa2ws", ""))
+	log.Println(VerifyLogin("msh.computing@gmail.com", "1qa2ws", "", "127.0.0.1"))
 }
 
 func TestChangeUserPassword(t *testing.T) {

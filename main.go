@@ -127,7 +127,7 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	u := GetCurrentUser(&w, r)
 	var attachments []*m.Attachment
 	if u != nil {
-		attachments = m.SearchAttachement(keyword, u)
+		attachments = m.SearchAttachment(keyword, u)
 	} else {
 		attachments = []*m.Attachment{}
 	}
@@ -164,15 +164,20 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	data := map[string]interface{}{
-		"title": "Webnote - " + aNote.Title,
-		"page": "noteview",
-		"msg":  "",
-		"note": aNote,
-		"revisions": m.GetNoteRevisions(aNote.ID),
+	if viewType != "3" {
+		data := map[string]interface{}{
+			"title": "Webnote - " + aNote.Title,
+			"page": "noteview",
+			"msg":  "",
+			"note": aNote,
+			"revisions": m.GetNoteRevisions(aNote.ID),
+		}
+		if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
+		CommonRenderTemplate(tName, &w, r, &data)
+	} else {//if is 3 then we send raw note content as response
+		fmt.Fprintf(w, aNote.Content)
+		return
 	}
-	if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
-	CommonRenderTemplate(tName, &w, r, &data)
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
@@ -356,7 +361,7 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := m.GetRequestValue(r, "keyword", "")
 	aNote := GetCurrentNote(r)
 	u := GetCurrentUser(&w, r)
-	aList := m.SearchAttachement(kw, u)
+	aList := m.SearchAttachment(kw, u)
 	data := map[string]interface{}{
 		"title": "Webnote - List attachements",
 		"page": "list_attachement",
@@ -605,22 +610,59 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
+	u := GetCurrentUser(&w, r)
+	if u.Email != m.Settings.ADMIN_EMAIL {
+		http.Error(w, "Permission denied", 403)
+		return
+	}
+	o := m.ScanAttachment("uploads/", u)
+	fmt.Fprintf(w, "Add / Update list: %v", o)
+	return
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
 	CSRF_TOKEN := m.MakePassword(32)
 	csrf.MaxAge(4 * 3600)
-	CSRF := csrf.Protect(
-		[]byte(CSRF_TOKEN),
-		// instruct the browser to never send cookies during cross site requests
-		csrf.SameSite(csrf.SameSiteStrictMode),
-		csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
-		// csrf.RequestHeader("X-CSRF-Token"),
-		// csrf.FieldName("authenticity_token"),
-		// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
-	)
-	csrf.Secure(true)
-	router.Use(CSRF)
+
+	// CSRF := csrf.Protect(
+	// 	[]byte(CSRF_TOKEN),
+	// 	// instruct the browser to never send cookies during cross site requests
+	// 	csrf.SameSite(csrf.SameSiteStrictMode),
+	// 	csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+	// 	// csrf.RequestHeader("X-CSRF-Token"),
+	// 	// csrf.FieldName("authenticity_token"),
+	// 	// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
+	// )
+	// csrf.Secure(true)
+	// router.Use(CSRF)
+	//By pass csrf for /view See https://stackoverflow.com/questions/53271241/disable-csrf-on-json-api-calls
+	protectionMiddleware := func(handler http.Handler) http.Handler {
+		protectionFn := csrf.Protect(
+			[]byte(CSRF_TOKEN),
+			// instruct the browser to never send cookies during cross site requests
+			csrf.SameSite(csrf.SameSiteStrictMode),
+			csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+			// csrf.RequestHeader("X-CSRF-Token"),
+			// csrf.FieldName("authenticity_token"),
+			// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
+			csrf.Secure(false),
+		)
+
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Use some kind of condition here to see if the router should use
+			// the CSRF protection. For the sake of this example, we'll check
+			// the path prefix.
+			if !strings.HasPrefix(r.URL.Path, "/nocsrf") {
+				protectionFn(handler).ServeHTTP(w, r)
+				return
+			}
+			handler.ServeHTTP(w, r)
+		})
+	}
+
 
 	staticFS := http.FileServer(http.Dir("./assets"))
 	//Not sure why this line wont work but the one after that works for serving static
@@ -634,7 +676,7 @@ func HandleRequests() {
 	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
 	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
 	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func
-	router.HandleFunc("/view", DoViewNote).Methods("GET")
+	router.HandleFunc("/view", DoViewNote).Methods("GET", "POST")
 	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
 	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
 	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
@@ -642,6 +684,7 @@ func HandleRequests() {
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
 	router.Handle("/edit_attachment", isAuthorized(DoEditAttachment)).Methods("GET", "POST")
+	router.Handle("/auto_scan_attachment", isAuthorized(DoAutoScanAttachment)).Methods("GET", "POST")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	router.HandleFunc("/streamfile", DoStreamfile).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
@@ -673,9 +716,9 @@ func HandleRequests() {
 		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
 	}
 	if *EnableCompression == "yes" {
-		srv.Handler = handlers.CompressHandler(router)
+		srv.Handler = handlers.CompressHandler(protectionMiddleware(router))
 	} else {
-		srv.Handler = router
+		srv.Handler = protectionMiddleware(router)
 	}
 
 	if SSLKey != "" {
@@ -701,6 +744,7 @@ func main() {
 	userpassword := flag.String("password", "", "User password")
 	usergroup := flag.String("group", "", "User Group. Any of default|family|friend or coma separated ")
 	EnableCompression = flag.String("comp", "", "Enable server compression. Dont use it for https")
+	AttachmentDir := flag.String("attachmentdir", "", "Directory path to scan attachments for auto add attachment command '-cmd scan_attachment'")
 
 	flag.Usage = func() {
 		flag.PrintDefaults()
@@ -742,6 +786,13 @@ func main() {
 	if *cmd != "" {
 		//Run command utils
 		switch *cmd {
+		case "list":
+			fmt.Printf(`List of commands:
+			set_admin_password
+			set_admin_otp
+			set_admin_email
+			add_user - take more opt username, password, group
+			scan_attachment - take option attachmentdir or leave it empty to use the default 'uploads' folder`)
 		case "set_admin_password":
 			m.SetAdminPassword()
 		case "set_admin_otp":
@@ -754,6 +805,10 @@ func main() {
 				"password": *userpassword,
 				"group": *usergroup,
 			})
+		case "scan_attachment":
+			aDir := m.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
+			u := m.GetUser(m.Settings.ADMIN_EMAIL)
+			m.ScanAttachment(aDir, u)
 		}
 	} else {//Server mode
 		if *sessionKey == "" {
@@ -838,6 +893,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			if strings.Contains(user.ExtraInfo, " First Time Login ") {
 				ses.Values["first_time_login"] = "yes"
 				user.ExtraInfo = strings.ReplaceAll(user.ExtraInfo, " First Time Login ", ""); user.Save()
+			} else {
+				ses.Values["first_time_login"] = "no"
 			}
 			log.Printf("INFO Verified user %v\n", user)
 			ses.Values["authenticated"] = true

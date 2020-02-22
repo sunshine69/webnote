@@ -163,17 +163,17 @@ func (n *User) Save() {
 			salt_length = $12
 			WHERE email = $13`
 		_, e := tx.Exec(sql,
-			Ternary(n.FirstName != "", n.FirstName, currentUser.FirstName).(string),
-			Ternary(n.LastName != "", n.LastName, currentUser.LastName).(string),
-			Ternary(n.Address != "", n.Address, currentUser.Address).(string),
-			Ternary(n.HomePhone != "", n.HomePhone, currentUser.HomePhone).(string),
-			Ternary(n.WorkPhone != "", n.WorkPhone, currentUser.WorkPhone).(string),
-			Ternary(n.MobilePhone != "", n.MobilePhone, currentUser.MobilePhone).(string),
-			Ternary(n.ExtraInfo != "", n.ExtraInfo, currentUser.ExtraInfo).(string),
-			Ternary(n.LastAttempt != 0, n.LastAttempt, currentUser.LastAttempt).(int64),
+			Ternary(n.FirstName != currentUser.FirstName, n.FirstName, currentUser.FirstName).(string),
+			Ternary(n.LastName != currentUser.LastName, n.LastName, currentUser.LastName).(string),
+			Ternary(n.Address != currentUser.Address, n.Address, currentUser.Address).(string),
+			Ternary(n.HomePhone != currentUser.HomePhone, n.HomePhone, currentUser.HomePhone).(string),
+			Ternary(n.WorkPhone != currentUser.WorkPhone, n.WorkPhone, currentUser.WorkPhone).(string),
+			Ternary(n.MobilePhone != currentUser.MobilePhone, n.MobilePhone, currentUser.MobilePhone).(string),
+			Ternary(n.ExtraInfo != currentUser.ExtraInfo, n.ExtraInfo, currentUser.ExtraInfo).(string),
+			Ternary(n.LastAttempt != currentUser.LastAttempt, n.LastAttempt, currentUser.LastAttempt).(int64),
 			Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount).(int8),
-			Ternary(n.LastLogin != 0, n.LastLogin, currentUser.LastLogin).(int64),
-			Ternary(n.PrefID != 0, n.PrefID, currentUser.PrefID).(int8),
+			Ternary(n.LastLogin != currentUser.LastLogin, n.LastLogin, currentUser.LastLogin).(int64),
+			Ternary(n.PrefID != currentUser.PrefID, n.PrefID, currentUser.PrefID).(int8),
 			Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength).(int8),
 			n.Email)
 		if e != nil {

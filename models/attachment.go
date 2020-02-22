@@ -1,6 +1,7 @@
 package models
 
 import (
+	"path/filepath"
 	"time"
 	"fmt"
 	"os"
@@ -27,7 +28,7 @@ func (a *Attachment) String() string {
 	return txt
 }
 
-func SearchAttachement(kw string, u *User) []*Attachment {
+func SearchAttachment(kw string, u *User) []*Attachment {
 	DB := GetDB(""); defer DB.Close()
 	var o []*Attachment
 
@@ -225,4 +226,44 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 		}
 	}
 	return nil
+}
+
+//ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
+func ScanAttachment(dir string, u *User) []*Attachment {
+	dir = Ternary(dir == "", "uploads", dir).(string)
+	o := []*Attachment{}
+
+	err := filepath.Walk(dir,
+		func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() { return nil }
+
+		a := GetAttachement(info.Name())
+		if a == nil {
+			fmt.Printf("INFO Create new attachment for %s Size: %d - Name %s\n", path, info.Size(), info.Name())
+			a = &Attachment{
+				Name: info.Name(),
+				AttachedFile: path,
+				FileSize: info.Size(),
+			}
+			a.AuthorID = u.ID
+			a.GroupID = u.Groups[0].ID
+			a.Permission = int8(1)
+		} else {
+			fmt.Printf("INFO attachment exists. Updating file path and size only ...\n")
+			a.AttachedFile = path
+			a.FileSize = info.Size()
+		}
+		a.Save()
+		o = append(o, a)
+		return nil
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+	return o
 }
