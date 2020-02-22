@@ -6,10 +6,14 @@ import (
 	"testing"
 )
 
-func TestAttachement(t *testing.T) {
-	os.Setenv("DBPATH", "testwebnote.db")
+func init() {
+	os.Setenv("DBPATH", "test-webnote.db")
 	SetupDefaultConfig()
 	SetupAppDatabase()
+}
+
+func TestAttachement(t *testing.T) {
+
 	a := Attachment{
 		Name: "test attachment 1",
 		AttachedFile: "/tmp/t",
@@ -23,4 +27,8 @@ func TestAttachement(t *testing.T) {
 	a1.Save()
 	a2 := GetAttachement("test attachment 1")
 	log.Print(a2.AttachedFile == "/tmp/t1" )
+}
+
+func TestScanAttachement(t *testing.T) {
+	ScanAttachment("/home/stevek/tmp")
 }

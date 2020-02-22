@@ -127,7 +127,7 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	u := GetCurrentUser(&w, r)
 	var attachments []*m.Attachment
 	if u != nil {
-		attachments = m.SearchAttachement(keyword, u)
+		attachments = m.SearchAttachment(keyword, u)
 	} else {
 		attachments = []*m.Attachment{}
 	}
@@ -361,7 +361,7 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := m.GetRequestValue(r, "keyword", "")
 	aNote := GetCurrentNote(r)
 	u := GetCurrentUser(&w, r)
-	aList := m.SearchAttachement(kw, u)
+	aList := m.SearchAttachment(kw, u)
 	data := map[string]interface{}{
 		"title": "Webnote - List attachements",
 		"page": "list_attachement",
@@ -610,6 +610,17 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
+	u := GetCurrentUser(&w, r)
+	if u.Email != m.Settings.ADMIN_EMAIL {
+		http.Error(w, "Permission denied", 403)
+		return
+	}
+	o := m.ScanAttachment("uploads/", u)
+	fmt.Fprintf(w, "Add / Update list: %v", o)
+	return
+}
+
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 	// router := StaticRouter()
@@ -673,6 +684,7 @@ func HandleRequests() {
 	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
 	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
 	router.Handle("/edit_attachment", isAuthorized(DoEditAttachment)).Methods("GET", "POST")
+	router.Handle("/auto_scan_attachment", isAuthorized(DoAutoScanAttachment)).Methods("GET", "POST")
 	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
 	router.HandleFunc("/streamfile", DoStreamfile).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
@@ -732,6 +744,7 @@ func main() {
 	userpassword := flag.String("password", "", "User password")
 	usergroup := flag.String("group", "", "User Group. Any of default|family|friend or coma separated ")
 	EnableCompression = flag.String("comp", "", "Enable server compression. Dont use it for https")
+	AttachmentDir := flag.String("attachmentdir", "", "Directory path to scan attachments for auto add attachment command '-cmd scan_attachment'")
 
 	flag.Usage = func() {
 		flag.PrintDefaults()
@@ -773,6 +786,13 @@ func main() {
 	if *cmd != "" {
 		//Run command utils
 		switch *cmd {
+		case "list":
+			fmt.Printf(`List of commands:
+			set_admin_password
+			set_admin_otp
+			set_admin_email
+			add_user - take more opt username, password, group
+			scan_attachment - take option attachmentdir or leave it empty to use the default 'uploads' folder`)
 		case "set_admin_password":
 			m.SetAdminPassword()
 		case "set_admin_otp":
@@ -786,7 +806,9 @@ func main() {
 				"group": *usergroup,
 			})
 		case "scan_attachment":
-			m.ScanAttachment("uploads")
+			aDir := m.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
+			u := m.GetUser(m.Settings.ADMIN_EMAIL)
+			m.ScanAttachment(aDir, u)
 		}
 	} else {//Server mode
 		if *sessionKey == "" {
