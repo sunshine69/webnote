@@ -1,6 +1,7 @@
 package main
 
 import (
+	"path/filepath"
 	"path"
 	"io"
 	"html/template"
@@ -279,18 +280,18 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "ERROR", http.StatusForbidden)
 			return
 		}
-		var aList [3]*m.Attachment
+		var aList []*m.Attachment
 
 		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		for count := 1; count <= len(aList) ; count++ {
+		for count := 0; count < m.Settings.UPLOAD_ITEM_COUNT; count++ {
 			cStr := strconv.Itoa(count)
 			file, handler, err := r.FormFile("myFile" + cStr )
 			if err != nil {
-				fmt.Printf("Error Retrieving the File %v\n", err)
+				// fmt.Printf("Error Retrieving the File %v\n", err)
 				continue
 			}
 			defer file.Close()
@@ -302,16 +303,19 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			if aName == "" {
 				aName = handler.Filename
 			}
+			uploadPath := m.GetRequestValue(r, "upload_path" + cStr)
+			attachedFileDir := m.Ternary(uploadPath == "", m.UpLoadPath, filepath.Join(m.UpLoadPath, uploadPath)).(string)
 			a := m.Attachment{
 				Name: aName,
 				Description: aDesc,
-				AttachedFile: m.UpLoadPath + handler.Filename,
+				AttachedFile: filepath.Join(attachedFileDir, handler.Filename),
 				FileSize: handler.Size,
 			}
+			os.MkdirAll(attachedFileDir , os.ModePerm)
 
 			f, err := os.OpenFile(a.AttachedFile, os.O_WRONLY|os.O_CREATE, 0666)
 			if err != nil {
-				log.Fatalf("ERROR can not open file to save attachement - %v\n", err)
+				log.Fatalf("ERROR can not open file to save attachment - %v\n", err)
 			}
 			copyFile := func(f *os.File, file io.Reader) {
 				bWritten, e := io.Copy(f, file)
@@ -332,18 +336,37 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			_p, _ := strconv.Atoi( m.GetRequestValue(r, "permission", "1"))
 			a.Permission = int8(_p)
 			a.Save()
-			aList[count - 1] = &a
+			aList = append(aList, &a)
 		}
 		//Cleanup temp files
 		r.MultipartForm.RemoveAll()
 
-		fmt.Fprintf(w, `<html><body><pre>OK Attachment created - +%v</pre>
+		tmplStr := `<html><body>OK Attachment(s) created
+		{{ $settings := .settings }}
+		{{ range $idx, $a := .attachments }}
+			<ul>
+				<li>
+					Name: {{ $a.Name }} - Path: {{ $a.AttachedFile }}<br>
+					<a href="{{ $settings.BASE_URL }}/streamfile?id={{ $a.ID }}&action=stream">view</a>
+					-
+					<a href="{{ $settings.BASE_URL }}/streamfile?id={{ $a.ID }}&action=download">download</a>
+					-
+					<a href="{{ $settings.BASE_URL }}/edit_attachment?id={{ $a.ID }}">edit</a>
+				</li>
+			</ul>
+		{{ end }}
+		<hr>
 		<ul>
 			<li><a href="/">Home</a></li>
 			<li><a href="/upload">More uploads</a></li>
 			<li><a href="/list_attachment">List files</a></li>
 		</ul>
-		</body></html>`, aList)
+		</body></html>`
+		t := template.Must(template.New("a").Parse(tmplStr))
+		t.Execute(w, map[string]interface{} {
+			"settings": m.Settings,
+			"attachments": aList,
+		})
 		return
 	}
 }
@@ -378,7 +401,7 @@ func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
 	u := GetCurrentUser(&w, r)
 	a := m.GetAttachementByID(aID)
-	if e := a.DeleteAttachment(aID, u); e != nil {
+	if e := a.DeleteAttachment(u); e != nil {
 		msg := fmt.Sprintf("ERROR Can not delete attachment - %v",e)
 		http.Error(w, msg, http.StatusOK)
 		return
