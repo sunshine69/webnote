@@ -1,0 +1,12 @@
+FROM golang:alpine
+
+RUN apk update && \
+    apk add --no-cache git ca-certificates tzdata gcc musl-dev && \
+    update-ca-certificates
+
+WORKDIR /work/
+
+COPY . .
+
+# Fetch dependencies.
+RUN go get -d -v
