@@ -754,6 +754,7 @@ func HandleRequests() {
 }
 
 func main() {
+	version := flag.Bool("v", false, "Get build version")
 	dbPath := flag.String("db", "", "Application DB path")
 	sessionKey := flag.String("sessionkey", "", "Session Key")
 	setup := flag.Bool("setup", false, "Run initial setup DB and config")
@@ -790,6 +791,11 @@ func main() {
 	}
 
 	flag.Parse()
+
+	if *version {
+		fmt.Println(m.Version)
+		os.Exit(0)
+	}
 
     ServerPort = *port
 
