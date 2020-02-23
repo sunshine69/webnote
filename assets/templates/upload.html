@@ -3,14 +3,16 @@
 <form action="{{ .settings.BASE_URL }}/upload" method="POST" enctype="multipart/form-data">{{ .csrfField }}
 <input type="hidden" name="action" value="show_uploadform"/>
 You are: {{ .user }} <br/>
-Select file to upload - type name and decription then click Submit<br/><br>
+Select file to upload - type name and decription then click Submit<br/><br><input type="submit" value="Submit" />
+{{ $permission_list := .permission_list }}
+{{ range $idx := int_range 0 .settings.UPLOAD_ITEM_COUNT }}
 <table>
     <tr>
         <td title="if leave it empty the filename will be used">Attachement name:</td>
-        <td><input type="text" value="" name="a1"/></td>
+        <td><input type="text" value="" name="a{{ $idx }}"/></td>
         <td>
             <select name="permission">
-            {{ range $permVal, $perm := .permission_list }}
+            {{ range $permVal, $perm := $permission_list }}
             <option value="{{ $permVal }}">{{ $perm }}</option>
             {{ end }}
             </select>
@@ -18,65 +20,17 @@ Select file to upload - type name and decription then click Submit<br/><br>
     </tr>
     <tr>
         <td>Description:</td>
-        <td><input type="text" value="" name="desc1"/></td>
+        <td><input type="text" value="" name="desc{{ $idx }}"/></td>
     </tr>
     <tr>
         <td title="file path to save the upload to note server. Empty string will upload to the root upload folder. Example 'images/2020'.">Upload path:</td>
-        <td><input type="text" value="" name="upload_path1"/></td>
+        <td><input type="text" value="" name="upload_path{{ $idx }}"/></td>
     </tr>
     <tr>
-        <td colspan="2"><input type="file" name="myFile1" /></td>
+        <td colspan="2"><input type="file" name="myFile{{ $idx }}" /></td>
     </tr>
 </table>
 <br><hr>
-<table>
-    <tr>
-        <td title="if leave it empty the filename will be used">Attachement name:</td>
-        <td><input type="text" value="" name="a2"/></td>
-        <td>
-            <select name="permission">
-            {{ range $permVal, $perm := .permission_list }}
-            <option value="{{ $permVal }}">{{ $perm }}</option>
-            {{ end }}
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Description:</td>
-        <td><input type="text" value="" name="desc2"/></td>
-    </tr>
-    <tr>
-        <td title="file path to save the upload to note server. Empty string will upload to the root upload folder. Example 'images/2020'.">Upload path:</td>
-        <td><input type="text" value="" name="upload_path2"/></td>
-    </tr>
-    <tr>
-        <td colspan="2"><input type="file" name="myFile2" /></td>
-    </tr>
-</table>
-<br><hr>
-<table>
-    <tr>
-        <td title="if leave it empty the filename will be used">Attachement name:</td>
-        <td><input type="text" value="" name="a3"/></td>
-        <td>
-            <select name="permission">
-            {{ range $permVal, $perm := .permission_list }}
-            <option value="{{ $permVal }}">{{ $perm }}</option>
-            {{ end }}
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Description:</td>
-        <td><input type="text" value="" name="desc3"/></td>
-    </tr>
-    <tr>
-        <td title="file path to save the upload to note server. Empty string will upload to the root upload folder. Example 'images/2020'.">Upload path:</td>
-        <td><input type="text" value="" name="upload_path3"/></td>
-    </tr>
-    <tr>
-        <td colspan="2"><input type="file" name="myFile3" /></td>
-    </tr>
-</table>
+{{ end }}
 <input type="submit" value="Submit" />
 </form>

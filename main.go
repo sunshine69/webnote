@@ -286,12 +286,12 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		numberOfUploadItemForm := 3 //See template upload.html we currently have 3 concurrent uploads
-		for count := 1; count <= numberOfUploadItemForm ; count++ {
+
+		for count := 0; count < m.Settings.UPLOAD_ITEM_COUNT; count++ {
 			cStr := strconv.Itoa(count)
 			file, handler, err := r.FormFile("myFile" + cStr )
 			if err != nil {
-				fmt.Printf("Error Retrieving the File %v\n", err)
+				// fmt.Printf("Error Retrieving the File %v\n", err)
 				continue
 			}
 			defer file.Close()

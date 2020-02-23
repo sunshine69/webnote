@@ -36,6 +36,7 @@ var SessionStore *sessions.CookieStore
 type AppSettings struct {
 	BASE_URL string
 	ADMIN_EMAIL string
+	UPLOAD_ITEM_COUNT int
 }
 //Settings -
 var Settings *AppSettings
@@ -90,6 +91,7 @@ func InitConfig() {
 	Settings = &AppSettings{
 		BASE_URL: GetConfig("base_url"),
 		ADMIN_EMAIL: GetConfig("admin_email"),
+		UPLOAD_ITEM_COUNT: 6,
 	}
 	PermissionList = &map[int8]string{
 		0: "only owner",
@@ -433,6 +435,14 @@ func LoadAllTemplates() {
 		},
 		"contains": func(subStr, data string) bool {
 			return strings.Contains(data, subStr)
+		},
+		"int_range": func(start, end int) []int {
+			n := end - start
+			result := make([]int, n)
+			for i := 0; i < n; i++ {
+				result[i] = start + i
+			}
+			return result
 		},
 	}
 	TemplateFuncMap = &_TemplateFuncMap
