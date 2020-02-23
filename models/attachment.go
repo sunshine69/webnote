@@ -46,6 +46,8 @@ func SearchAttachment(kw string, u *User) []*Attachment {
 		updated
 		FROM attachment WHERE name LIKE '%%%s%%' OR attached_file LIKE '%%%s%%'
 		ORDER BY updated desc LIMIT 200;`, kw, kw)
+
+	// fmt.Printf("DEBUG SearchAttachment kw %s - query %s\n", kw, q)
 	rows, e := DB.Query(q)
 	if e != nil {
 		log.Printf("ERROR search attachement - %v\n", e)
@@ -169,7 +171,7 @@ func GetAttachementByID(id int64) *Attachment {
 	return &a
 }
 
-func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
+func (a *Attachment) DeleteAttachment(u *User) error {
 	DB := GetDB(""); defer DB.Close()
 	if ! CheckPerm(a.Object, u.ID, "d") {
 		return errors.New("Permission denied")
@@ -197,21 +199,10 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 		return errors.New(msg)
 	}
 	tx, _ := DB.Begin()
-	q := `DELETE FROM attachment WHERE `
-	val, ok := in.(string)
-	var fName string
-	if ok {
-		a := GetAttachement(val)
-		fName = a.Name
-		q = q + "name = $1;"
-		_, e = tx.Exec(q, val)
-	} else {
-		id := in.(int64)
-		a := GetAttachementByID(id)
-		fName = a.Name
-		q = q + "id = $1;"
-		_, e = tx.Exec(q, id)
-	}
+	q := `DELETE FROM attachment WHERE id = $1;`
+
+	_, e = tx.Exec(q, a.ID)
+
 	if e != nil {
 		etxt := fmt.Sprintf("ERROR can not remove attachment - %v\n", e)
 		tx.Rollback()
@@ -220,7 +211,7 @@ func (a *Attachment) DeleteAttachment(in interface{}, u *User) error {
 	tx.Commit()
 	var _id int64
 	if e := DB.QueryRow(`SELECT id from attachment WHERE attached_file = $1`, a.AttachedFile).Scan(&_id); e != nil { //No more attachment reference to this AttachedFile. Remove the file
-		if e := os.Remove(UpLoadPath + fName); e != nil {
+		if e := os.Remove(a.AttachedFile); e != nil {
 			etxt := fmt.Sprintf("ERROR removing the file - %v\n", e)
 			return errors.New(etxt)
 		}
