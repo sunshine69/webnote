@@ -9,7 +9,7 @@ sed -i "s/const Version = .*/const Version = \"${VER}\"/" models/version.go
 # docker build -t golang-alpine-build:latest -f Dockerfile.alpine .
 
 # you can remove the --rm option, build it first time and then commit the container to image. Then add --rm back, so next time you dont have to install go library again.
-docker run --rm -v $(pwd):/work --workdir /work --entrypoint go --env-file ~/.gobuild-linux-cgo golang-alpine-build:latest build --tags "json1 secure_delete" --ldflags '-extldflags "-static" -w -s' -o webnote-linux-amd64-static main.go
+docker run --rm --name golang-alpine-build  -v $(pwd):/work --workdir /work --entrypoint go --env-file ~/.gobuild-linux-cgo golang-alpine-build:latest build --tags "json1 secure_delete" --ldflags '-extldflags "-static" -w -s' -o webnote-linux-amd64-static main.go
 
 ARCH=linux-amd64-static
 
