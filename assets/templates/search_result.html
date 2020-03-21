@@ -13,7 +13,7 @@ function select_all(obj) {
 	}
 }
 function on_selected_run_sql(sql='') {
-	var msg = "Info. Table name: webnote_note\nField: title, content, url flags, econtent as text, group_id ";
+	var msg = "Info. Table name: note\nField: title, content, url flags, as text, group_id ";
 	if (sql == '')	sql = prompt(msg + "\nEnter the sql statement. Only work Update / Delete statement", 'UPDATE webnote_note set ');
 	if (sql == '') return;
 	var where_str = '';

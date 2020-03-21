@@ -136,8 +136,10 @@ func ParseVideoURL(url string) (string) {
 			vid := match[1]
 			switch vtype {
 			case "youtube":
-				outputURL = "plugin://plugin.video.youtube/?action=play_video&videoid=" + vid
-				// outputURL = "plugin://plugin.video.youtube/play/?video_id=" + vid
+				//old
+				// outputURL = "plugin://plugin.video.youtube/?action=play_video&videoid=" + vid
+				//new
+				outputURL = "plugin://plugin.video.youtube/play/?video_id=" + vid
 			case "vimeo":
 				outputURL = "plugin://plugin.video.vimeo/play/?video_id=" + vid
 			}
