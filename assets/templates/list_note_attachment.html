@@ -18,7 +18,7 @@
 {{ range $idx, $attachment := .attachments }}
 <tr id="{{ $attachment.ID }}">
   <TD id='name'>{{ $attachment.Name }}</TD>
-  <td id='desc'>{{ $attachment.Description | raw_html }}</td>
+  <td id='desc'>{{ $attachment.Description | md2html }}</td>
   <td id='group'>{{ $attachment.Group.Name }}</td>
   <td id='permission'>{{ $attachment.Permission }}</td>
   <td>{{ $attachment.Updated|time_fmt $date_layout }}</td>
