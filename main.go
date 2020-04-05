@@ -165,20 +165,17 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	if viewType != "3" {
-		data := map[string]interface{}{
-			"title": "Webnote - " + aNote.Title,
-			"page": "noteview",
-			"msg":  "",
-			"note": aNote,
-			"revisions": m.GetNoteRevisions(aNote.ID),
-		}
-		if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
-		CommonRenderTemplate(tName, &w, r, &data)
-	} else {//if is 3 then we send raw note content as response
-		fmt.Fprintf(w, aNote.Content)
-		return
+
+	data := map[string]interface{}{
+		"title": "Webnote - " + aNote.Title,
+		"page": "noteview",
+		"msg":  "",
+		"note": aNote,
+		"revisions": m.GetNoteRevisions(aNote.ID),
 	}
+	if len(aNote.Attachments) > 0 { data["attachments"] = aNote.Attachments }
+	CommonRenderTemplate(tName, &w, r, &data)
+
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
