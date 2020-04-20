@@ -17,7 +17,7 @@ pipeline {
                 ).trim()
                 def PWD = pwd()
                 echo "Check out REVISION: $GIT_REVISION on $PWD"
-                DO_GATHER_ARTIFACT_BRANCH = (['master', 'jenkins'].contains(GIT_BRANCH) ||
+                DO_GATHER_ARTIFACT_BRANCH = (['master'].contains(GIT_BRANCH) ||
                     GIT_BRANCH ==~ /release\-[\d\-\.]+/ ||
                     GIT_BRANCH ==~ /[^\s]+enable_docker_image_push$/)
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jenkins-helper']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-personal-jenkins', url: 'https://github.com/sunshine69/jenkins-helper.git']]]
@@ -32,6 +32,7 @@ pipeline {
                   utils.generate_add_user_script()
                   //utils.generate_aws_environment()
                   sh '''cat <<EOF > build.sh
+rm -f webnote-go-bin-*.tgz
 BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
 EOF
 '''
@@ -55,13 +56,14 @@ EOF
                         //'extra_build_scripts': ['fix-godir-ownership.sh'],
                         //'run_as_user': ['fix-godir-ownership.sh': 'root'],
                     ])
-                    if (GIT_BRANCH ==~ /jenkins/) {//Build for ARM x96
+                    if (GIT_BRANCH ==~ /master/) {//Build for ARM x96
                     withCredentials([usernamePassword(credentialsId: 'github-personal-jenkins', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
                     env.REPOSITORY = "webnote"
                     sh '''cat <<EOF > build-arm-auto-gen.sh
 #!/bin/sh
 
 cd ~/webnote
+rm -f webnote-go-bin-*.tgz
 git fetch http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} refs/heads/${GIT_BRANCH}
 git checkout FETCH_HEAD
 BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
@@ -75,6 +77,11 @@ EOF
                         sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f build-arm-auto-gen.sh'
                         sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.0.130:webnote/webnote-go-bin-*.tgz' ."
                     }//sshagent
+                    sh """
+                      ARTIFACT_FILE=\$(ls webnote-go-bin-*.tgz)
+                      gzip \$ARTIFACT_FILE
+                      git tag v${BUILD_VERSION}; git push http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} --tags
+                      GITHUB_USER=$GITHUB_USER REPOSITORY=${REPOSITORY} GITHUB_TOKEN=$GITHUB_TOKEN ARTIFACT_FILE=\${ARTIFACT_FILE}.gz ./create-github-release.sh"""
                     }//withCred
                     }//If GIT_BRANCH
                 }//script
