@@ -10,7 +10,8 @@
 VER=$(git rev-parse --short HEAD)
 sed -i "s/const Version = .*/const Version = \"${VER}\"/" models/version.go
 
-go build --tags "json1 fts5 secure_delete" -ldflags='-s -w'
+#go build --tags "json1 fts5 secure_delete" -ldflags='-s -w'
+go build --tags "json1 secure_delete" --ldflags '-extldflags "-static" -w -s'
 
 CDIR=$(pwd)
 
@@ -19,6 +20,6 @@ ARCH=$(uname -m)
 mkdir /tmp/webnote-$$/webnote-go-bin -p
 cp -a assets webnote-go /tmp/webnote-$$/webnote-go-bin/
 cd /tmp/webnote-$$
-tar czf $CDIR/webnote-go-bin-${ARCH}.tgz webnote-go-bin
+tar czf $CDIR/webnote-go-bin-${BUILD_VERSION}-${ARCH}.tgz webnote-go-bin
 rm -rf /tmp/webnote-$$
-echo "The archive ready to be extracted and run is webnote-go-bin-${ARCH}.tgz"
+echo "The archive ready to be extracted and run is webnote-go-bin-${BUILD_VERSION}-${ARCH}.tgz"
