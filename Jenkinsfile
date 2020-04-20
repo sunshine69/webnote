@@ -25,14 +25,14 @@ pipeline {
                 }//script
             }//steps
         }//stage
-        
+
         stage('Generate build scripts') {
             steps {
                 script {
                   utils.generate_add_user_script()
                   //utils.generate_aws_environment()
                   sh '''cat <<EOF > build.sh
-./build-jenkins.sh
+BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
 EOF
 '''
                   sh 'chmod +x build.sh'
@@ -45,7 +45,7 @@ EOF
                 script {
                     utils.run_build_script([
 //Make sure you build this image ready - having user jenkins and cache go mod for that user.
-                        'docker_image': 'golang-alpine-build-jenkins:latest', 
+                        'docker_image': 'golang-alpine-build-jenkins:latest',
                         'docker_net_opt': '',
 //define the name here so we can save a image cache in the script save-docker-image-cache.sh
                         'docker_extra_opt': '--name golang-alpine-build-jenkins',
@@ -64,14 +64,15 @@ EOF
 cd ~/webnote
 git fetch http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} refs/heads/${GIT_BRANCH}
 git checkout FETCH_HEAD
-./build-jenkins.sh
-ls webnote-go-bin-*.tgz                                    
-EOF                  
-'''                  
-                    sh 'chmod +x build-arm-auto-gen.sh'       
+BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
+ls webnote-go-bin-*.tgz
+EOF
+'''
+                    sh 'chmod +x build-arm-auto-gen.sh'
                     sshagent(['jenkins-to-x96']) {
                         sh 'scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build-arm-auto-gen.sh stevek@192.168.0.130:build-arm-auto-gen.sh'
-                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./build-arm-auto-gen.sh'                        
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./build-arm-auto-gen.sh'
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f build-arm-auto-gen.sh'
                         sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.0.130:webnote/webnote-go-bin-*.tgz' ."
                     }//sshagent
                     }//withCred
@@ -83,21 +84,21 @@ EOF
         stage('Gather artifacts') {
             steps {
                 script {
-                    utils.save_build_data(['artifact_class': 'nsre'])
+                    utils.save_build_data(['artifact_class': 'webnote'])
 
                     if (DO_GATHER_ARTIFACT_BRANCH) {
                       archiveArtifacts allowEmptyArchive: true, artifacts: 'webnote-go-bin-*.tgz', fingerprint: true, onlyIfSuccessful: true
                       if (GIT_BRANCH ==~ /master/ ) {
                         echo "Create a release as this is a master merge ..."
                         withCredentials([usernamePassword(credentialsId: 'github-personal-jenkins', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
-                            env.REPOSITORY = "nsre"
-                            sh """                            
+                            env.REPOSITORY = "webnote"
+                            sh """
                             git tag v${BUILD_VERSION}; git push http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} --tags
                             ARTIFACT_FILES=\$(ls webnote-go-bin-*.tgz)
                             for ARTIFACT_FILE in \$ARTIFACT_FILES; do
                               GITHUB_USER=$GITHUB_USER REPOSITORY=${REPOSITORY} GITHUB_TOKEN=$GITHUB_TOKEN ARTIFACT_FILE=\${ARTIFACT_FILE}.gz ./create-github-release.sh
                             done
-                            """                            
+                            """
     // some block
                         }
                       }
