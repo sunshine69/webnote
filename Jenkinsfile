@@ -77,11 +77,6 @@ EOF
                         sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f build-arm-auto-gen.sh'
                         sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.0.130:webnote/webnote-go-bin-*.tgz' ."
                     }//sshagent
-                    sh """
-                      ARTIFACT_FILE=\$(ls webnote-go-bin-*.tgz)
-                      gzip \$ARTIFACT_FILE
-                      git tag v${BUILD_VERSION}; git push http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} --tags
-                      GITHUB_USER=$GITHUB_USER REPOSITORY=${REPOSITORY} GITHUB_TOKEN=$GITHUB_TOKEN ARTIFACT_FILE=\${ARTIFACT_FILE}.gz ./create-github-release.sh"""
                     }//withCred
                     }//If GIT_BRANCH
                 }//script
@@ -102,14 +97,11 @@ EOF
                             sh """
                             git tag v${BUILD_VERSION}; git push http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} --tags
                             ARTIFACT_FILES=\$(ls webnote-go-bin-*.tgz)
-                            for ARTIFACT_FILE in \$ARTIFACT_FILES; do
-                              GITHUB_USER=$GITHUB_USER REPOSITORY=${REPOSITORY} GITHUB_TOKEN=$GITHUB_TOKEN ARTIFACT_FILE=\${ARTIFACT_FILE}.gz ./create-github-release.sh
-                            done
+                            GITHUB_USER=$GITHUB_USER REPOSITORY=${REPOSITORY} GITHUB_TOKEN=$GITHUB_TOKEN ARTIFACT_FILES=\${ARTIFACT_FILES} ./create-github-release.sh
                             """
-    // some block
-                        }
-                      }
-                    }
+                        }//withCred
+                      }//If GIT_BRANCH
+                    }//If DO_GATHER_ARTIFACT_BRANCH
                     else {
                       echo "Not collecting artifacts as branch"
                     }// If GIT_BRANCH

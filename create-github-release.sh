@@ -5,7 +5,7 @@ echo "Publishing on Github"
 token="$GITHUB_TOKEN"
 # GITHUB_USER=<get_from_env>
 # REPOSITORY=<get_from_env>
-# ARTIFACT_FILE=<get_from_env>
+# ARTIFACT_FILES=<get_from_env-space-separated-list>
 
 # Get the last tag name
 tag=$(git describe --tags)
@@ -25,5 +25,7 @@ release=$(curl -XPOST -H "Authorization:token $token" --data "{\"tag_name\": \"$
 id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
 
 # Upload the artifact
-curl -XPOST -H "Authorization:token $token" -H "Content-Type:application/octet-stream" --data-binary @${ARTIFACT_FILE} https://uploads.github.com/repos/${GITHUB_USER}/${REPOSITORY}/releases/$id/assets?name=${ARTIFACT_FILE}
+for ARTIFACT_FILE in $ARTIFACT_FILES; do
+    curl -XPOST -H "Authorization:token $token" -H "Content-Type:application/octet-stream" --data-binary @${ARTIFACT_FILE} https://uploads.github.com/repos/${GITHUB_USER}/${REPOSITORY}/releases/$id/assets?name=${ARTIFACT_FILE}
+done
 
