@@ -51,18 +51,18 @@ EOF
                         'docker_extra_opt': '--name golang-alpine-build-jenkins',
 //Uncomment these when you build with the golang-alpine from scratch. After we
 //can commented out as the image is saved
-                        'outside_scripts': ['save-docker-image-cache.sh'],
+                        //'outside_scripts': ['save-docker-image-cache.sh'],
                         //'extra_build_scripts': ['fix-godir-ownership.sh'],
                         //'run_as_user': ['fix-godir-ownership.sh': 'root'],
                     ])
-                    if (GIT_BRANCH ==~ /master/) {//Build for ARM x96
+                    if (GIT_BRANCH ==~ /jenkins/) {//Build for ARM x96
                     withCredentials([usernamePassword(credentialsId: 'github-personal-jenkins', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
                     env.REPOSITORY = "webnote"
                     sh '''cat <<EOF > build-arm-auto-gen.sh
 #!/bin/sh
 
 cd ~/webnote
-git fetch http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY}
+git fetch http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} refs/heads/${GIT_BRANCH}
 git checkout FETCH_HEAD
 ./build-jenkins.sh
 ls webnote-go-bin-*.tgz                                    
