@@ -76,6 +76,8 @@ EOF
                         sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./build-arm-auto-gen.sh'
                         sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f build-arm-auto-gen.sh'
                         sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.0.130:webnote/webnote-go-bin-*.tgz' ."
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./deploy-webnote.sh'
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f webnote/webnote-go-bin-*.tgz'
                     }//sshagent
                     }//withCred
                     }//If GIT_BRANCH
