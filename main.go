@@ -14,7 +14,9 @@ import (
 	"flag"
 	"time"
 	"log"
+    "net"
 	"net/http"
+    "net/url"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/csrf"
@@ -643,6 +645,12 @@ func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
 
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
+    base_url = m.GetConfig("base_url", "")
+    _u, _e := url.Parse(base_url)
+    if _e != nil {
+        panic(err)
+    }
+    app_domain, port, _ := net.SplitHostPort(_u.Host)
 	// router := StaticRouter()
 	CSRF_TOKEN := m.MakePassword(32)
 	csrf.MaxAge(4 * 3600)
@@ -664,7 +672,7 @@ func HandleRequests() {
 			[]byte(CSRF_TOKEN),
 			// instruct the browser to never send cookies during cross site requests
 			csrf.SameSite(csrf.SameSiteStrictMode),
-			csrf.TrustedOrigins([]string{"note20.duckdns.org"}),
+			csrf.TrustedOrigins([]string{app_domain}),
 			// csrf.RequestHeader("X-CSRF-Token"),
 			// csrf.FieldName("authenticity_token"),
 			// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
