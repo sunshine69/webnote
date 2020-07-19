@@ -664,7 +664,7 @@ func HandleRequests() {
 			[]byte(CSRF_TOKEN),
 			// instruct the browser to never send cookies during cross site requests
 			csrf.SameSite(csrf.SameSiteStrictMode),
-			csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
+			csrf.TrustedOrigins([]string{"note20.duckdns.org"}),
 			// csrf.RequestHeader("X-CSRF-Token"),
 			// csrf.FieldName("authenticity_token"),
 			// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
