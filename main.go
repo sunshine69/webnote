@@ -645,12 +645,12 @@ func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
 
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
-    base_url = m.GetConfig("base_url", "")
+    base_url := m.GetConfig("base_url", "")
     _u, _e := url.Parse(base_url)
     if _e != nil {
-        panic(err)
+        panic(_e)
     }
-    app_domain, port, _ := net.SplitHostPort(_u.Host)
+    app_domain, _, _ := net.SplitHostPort(_u.Host)
 	// router := StaticRouter()
 	CSRF_TOKEN := m.MakePassword(32)
 	csrf.MaxAge(4 * 3600)

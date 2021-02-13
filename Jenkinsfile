@@ -20,8 +20,9 @@ pipeline {
                 DO_GATHER_ARTIFACT_BRANCH = (['master'].contains(GIT_BRANCH) ||
                     GIT_BRANCH ==~ /release\-[\d\-\.]+/ ||
                     GIT_BRANCH ==~ /[^\s]+enable_docker_image_push$/)
-                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jenkins-helper']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-personal-jenkins', url: 'https://github.com/sunshine69/jenkins-helper.git']]]
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'jenkins-helper']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-personal-jenkins', url: 'https://github.com/sunshine69/jenkins-helper.git']]]
                 utils = load("${WORKSPACE}/jenkins-helper/deployment.groovy")
+                sh "git clean -fdx"
                 }//script
             }//steps
         }//stage
@@ -29,9 +30,10 @@ pipeline {
         stage('Generate build scripts') {
             steps {
                 script {
-                  utils.generate_add_user_script()
+                  //utils.generate_add_user_script()
                   //utils.generate_aws_environment()
                   sh '''cat <<EOF > build.sh
+#!/bin/sh -x
 rm -f webnote-go-bin-*.tgz
 BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
 EOF
@@ -47,6 +49,8 @@ EOF
                     utils.run_build_script([
 //Make sure you build this image ready - having user jenkins and cache go mod for that user.
                         'docker_image': 'golang-alpine-build-jenkins:latest',
+                        'docker_entrypoint_opt': '--entrypoint sleep',
+                        'docker_args_opt': '3600',
                         'docker_net_opt': '',
 //define the name here so we can save a image cache in the script save-docker-image-cache.sh
                         'docker_extra_opt': '--name golang-alpine-build-jenkins',
@@ -56,7 +60,7 @@ EOF
                         //'extra_build_scripts': ['fix-godir-ownership.sh'],
                         //'run_as_user': ['fix-godir-ownership.sh': 'root'],
                     ])
-                    if (GIT_BRANCH ==~ /master/) {//Build for ARM x96
+                    if (GIT_BRANCH ==~ /(master|jenkins)/) {//Build for ARM x96
                     withCredentials([usernamePassword(credentialsId: 'github-personal-jenkins', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
                     env.REPOSITORY = "webnote"
                     sh '''cat <<EOF > build-arm-auto-gen.sh
@@ -65,6 +69,7 @@ EOF
 cd ~/webnote
 rm -f webnote-go-bin-*.tgz
 git fetch http://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPOSITORY} refs/heads/${GIT_BRANCH}
+git reset --hard
 git checkout FETCH_HEAD
 BUILD_VERSION=${BUILD_VERSION} ./build-jenkins.sh
 ls webnote-go-bin-*.tgz
@@ -72,12 +77,17 @@ EOF
 '''
                     sh 'chmod +x build-arm-auto-gen.sh'
                     sshagent(['jenkins-to-x96']) {
-                        sh 'scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build-arm-auto-gen.sh stevek@192.168.0.130:build-arm-auto-gen.sh'
-                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./build-arm-auto-gen.sh'
-                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f build-arm-auto-gen.sh'
-                        sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.0.130:webnote/webnote-go-bin-*.tgz' ."
-                        sh "ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 ./deploy-webnote.sh 'webnote/webnote-go-bin-*.tgz'"
-                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.0.130 rm -f webnote/webnote-go-bin-*.tgz'
+                        sh 'scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build-arm-auto-gen.sh stevek@192.168.20.20:build-arm-auto-gen.sh'
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.20.20 ./build-arm-auto-gen.sh'
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.20.20 rm -f build-arm-auto-gen.sh'
+                        sh 'rm -f webnote-go-bin-*armv*.tgz'
+                        sh "scp -P 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 'stevek@192.168.20.20:webnote/webnote-go-bin-*.tgz' ."
+                        sh 'ssh -p 1969 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stevek@192.168.20.20 rm -f webnote/webnote-go-bin-*.tgz'
+                        sh 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.20.21 rm -f webnote-go-bin-*armv*.tgz'
+                        sh "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null webnote-go-bin-*armv*.tgz root@192.168.20.21:"
+                        //it never returns even & in the deploy command no matter what I tried
+                        //sh "ssh -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.20.21 ./deploy-webnote.sh webnote-go-bin-*armv*.tgz"
+                        echo "You have to go there and deploy manually"
                     }//sshagent
                     }//withCred
                     }//If GIT_BRANCH

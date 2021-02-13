@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# RUn this on android chroot env to build for arm. I ran on Ubunto 18.04 using LinuxDeply android app.
+# Run this on android chroot env to build for arm. I ran on Ubuntu 18.04 using LinuxDeply android app.
 
 # You may need to tweak the below if you want cross compile for different ARM
 # Orange pi is 7, but x96 is 8
