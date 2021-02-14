@@ -489,7 +489,7 @@ func SearchNote(keyword string, u *User) []Note {
 		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
 	q = fmt.Sprintf("%s LIMIT 100;", q)
-	// fmt.Println(q)
+	fmt.Println(q)
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
