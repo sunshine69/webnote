@@ -23,6 +23,15 @@ import (
 	"encoding/binary"
 	crand "crypto/rand"
 	rand "math/rand"
+
+    "crypto/ecdsa"
+    "crypto/elliptic"
+   
+    "crypto/rsa"
+    "crypto/x509"
+    "crypto/x509/pkix"
+    "encoding/pem"
+    "math/big"
 )
 
 //GetMapByKey -
@@ -377,7 +386,7 @@ func RunSystemCommand(cmd string, verbose bool) string {
 
 func GenSelfSignedKey(keyfilename string) {
 	// priv, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
-	priv, err := ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
+	priv, err := ecdsa.GenerateKey(elliptic.P384(), crand.Reader)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -396,7 +405,7 @@ func GenSelfSignedKey(keyfilename string) {
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
 	}
-	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, publicKey(priv), priv)
+	derBytes, err := x509.CreateCertificate(crand.Reader, &template, &template, publicKey(priv), priv)
 	if err != nil {
 		log.Fatalf("Failed to create certificate: %s", err)
 	}
@@ -426,7 +435,7 @@ func publicKey(priv interface{}) interface{} {
 	}
 }
 
-func pemBlockForKey(priv interface{}) *pem.Block {
+func pemBlockForKey(priv interface{}) *pem.Block {	
 	switch k := priv.(type) {
 	case *rsa.PrivateKey:
 		return &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(k)}
@@ -440,4 +449,8 @@ func pemBlockForKey(priv interface{}) *pem.Block {
 	default:
 		return nil
 	}
+}
+func FileNameWithoutExtension(fileName string) string {
+	// return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+	return fileName[:len(fileName) - len(filepath.Ext(fileName))]
 }

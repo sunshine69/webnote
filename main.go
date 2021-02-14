@@ -812,8 +812,9 @@ func main() {
 		m.SetupAppDatabase()
 		m.CreateAdminUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
-			m.GenSelfSignedKey(*sslKey)
-			*sslCert = fmt.Sprintf("%s.crt", *sslKey)
+			keyFileName := m.FileNameWithoutExtension(*sslKey)
+			m.GenSelfSignedKey(keyFileName)
+			*sslCert = fmt.Sprintf("%s.crt", keyFileName)
 		}
 	}
 

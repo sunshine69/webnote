@@ -1,6 +1,7 @@
 package models
 
 import (
+	"os"
 	"errors"
 	"regexp"
 	"fmt"
@@ -444,7 +445,10 @@ func (n *Note) Delete() {
 	}
 }
 
-func SearchNote(keyword string, u *User) []Note {
+//Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B 
+//then `A & !B` or `A & -B`
+//You can search by note flags only, by prefix then using `f:` or `F:`, `FLAGS:`
+func SearchNote(keyword string, u *User) []Note {	
 	keyword = strings.TrimSpace(keyword)
 	splitPtn := regexp.MustCompile(`[\s]+[\&\+][\s]+`)
 	var q string
@@ -475,7 +479,7 @@ func SearchNote(keyword string, u *User) []Note {
 			negate := ""
 			combind := "OR"
 			if strings.HasPrefix(t, "!") || strings.HasPrefix(t, "-") {
-				negate = " ! "
+				negate = " NOT "
 				t = strings.Replace(t, "!", "", 1)
 				t = strings.Replace(t, "-", "", 1)
 				combind = "AND"
@@ -488,8 +492,11 @@ func SearchNote(keyword string, u *User) []Note {
 		}
 		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
-	q = fmt.Sprintf("%s LIMIT 100;", q)
-	fmt.Println(q)
+	if (! strings.Contains(q, "LIMIT")) {
+		q = fmt.Sprintf("%s LIMIT 100;", q)	
+	}
+	if (os.Getenv("DEBUG") != "") {
+	fmt.Println(q)}
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
