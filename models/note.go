@@ -1,14 +1,15 @@
 package models
 
 import (
-	"os"
 	"errors"
-	"regexp"
 	"fmt"
-	"strings"
 	"log"
-	"time"
+	"os"
+	"regexp"
 	"strconv"
+	"strings"
+	"time"
+
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
@@ -16,26 +17,26 @@ import (
 //All other types (except user and group itself) should embed this type. Example: Note, Attachment
 type Object struct {
 	Permission int8
-	AuthorID int64
-	GroupID int64
+	AuthorID   int64
+	GroupID    int64
 }
 
 //Note -
 type Note struct {
 	Object
-	ID int64
-	Title string
-	Datelog int64
-	Content string
-	URL string
+	ID            int64
+	Title         string
+	Datelog       int64
+	Content       string
+	URL           string
 	ReminderTicks int64
-	Flags string
-	Timestamp int64
-	TimeSpent int64
-	Author *User
-	Group *Group
-	RawEditor int8
-	Attachments []*Attachment
+	Flags         string
+	Timestamp     int64
+	TimeSpent     int64
+	Author        *User
+	Group         *Group
+	RawEditor     int8
+	Attachments   []*Attachment
 }
 
 //Update - Populate dynamic fields such as Author, Group, etc. Not allowed saving data into DB
@@ -57,7 +58,8 @@ func (n *Note) UnlinkAttachment(aID int64, u *User) error {
 	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
 		return errors.New("Permission denied")
 	}
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	tx, _ := DB.Begin()
 	q := `DELETE FROM note_attachment WHERE
 		user_id = $1 AND
@@ -80,7 +82,8 @@ func (n *Note) LinkAttachment(aID int64, u *User) error {
 	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
 		return errors.New("Permission denied")
 	}
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	tx, _ := DB.Begin()
 	q := `INSERT INTO note_attachment(
 		user_id,
@@ -97,7 +100,8 @@ func (n *Note) LinkAttachment(aID int64, u *User) error {
 }
 
 func (n *Note) GetNoteAttachments() {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	rows, e := DB.Query(`SELECT
 		a.id,
 		a.name,
@@ -134,7 +138,7 @@ func (n *Note) GetNoteAttachments() {
 }
 
 //NoteNew
-func NoteNew(in map[string]interface{}) (*Note) {
+func NoteNew(in map[string]interface{}) *Note {
 	n := Note{}
 
 	ct := GetMapByKey(in, "content", "").(string)
@@ -143,7 +147,9 @@ func NoteNew(in map[string]interface{}) (*Note) {
 	if titleText == "" {
 		if ct != "" {
 			_l := len(ct)
-			if _l >= 64 {_l = 64}
+			if _l >= 64 {
+				_l = 64
+			}
 			titleText = strings.ReplaceAll(ct[0:_l], "\n", " ")
 		}
 	}
@@ -184,9 +190,9 @@ func NoteNew(in map[string]interface{}) (*Note) {
 }
 
 type NoteDiff struct {
-	Flags string
+	Flags   string
 	Content string
-	URL string
+	URL     string
 }
 
 func (nd *NoteDiff) String() string {
@@ -197,7 +203,9 @@ func (nd *NoteDiff) String() string {
 //Only compare Flags, Content and URL
 func (n *Note) Diff(n1 *Note) *NoteDiff {
 	nd := NoteDiff{}
-	if n.Flags == n1.Flags && n.Content == n1.Content && n.URL == n1.URL { return nil }
+	if n.Flags == n1.Flags && n.Content == n1.Content && n.URL == n1.URL {
+		return nil
+	}
 
 	dmp := diffmatchpatch.New()
 	if n.Flags != n1.Flags {
@@ -217,15 +225,17 @@ func (n *Note) Diff(n1 *Note) *NoteDiff {
 
 //Save a note. If new note then create one. If existing note then create a revisions before update.
 func (n *Note) Save() {
-	currentNote := GetNote(n.Title)//This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
+	currentNote := GetNote(n.Title) //This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
 	DB := GetDB("")
 	defer DB.Close()
 	var sql string
-	if currentNote == nil {//New note
+	if currentNote == nil { //New note
 		if n.Title == "" {
 			if n.Content != "" {
 				_l := len(n.Content)
-				if _l >= 64 {_l = 64}
+				if _l >= 64 {
+					_l = 64
+				}
 				n.Title = strings.ReplaceAll(n.Content[0:_l], "\n", " ")
 			}
 		}
@@ -251,13 +261,15 @@ func (n *Note) Save() {
 		}
 		n.ID, _ = res.LastInsertId()
 		tx.Commit()
-	} else {//Insert into revision and update current
+	} else { //Insert into revision and update current
 		if n.Flags == currentNote.Flags &&
 			n.Content == currentNote.Content &&
 			n.URL == currentNote.URL &&
 			n.Permission == currentNote.Permission &&
 			n.RawEditor == currentNote.RawEditor &&
-			n.GroupID == currentNote.GroupID {	return }
+			n.GroupID == currentNote.GroupID {
+			return
+		}
 		sql = `INSERT INTO note_revision(
 			note_id,
 			timestamp,
@@ -313,10 +325,10 @@ func (n *Note) Save() {
 	}
 }
 
-func GetNoteByID(id int64) (*Note) {
+func GetNoteByID(id int64) *Note {
 	DB := GetDB("")
 	defer DB.Close()
-	n := Note{ ID: id }
+	n := Note{ID: id}
 	if e := DB.QueryRow(`SELECT
 		title,
 		flags,
@@ -338,10 +350,10 @@ func GetNoteByID(id int64) (*Note) {
 	return &n
 }
 
-func GetNote(title string) (*Note) {
+func GetNote(title string) *Note {
 	DB := GetDB("")
 	defer DB.Close()
-	n := Note{ Title: title }
+	n := Note{Title: title}
 	if e := DB.QueryRow(`SELECT
 		id,
 		flags,
@@ -367,7 +379,8 @@ func GetNoteRevisionByID(id int64) *Note {
 	n := Note{
 		ID: id,
 	}
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 
 	if e := DB.QueryRow(`SELECT id, timestamp, flags, url, content, author_id, group_id, permission, raw_editor FROM note_revision WHERE id = $1`, id).Scan(&n.ID, &n.Datelog, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
 		log.Printf("ERROR can not get note revision - %v\n", e)
@@ -396,7 +409,8 @@ func GetNoteRevisions(noteIdentity interface{}) []Note {
 	// o = append(o, *cNote)
 
 	noteID = cNote.ID
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 
 	res, e := DB.Query(`SELECT id, timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1 ORDER BY timestamp DESC LIMIT 200`, noteID)
 	if e != nil {
@@ -413,18 +427,19 @@ func GetNoteRevisions(noteIdentity interface{}) []Note {
 	return o
 }
 
-func (n *Note) String() string {return n.Title}
+func (n *Note) String() string { return n.Title }
 
 func NoteDeleteByID(id int64) bool {
 	var o bool
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	tx, _ := DB.Begin()
 	_, e := tx.Exec(`DELETE FROM note WHERE id = $1`, id)
 	if e != nil {
 		tx.Rollback()
 		log.Printf("WARN Can not delete note ID %d\n", id)
 		o = false
-	} else{
+	} else {
 		tx.Commit()
 		o = true
 	}
@@ -445,10 +460,10 @@ func (n *Note) Delete() {
 	}
 }
 
-//Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B 
+//Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B
 //then `A & !B` or `A & -B`
 //You can search by note flags only, by prefix then using `f:` or `F:`, `FLAGS:`
-func SearchNote(keyword string, u *User) []Note {	
+func SearchNote(keyword string, u *User) []Note {
 	keyword = strings.TrimSpace(keyword)
 	splitPtn := regexp.MustCompile(`[\s]+[\&\+][\s]+`)
 	var q string
@@ -464,8 +479,8 @@ func SearchNote(keyword string, u *User) []Note {
 	}
 	if searchFlags {
 		_l := len(tokens)
-		for i, t := range(tokens) {
-			if i == _l - 1 {
+		for i, t := range tokens {
+			if i == _l-1 {
 				q = fmt.Sprintf(`%s (flags LIKE "%%%s%%") ORDER BY datelog DESC LIMIT 200`, q, t)
 			} else {
 				q = fmt.Sprintf(`%s (flags LIKE "%%%s%%") OR `, q, t)
@@ -475,7 +490,7 @@ func SearchNote(keyword string, u *User) []Note {
 	} else {
 		_l := len(tokens)
 
-		for i, t := range(tokens) {
+		for i, t := range tokens {
 			negate := ""
 			combind := "OR"
 			if strings.HasPrefix(t, "!") || strings.HasPrefix(t, "-") {
@@ -484,7 +499,7 @@ func SearchNote(keyword string, u *User) []Note {
 				t = strings.Replace(t, "-", "", 1)
 				combind = "AND"
 			}
-			if i == _l - 1 {
+			if i == _l-1 {
 				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%%%s%%") %s %s(url LIKE "%%%s%%")) ORDER BY timestamp DESC`, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
 			} else {
 				q = fmt.Sprintf(`%s (%s(title LIKE "%%%s%%") %s %s(flags LIKE "%%%s%%") %s %s(content LIKE "%%%s%%") %s %s(url LIKE "%%%s%%")) AND `, q, negate, t, combind, negate, t, combind, negate, t, combind, negate, t)
@@ -492,11 +507,12 @@ func SearchNote(keyword string, u *User) []Note {
 		}
 		q = fmt.Sprintf("SELECT id as note_id, title, flags, content, url, datelog , reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE %s", q)
 	}
-	if (! strings.Contains(q, "LIMIT")) {
-		q = fmt.Sprintf("%s LIMIT 100;", q)	
+	if !strings.Contains(q, "LIMIT") {
+		q = fmt.Sprintf("%s LIMIT 100;", q)
 	}
-	if (os.Getenv("DEBUG") != "") {
-	fmt.Println(q)}
+	if os.Getenv("DEBUG") != "" {
+		fmt.Println(q)
+	}
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
