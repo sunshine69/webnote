@@ -23,6 +23,15 @@ import (
 	"encoding/binary"
 	crand "crypto/rand"
 	rand "math/rand"
+
+    "crypto/ecdsa"
+    "crypto/elliptic"
+   
+    "crypto/rsa"
+    "crypto/x509"
+    "crypto/x509/pkix"
+    "encoding/pem"
+    "math/big"
 )
 
 //GetMapByKey -
@@ -358,4 +367,90 @@ func Ternary(cond bool, first, second interface{}) interface{} {
 	} else {
 		return second
 	}
+}
+
+func RunSystemCommand(cmd string, verbose bool) string {
+	if verbose {
+		log.Printf("command: %s\n", cmd)
+	}
+	command := exec.Command("bash", "-c", cmd)
+
+	combinedOutput, err := command.CombinedOutput()
+	if err != nil {
+		log.Fatalf("error command: '%s' - %v\n    %s\n", cmd, err, combinedOutput)
+	}
+	output1 := fmt.Sprintf("%s", command.Stdout)
+	output1 = strings.TrimSuffix(output1, "\n")
+	return output1
+}
+
+func GenSelfSignedKey(keyfilename string) {
+	// priv, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	priv, err := ecdsa.GenerateKey(elliptic.P384(), crand.Reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+	template := x509.Certificate{
+		SerialNumber: big.NewInt(1),
+		Subject: pkix.Name{
+			Organization: []string{"ABB PGES Co"},
+			CommonName:   "oidc-test",
+			Country:      []string{"AU"},
+			Locality:     []string{"Brisbane"},
+		},
+		NotBefore: time.Now(),
+		NotAfter:  time.Now().Add(time.Hour * 24 * 180),
+
+		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		BasicConstraintsValid: true,
+	}
+	derBytes, err := x509.CreateCertificate(crand.Reader, &template, &template, publicKey(priv), priv)
+	if err != nil {
+		log.Fatalf("Failed to create certificate: %s", err)
+	}
+	out := &bytes.Buffer{}
+	pem.Encode(out, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
+	// fmt.Println(out.String())
+	if err := ioutil.WriteFile(fmt.Sprintf("%s.crt", keyfilename), out.Bytes(), 0640); err != nil {
+		log.Fatalf("can not write public key %v\n", err)
+	}
+
+	out.Reset()
+	pem.Encode(out, pemBlockForKey(priv))
+	if err := ioutil.WriteFile(fmt.Sprintf("%s.key", keyfilename), out.Bytes(), 0600); err != nil {
+		log.Fatalf("can not write private key %v\n", err)
+	}
+	// fmt.Println(out.String())
+}
+
+func publicKey(priv interface{}) interface{} {
+	switch k := priv.(type) {
+	case *rsa.PrivateKey:
+		return &k.PublicKey
+	case *ecdsa.PrivateKey:
+		return &k.PublicKey
+	default:
+		return nil
+	}
+}
+
+func pemBlockForKey(priv interface{}) *pem.Block {	
+	switch k := priv.(type) {
+	case *rsa.PrivateKey:
+		return &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(k)}
+	case *ecdsa.PrivateKey:
+		b, err := x509.MarshalECPrivateKey(k)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Unable to marshal ECDSA private key: %v", err)
+			os.Exit(2)
+		}
+		return &pem.Block{Type: "EC PRIVATE KEY", Bytes: b}
+	default:
+		return nil
+	}
+}
+func FileNameWithoutExtension(fileName string) string {
+	// return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+	return fileName[:len(fileName) - len(filepath.Ext(fileName))]
 }

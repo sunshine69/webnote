@@ -8,6 +8,8 @@
 # export GOARCH=arm
 
 VER=$(git rev-parse --short HEAD)
+BUILD_VERSION=${BUILD_VERSION:-$VER}
+
 sed -i "s/const Version = .*/const Version = \"${VER}\"/" models/version.go
 
 #go build --tags "json1 fts5 secure_delete" -ldflags='-s -w'

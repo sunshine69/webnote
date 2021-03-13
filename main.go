@@ -781,6 +781,8 @@ func main() {
 		Quick start
 		To setup initial database use option '-db path-to-your-new-db.db -key path-to-ssl-key -cert path-to-cert-file -p port -setup'
 
+		The ssl cert and key if it does not exist then will be created automatically.
+
 		Next run remove the option -setup
 		The default admin email to login is admin@admin.com. To change this use option '-cmd set_admin_email'
 
@@ -809,6 +811,11 @@ func main() {
 		m.SetupDefaultConfig()
 		m.SetupAppDatabase()
 		m.CreateAdminUser()
+		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
+			keyFileName := m.FileNameWithoutExtension(*sslKey)
+			m.GenSelfSignedKey(keyFileName)
+			*sslCert = fmt.Sprintf("%s.crt", keyFileName)
+		}
 	}
 
 	SSLKey = m.GetConfigSave("ssl_key", *sslKey)
