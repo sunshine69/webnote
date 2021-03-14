@@ -1,3 +1,3 @@
 package models
 
-const Version = "38eeb3b"
+const Version = "99b78e4"

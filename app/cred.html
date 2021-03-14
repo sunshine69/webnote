@@ -1,0 +1,207 @@
+<hr />
+<script type="text/javascript" src='/assets/media/js/ajax.js'></script><script language="javascript">
+
+function mycopyTextToClipboard(text_to_copy, row_id, cred_id = -1, qrlink = "") {
+
+// row_id is my addition to process form filled values only
+  copyTextToClipboard(text_to_copy);
+
+  if ( row_id != "-1" ) {
+// Func copy text to clipboard end
+// Extra action - Populate the form with input
+    search_result_url = document.getElementById("search_result_url_" + row_id).href;
+    if (! search_result_url ) search_result_url = document.getElementById("search_result_url_" + row_id).innerHTML;
+    search_result_username = document.getElementById("search_result_username_" + row_id).innerHTML;
+    search_result_cred_note = document.getElementById("search_result_cred_note_" + row_id).value;
+
+    document.getElementById("cred_url").value = search_result_url;
+    document.getElementById("cred_username").value = search_result_username;
+    document.getElementById("cred_password").value = text_to_copy;
+    document.getElementById("cred_note").value = search_result_cred_note;
+    document.getElementById("current_cred_id").value = cred_id;
+    document.getElementById("current_qrlink").value = qrlink;
+  }
+
+}
+
+function cred_search() {
+    var kw = document.getElementById("cred_url_keyword").value;
+    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=cred_search&kw=" + kw, function (r) {
+		var display_msg = document.getElementById("display_msg");
+           	display_msg.innerHTML = '&nbsp;';
+		var display_results = document.getElementById("display_results");
+                display_results.innerHTML = r;
+    } )
+
+}
+
+function cred_add() {
+    var cred_url = document.getElementById("cred_url").value;
+    var cred_username = document.getElementById("cred_username").value;
+    var cred_password = document.getElementById("cred_password").value;
+    var cred_note = document.getElementById("cred_note").value;
+    var qrlink = document.getElementById("qr_password").value;
+    var data = "&action=cred_add&cred_url=" + encodeURI(cred_url) + "&cred_username=" + cred_username + "&cred_password=" + encodeURIComponent(cred_password) + "&cred_note=" + escape(cred_note) + "&qrlink=" + encodeURI(qrlink);
+
+    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + data, function (r) {
+        var display_msg = document.getElementById("display_msg");
+        display_msg.innerHTML = r;
+		var display_results = document.getElementById("display_results");
+		if (display_results.innerHTML == 'No credentials found.')
+			display_results.innerHTML = '&nbsp;';
+        })
+}
+
+function deleteRow(rowid)
+{
+    var row = document.getElementById(rowid);
+    var table = row.parentNode;
+    while ( table && table.tagName != 'TABLE' )
+        table = table.parentNode;
+    if ( !table )
+        return;
+    table.deleteRow(row.rowIndex);
+}
+
+function cred_delete(cred_id, row_id) {
+    if (! confirm("Are you sure to delete?")) return;
+    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=cred_delete&id=" + cred_id, function (r) {
+        deleteRow(row_id);
+		var display_msg = document.getElementById("display_msg");
+        display_msg.innerHTML = r;
+        })
+}
+
+function clear_box(box_ids) {
+    ids = box_ids.split(',');
+    for (var i = 0; i < ids.length; i++) {
+    document.getElementById(ids[i]).value = "";
+    document.getElementById(ids[i]).focus();
+    }
+}
+
+function mark_row_clicked(row_id, pass) {
+   mycopyTextToClipboard(pass, "-1");
+   var table = document.getElementById("display_search_results");
+    table.rows[row_id].cells[2].innerHTML = '<font color=red><b>Selected</b></font>';
+/*   for (var i = 0, row; row = table.rows[i]; i++) {
+     if (row.rowIndex != row_id) row.bgcolor = '#ffffff';
+     else row.bgcolor = '#F8F8F8';
+   }
+*/
+   return true;
+}
+
+function note_search() {
+  var keyword = document.getElementById("cred_url_keyword");
+    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+  AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=search&keyword=" + keyword , function (r) {
+        var display_msg = document.getElementById("display_msg");
+        display_msg.innerHTML = r;
+        });
+}
+
+function update_qr_link() {
+  var cred_id = document.getElementById("current_cred_id").value;
+  var qrlink = document.getElementById("current_qrlink").value;
+  // alert("cred_id " + cred_id + "\nqrlink " + qrlink);
+      var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
+  AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=update_qrlink&id=" + cred_id + "&qrlink=" + myEncode(qrlink), function (r) {
+    var display_msg = document.getElementById("display_msg");
+    display_msg.innerHTML = r;
+    document.getElementById("current_qrlink").href = qrlink;
+    }
+  );
+}
+
+function beforeSubmit(form_id) {
+    var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
+
+    var myin = document.createElement("input");
+    myin.type='hidden';
+    myin.name='gorilla.csrf.Token';
+    myin.value=csrfToken;
+    document.getElementById(form_id).appendChild(myin);
+    document.getElementById(form_id).submit();
+    return false;
+}
+
+</script>
+
+<table>
+  <tbody>
+    <tr><form method="POST" id="searchform" action="/search" onsubmit="try { beforeSubmit('searchform'); } catch (e) { window.alert (e); }">
+      <input type="hidden" name="action" value="search"/>
+      <td>Search by url:</td>
+      <td><input id="cred_url_keyword" size="50" type="text" name="keyword"/></td>
+      <td><input id="search" onclick="return cred_search();" type="button" value="SearchCred" /></td>
+      <td><input id="search_note" type="submit" name="search_submit" value="SearchNote"/></td>
+      <td><input id="clear" onclick="return clear_box('cred_url_keyword');" type="button" value="Clear" /></td>
+      </form>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<table>
+  <tbody>
+    <tr>
+      <td>cred_url:</td>
+      <td><input id="cred_url" size="50" type="text" /><input type=hidden id=current_cred_id value=""></td>
+    </tr>
+    <tr>
+
+    <tr>
+      <td>qrlink</td><td><input id="current_qrlink" size="50" type="text" value=""/>&nbsp;<input type=button id="update_qr_link" value="update" onclick="return update_qr_link();"/></td>
+    </tr>
+      <td>cred_username:</td>
+      <form id="make_qr_form" action="/cred" method="POST" onsubmit="try { beforeSubmit('make_qr_form'); } catch (e) { window.alert (e); }">
+      <input type="hidden" name="action" value="generate_qr"/>
+      <td><input id="cred_username" name="username" size="50" type="text" /></td>
+    </tr>
+    <tr>
+      <td>cred_password:</td>
+      <td><input autocomplete="off" id="cred_password" size="25" type="password" /></td>
+    </tr>
+    <tr>
+      <td>qr password</td>
+      <td>
+        <input id="qr_password" size="50" type="text" value="" name="cred_password" />
+        <input id="make_qr" type="submit" value="make qr"/>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>cred_note:</td>
+      <td><textarea cols="50" id="cred_note" rows="8" size="25"></textarea></td>
+    </tr>
+    <tr>
+      <td><input id="add_new" onclick="return cred_add();" type="button" value="add new" /></td>
+      <td><input onclick="return clear_box('cred_url,cred_username,cred_password,cred_note'); " type="button" value="clear" /></td>
+    </tr>
+  </tbody>
+</table>
+<script>
+
+document.getElementById("cred_url_keyword")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("search").click();
+    }
+});
+document.getElementById("cred_password")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("add_new").click();
+    }
+});
+
+</script>
+
+<div id="display_msg">&nbsp;</div>
+<div id="display_results">&nbsp;</div>
