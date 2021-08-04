@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,6 +12,9 @@ import (
 	m "github.com/sunshine69/webnote-go/models"
 )
 
+//Credential Application. To setup in the browser access https://<your_dns>:<your_port>/cred?action=setup and follow the instruction
+//This is a simple onepage app to store/search credentials (password management)
+//This is per webnote user and each user has no view of other user credential
 func DoCredApp(w http.ResponseWriter, r *http.Request) {
 	action := m.GetRequestValue(r, "action", "")
 	switch action {
@@ -24,6 +28,8 @@ func DoCredApp(w http.ResponseWriter, r *http.Request) {
 		DoCredUpdateQrlink(&w, r)
 	case "generate_qr":
 		DoCredGenerateQr(&w, r)
+	case "setup":
+		SetupSchema(&w, r)
 	}
 }
 
@@ -98,7 +104,7 @@ func DoCredSearch(w *http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(*w, tpl.String())
 }
 
-func SetupSchema() {
+func SetupSchema(w *http.ResponseWriter, r *http.Request) {
 	q := `-- credential app
 	CREATE TABLE IF NOT EXISTS credential (
 		id integer NOT NULL PRIMARY KEY,
@@ -130,9 +136,15 @@ func SetupSchema() {
 	_, err := tx.Exec(q)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalf("ERROR setup schema for cred app %v\n", err)
+		http.Error(*w, err.Error(), http.StatusInternalServerError)
+		log.Printf("ERROR setup schema for cred app %v\n", err)
 	}
 	tx.Commit()
+	uitext, _ := ioutil.ReadFile("./app/cred.html")
+	responseText := fmt.Sprintf(`Database schema setup completed successfully. Below is the UI text. Copy this and create a note with that content with title you wish. When save and then use view2 you will see the GUI of the app.
+	>>>>> UI TEXT <<<<<
+	%s`, uitext)
+	fmt.Fprintf(*w, responseText)
 }
 
 type Credential struct {

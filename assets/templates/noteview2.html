@@ -4,8 +4,8 @@
         <meta http-equiv="Pragma" content="no-cache"/><meta http-equiv="Expires" content="0"/>
         <title>{{ .note.Title }}</title>
     </head>
-    <body style="background-image: url('{{ .settings.BASE_URL }}?action=sendfile&id=113')">
-        <table rules="rows,cols" align='center' border="0" cellpadding="5" cellspacing="5" width="98%" style="background-image: url('{{ .settings.BASE_URL }}?action=sendfile&id=112')">
+    <body>
+        <table rules="rows,cols" align='center' border="0" cellpadding="5" cellspacing="5" width="98%">
             <tr>
                 <td>{{ .note.Content | unsafe_raw_html }}</td>
                 {{ .csrfField }}
