@@ -24,6 +24,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
+	_ "time/tzdata"
 )
 
 var version, ServerPort, SSLKey, SSLCert string
@@ -770,6 +771,15 @@ func HandleRequests() {
 }
 
 func main() {
+	tz := os.Getenv("TZ")
+	if tz != "" {
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			fmt.Printf("[WARN] can not load timezone %s\n", tz)
+		} else {
+			time.Local = loc // -> this is setting the global timezone
+		}
+	}
 	getVersion := flag.Bool("v", false, "Get build version")
 	dbPath := flag.String("db", "", "Application DB path")
 	sessionKey := flag.String("sessionkey", "", "Session Key")
