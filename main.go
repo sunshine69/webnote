@@ -795,6 +795,7 @@ func main() {
 		The ssl cert and key if it does not exist then will be created automatically.
 
 		The default admin email to login is admin@admin.com. To change this use option '-cmd set_admin_email'
+		The default password for admin@admin.com is 1qa2ws. When logged in follow the instructions on screen to change password and generate QR OTP image for MFA.
 
 		Next run remove the option -setup to start the app
 

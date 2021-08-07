@@ -1,18 +1,18 @@
 package models
 
 import (
-	"strings"
-	"github.com/yuin/goldmark"
 	"bytes"
-	"github.com/microcosm-cc/bluemonday"
-	"html/template"
-	"net/http"
+	"database/sql"
+	"fmt"
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/yuin/goldmark"
+	"html/template"
 	"log"
-	"database/sql"
+	"net/http"
 	"os"
-	"fmt"
+	"strings"
 )
 
 const MaxUploadSizeInMemory = 4 * 1024 * 1024 // 4 MB
@@ -24,6 +24,7 @@ var DateLayout string
 
 //WebNotePassword
 var WebNotePassword string
+
 //WebNoteUser
 var WebNoteUser string
 
@@ -34,10 +35,11 @@ var SessionStore *sessions.CookieStore
 
 //AppSettings -
 type AppSettings struct {
-	BASE_URL string
-	ADMIN_EMAIL string
+	BASE_URL          string
+	ADMIN_EMAIL       string
 	UPLOAD_ITEM_COUNT int
 }
+
 //Settings -
 var Settings *AppSettings
 
@@ -49,7 +51,7 @@ func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{
 	ses, e := SessionStore.Get(r, "auth-session")
 	if e != nil {
 		log.Printf("ERROR can not get session - %v\n", e)
-		return nil
+		return defaultVal
 	}
 	o := ses.Values[k]
 	if o == nil && defaultVal != nil {
@@ -69,7 +71,7 @@ func SaveSessionVal(r *http.Request, w *http.ResponseWriter, k string, defaultVa
 }
 
 //GetDB -
-func GetDB(dbPath string) (*sql.DB) {
+func GetDB(dbPath string) *sql.DB {
 	if dbPath == "" {
 		if DBPATH == "" {
 			DBPATH = os.Getenv("DBPATH")
@@ -78,7 +80,7 @@ func GetDB(dbPath string) (*sql.DB) {
 	}
 	DB, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
-	  panic("failed to connect database")
+		panic("failed to connect database")
 	}
 	return DB
 }
@@ -89,8 +91,8 @@ func InitConfig() {
 	DateLayout = GetConfig("date_layout")
 	WebNoteUser = GetConfig("webnote_user")
 	Settings = &AppSettings{
-		BASE_URL: GetConfig("base_url"),
-		ADMIN_EMAIL: GetConfig("admin_email"),
+		BASE_URL:          GetConfig("base_url"),
+		ADMIN_EMAIL:       GetConfig("admin_email"),
 		UPLOAD_ITEM_COUNT: 6,
 	}
 	PermissionList = &map[int8]string{
@@ -105,11 +107,11 @@ func InitConfig() {
 
 //CreateAdminUser -
 func CreateAdminUser() {
-	u := UserNew(map[string]interface{} {
-		"FirstName": "Admin",
-		"LastName": "Admin",
-		"Email": GetConfig("admin_email"),
-		"Password": "1qa2ws",
+	u := UserNew(map[string]interface{}{
+		"FirstName":  "Admin",
+		"LastName":   "Admin",
+		"Email":      GetConfig("admin_email"),
+		"Password":   "1qa2ws",
 		"SaltLength": int8(16),
 		"GroupNames": "default,family,friend",
 	})
@@ -136,13 +138,13 @@ func SetupDefaultConfig() {
 	}
 	configSet := map[string]string{
 		"config_created": "",
-		"list_flags" : "TODO<|>IMPORTANT<|>URGENT",
-		"date_layout": "02-01-2006 15:04:05 MST",
+		"list_flags":     "TODO<|>IMPORTANT<|>URGENT",
+		"date_layout":    "02-01-2006 15:04:05 MST",
 		//note_revision to keep
 		"revision_to_keep": "1000",
-		"admin_email": "admin@admin.com",
+		"admin_email":      "admin@admin.com",
 	}
-	for key, val := range(configSet) {
+	for key, val := range configSet {
 		fmt.Printf("Inserting %s - %s\n", key, val)
 		_, e := tx.Exec(`INSERT INTO appconfig(key, val) VALUES($1, $2)`, key, val)
 		if e != nil {
@@ -155,7 +157,7 @@ func SetupDefaultConfig() {
 }
 
 //GetConfig - by key and return value. Give second arg as default value.
-func GetConfig(key ...string) (string) {
+func GetConfig(key ...string) string {
 	DB := GetDB("")
 	defer DB.Close()
 	var val string
@@ -172,7 +174,7 @@ func GetConfig(key ...string) (string) {
 }
 
 //GetConfigSave -
-func GetConfigSave(key ...string) (string) {
+func GetConfigSave(key ...string) string {
 	v := GetConfig(key...)
 	if len(key) == 2 && v == key[1] {
 		SetConfig(key[0], key[1])
@@ -186,14 +188,14 @@ func SetConfig(key, val string) {
 	DB := GetDB("")
 	defer DB.Close()
 	tx, _ := DB.Begin()
-	if curVal != "NOTFOUND" {//Key exists, need update?
+	if curVal != "NOTFOUND" { //Key exists, need update?
 		if curVal != val {
 			if _, e := tx.Exec(`UPDATE appconfig SET val = $1 WHERE key = $2`, val, key); e != nil {
 				tx.Rollback()
 				log.Fatalf("ERROR %v\n", e)
 			}
 		}
-	} else {//Not exist, just do insert
+	} else { //Not exist, just do insert
 		if _, e := tx.Exec(`INSERT INTO appconfig(key, val) VALUES($1, $2)`, key, val); e != nil {
 			tx.Rollback()
 			log.Fatalf("ERROR %v\n", e)
@@ -206,7 +208,7 @@ func SetConfig(key, val string) {
 func DeleteConfig(key string) {
 	DB := GetDB("")
 	tx, _ := DB.Begin()
-	if _, e := tx.Exec(`DELETE FROM appconfig WHERE key = $1`, key); e !=nil {
+	if _, e := tx.Exec(`DELETE FROM appconfig WHERE key = $1`, key); e != nil {
 		tx.Rollback()
 		log.Fatalf("ERROR %v\n", e)
 	}
@@ -340,49 +342,61 @@ func SetupAppDatabase() {
 //CheckPerm - Check permission to do an operation on a object
 //obj must have fields :  Permission, AuthorID/Author,  GroupID/Group (similar to a note)
 //Action can be a string of 'r' (read), 'w' (write), 'rw' (read-write), 'd' (delete)
-func CheckPerm(obj Object, UserID int64, Action string) (bool) {
-		if obj.Permission == 5 {//World read, everyone logged in can do anything
-			if Action == "r" {
-				return true
-			} else if UserID > 0 {
-				return true
-			}
-			return false
-		}
-
-		if UserID == 0 { return false }//From here we require a logged in
-
-		user := GetUserByID(UserID)
-		if (obj.AuthorID == user.ID) { return true } //Object created by this userID can do all
-
-		//From now user is not the owner of the object
-		if (Action == "d") {return false} //Only owner can delete object
-
-		if (obj.Permission == 4) {return true} //Logged in user can do anything except deletion
-
-		groupIDMap := make(map[int64]string)
-		for _, g := range(user.Groups) {
-			groupIDMap[g.ID] = g.Name
-		}
-		if _, ok := groupIDMap[obj.GroupID]; !ok {
-			//user has no group which matches with this object group
-			if (obj.Permission == 3) {//Group w, all read
-				if (Action == "r") {
-					return true
-				}
-			}
-			return false
-		}
-		//From now on user has a group that this object is in
-		if (obj.Permission >= 2) {return true}// group rw granted
-
-		if (obj.Permission == 0) {return false}//Only owner can do
-		//Only left Permission == 1
-		if (Action == "r") {
+func CheckPerm(obj Object, UserID int64, Action string) bool {
+	if obj.Permission == 5 { //World read, everyone logged in can do anything
+		if Action == "r" {
+			return true
+		} else if UserID > 0 {
 			return true
 		}
 		return false
 	}
+
+	if UserID == 0 {
+		return false
+	} //From here we require a logged in
+
+	user := GetUserByID(UserID)
+	if obj.AuthorID == user.ID {
+		return true
+	} //Object created by this userID can do all
+
+	//From now user is not the owner of the object
+	if Action == "d" {
+		return false
+	} //Only owner can delete object
+
+	if obj.Permission == 4 {
+		return true
+	} //Logged in user can do anything except deletion
+
+	groupIDMap := make(map[int64]string)
+	for _, g := range user.Groups {
+		groupIDMap[g.ID] = g.Name
+	}
+	if _, ok := groupIDMap[obj.GroupID]; !ok {
+		//user has no group which matches with this object group
+		if obj.Permission == 3 { //Group w, all read
+			if Action == "r" {
+				return true
+			}
+		}
+		return false
+	}
+	//From now on user has a group that this object is in
+	if obj.Permission >= 2 {
+		return true
+	} // group rw granted
+
+	if obj.Permission == 0 {
+		return false
+	} //Only owner can do
+	//Only left Permission == 1
+	if Action == "r" {
+		return true
+	}
+	return false
+}
 
 //TemplateFuncMap - custom template func map
 var TemplateFuncMap *template.FuncMap
@@ -427,7 +441,7 @@ func LoadAllTemplates() {
 				panic(err)
 			}
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
-			return template.HTML( cleanupBytes )
+			return template.HTML(cleanupBytes)
 		},
 		"replace": func(old, new, data string) template.HTML {
 			o := strings.ReplaceAll(data, old, new)
