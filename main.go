@@ -24,9 +24,10 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
+	_ "time/tzdata"
 )
 
-var ServerPort, SSLKey, SSLCert string
+var version, ServerPort, SSLKey, SSLCert string
 var EnableCompression *string
 
 func init() {
@@ -770,7 +771,16 @@ func HandleRequests() {
 }
 
 func main() {
-	version := flag.Bool("v", false, "Get build version")
+	tz := os.Getenv("TZ")
+	if tz != "" {
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			fmt.Printf("[WARN] can not load timezone %s\n", tz)
+		} else {
+			time.Local = loc // -> this is setting the global timezone
+		}
+	}
+	getVersion := flag.Bool("v", false, "Get build version")
 	dbPath := flag.String("db", "", "Application DB path")
 	sessionKey := flag.String("sessionkey", "", "Session Key")
 	setup := flag.Bool("setup", false, "Run initial setup DB and config")
@@ -795,6 +805,7 @@ func main() {
 		The ssl cert and key if it does not exist then will be created automatically.
 
 		The default admin email to login is admin@admin.com. To change this use option '-cmd set_admin_email'
+		The default password for admin@admin.com is 1qa2ws. When logged in follow the instructions on screen to change password and generate QR OTP image for MFA.
 
 		Next run remove the option -setup to start the app
 
@@ -812,8 +823,8 @@ func main() {
 
 	flag.Parse()
 
-	if *version {
-		fmt.Println(m.Version)
+	if *getVersion {
+		fmt.Println(version)
 		os.Exit(0)
 	}
 

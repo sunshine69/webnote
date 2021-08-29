@@ -1,18 +1,18 @@
 package app
 
 import (
-	"os"
-	"strings"
+	"fmt"
+	"github.com/json-iterator/go"
+	"github.com/sunshine69/kodirpc"
+	m "github.com/sunshine69/webnote-go/models"
 	"io/ioutil"
-	"strconv"
-	"time"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
-	"fmt"
-	"github.com/pdf/kodirpc"
-	"github.com/json-iterator/go"
-	m "github.com/sunshine69/webnote-go/models"
+	"strconv"
+	"strings"
+	"time"
 )
 
 var json jsoniter.API
@@ -23,7 +23,7 @@ func init() {
 	kodiURL = `127.0.0.1:9090`
 }
 
-func GetKodiClient() (*kodirpc.Client) {
+func GetKodiClient() *kodirpc.Client {
 	client, err := kodirpc.NewClient(kodiURL, kodirpc.NewConfig())
 	if err != nil || client == nil {
 		panic(err)
@@ -32,12 +32,12 @@ func GetKodiClient() (*kodirpc.Client) {
 }
 
 //GetCurrentPlayList -
-func GetCurrentPlayList(playerID int) (int) {
+func GetCurrentPlayList(playerID int) int {
 	client := GetKodiClient()
 	defer client.Close()
 
 	res, err := client.Call(`Player.GetProperties`, map[string]interface{}{
-		"playerid": playerID,
+		"playerid":   playerID,
 		"properties": []string{"playlistid"},
 	})
 	if err != nil {
@@ -67,7 +67,7 @@ func AddToPlayList(listID int, entry string) {
 	defer client.Close()
 	res, err := client.Call(`Playlist.Add`, map[string]interface{}{
 		"playlistid": listID,
-		"item": []map[string]string {
+		"item": []map[string]string{
 			{
 				"file": kodiYoutubeUrl,
 			},
@@ -86,8 +86,8 @@ func InsertToPlayList(listID int, entry string, position int) {
 	defer client.Close()
 	res, err := client.Call(`Playlist.Insert`, map[string]interface{}{
 		"playlistid": listID,
-		"position": position,
-		"item": []map[string]string {
+		"position":   position,
+		"item": []map[string]string{
 			{
 				"file": kodiYoutubeUrl,
 			},
@@ -100,7 +100,7 @@ func InsertToPlayList(listID int, entry string, position int) {
 }
 
 //GetActivePlayer -
-func GetActivePlayer() (int) {
+func GetActivePlayer() int {
 	client := GetKodiClient()
 	defer client.Close()
 
@@ -110,9 +110,9 @@ func GetActivePlayer() (int) {
 	}
 	//First use json Marshal and print the string. Then define this type. Not sure what is better and cleaner way to convert cast it though.
 	type Player struct {
-		Playerid int
+		Playerid   int
 		Playertype string
-		Type string
+		Type       string
 	}
 
 	o, _ := json.Marshal(res)
@@ -121,17 +121,17 @@ func GetActivePlayer() (int) {
 	return o1.ToInt()
 }
 
-func ParseVideoURL(url string) (string) {
+func ParseVideoURL(url string) string {
 	outputURL := ""
 	found := false
 
 	patterns := map[string]*regexp.Regexp{
 		"youtube": regexp.MustCompile(`youtube\.com\/watch\?v\=([^\=\&]+)`),
-		"vimeo": regexp.MustCompile(`vimeo\.com\/([\d]+)`),
+		"vimeo":   regexp.MustCompile(`vimeo\.com\/([\d]+)`),
 	}
-	for vtype, ptn := range(patterns) {
+	for vtype, ptn := range patterns {
 		match := ptn.FindStringSubmatch(url)
-		if len(match) > 0{
+		if len(match) > 0 {
 			found = true
 			vid := match[1]
 			switch vtype {
@@ -146,7 +146,7 @@ func ParseVideoURL(url string) (string) {
 			break
 		}
 	}
-	if ! found {
+	if !found {
 		outputURL = url
 	}
 	// fmt.Println(outputURL)
@@ -159,8 +159,8 @@ func PlayYoutube(url string) {
 	youtubeUrl := ParseVideoURL(url)
 
 	if youtubeUrl != "" {
-		params := map[string]interface{} {
-			"item": map[string]string {
+		params := map[string]interface{}{
+			"item": map[string]string{
 				"file": youtubeUrl,
 			},
 		}
@@ -193,7 +193,7 @@ func HandleAddToPlayList(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "OK")
 }
 
-func ParseCommon(w http.ResponseWriter, r *http.Request) (string) {
+func ParseCommon(w http.ResponseWriter, r *http.Request) string {
 	r.ParseForm()
 	if _kodiURL := r.FormValue("kodi_addr"); _kodiURL != "" {
 		kodiURL = _kodiURL
@@ -215,7 +215,7 @@ func HandleLoadList(w http.ResponseWriter, r *http.Request) {
 	data, e := ioutil.ReadFile(listName + ".list")
 	if e != nil {
 		fmt.Fprintf(w, "ERROR list does not exists")
-	} else{
+	} else {
 		fmt.Fprintf(w, string(data))
 	}
 }
@@ -224,7 +224,7 @@ func HandleSaveList(w http.ResponseWriter, r *http.Request) {
 	ParseCommon(w, r)
 	list_text := r.FormValue("list_text")
 	list_name := r.FormValue("list_name")
-	ioutil.WriteFile(list_name + ".list", []byte(list_text), 0755)
+	ioutil.WriteFile(list_name+".list", []byte(list_text), 0755)
 	fmt.Fprintf(w, "OK")
 }
 
@@ -236,12 +236,14 @@ func HandlePlayList(w http.ResponseWriter, r *http.Request) {
 	playerID := GetActivePlayer()
 	listID := GetCurrentPlayList(playerID)
 	// log.Printf("DEBUG: ListID %d\n", listID)
-	if action == "play"{
+	if action == "play" {
 		ClearCurrentList(listID)
 	}
-	for _, url := range(listUrls) {
+	for _, url := range listUrls {
 		_tmp := strings.Split(url, " ")
-		if _tmp[0] == "" { continue }
+		if _tmp[0] == "" {
+			continue
+		}
 		if playerID == 0 {
 			PlayYoutube(_tmp[0])
 			time.Sleep(5 * time.Second)
@@ -266,14 +268,14 @@ func SaveRecentList(url string) {
 }
 
 func KodiIsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		userIP := m.ReadUserIP(r)
 		kodiNetwork := m.GetConfigSave("kodi_network", "127.0.0.1/8, 192.168.0.0/24")
-		if ! m.CheckUserIPInWhiteList(userIP, kodiNetwork){
+		if !m.CheckUserIPInWhiteList(userIP, kodiNetwork) {
 			fmt.Fprintf(w, "ERROR")
 			return
 		}
 		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		endpoint(w, r)
-    })
+	})
 }
