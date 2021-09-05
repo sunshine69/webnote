@@ -12,7 +12,7 @@
         <td contenteditable="false" id="flags">{{ .note.Flags }}</td>
     </tr>
     <tr>{{ if eq .note.RawEditor 0 }}
-        <TD valign="top" onclick="enable_edit(this);" title="Click me or any left area below me and click the next content area to enable edit the note content. Click again to save and switch to view"><u><i>edit</i></u></TD>
+        <TD valign="center" onclick="enable_edit(this);" title="Click me or any left area below me and click the next content area to enable edit the note content. Click again to save and switch to view"><u><i>edit</i></u></TD>
         {{ else }}
         <td>&nbsp;</td>
         {{ end }}

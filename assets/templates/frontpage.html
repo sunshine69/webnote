@@ -30,8 +30,9 @@
 <!-- <tr><TD>&nbsp;</TD><td colspan="2"><textareA class='ckeditor' id="content" name="content" -->
     <tr>
         <TD>&nbsp;</TD>
-        <td colspan="3"><textarea id="content" name="content" wrap="soft" autocomplete="on"
-cols="150" rows="25">{{ .note.Content }}</textarea></td>
+        <td colspan="3">        <textarea id="content" name="content" wrap="soft" autocomplete="on"
+            cols="150" rows="25">{{ .note.Content }}</textarea>
+</td>
     </tr>
 {{ if eq .note.RawEditor 1 }}
 <!-- No HTML editor Handle TAB key -->
@@ -50,12 +51,13 @@ for(var i=0;i<count;i++){
 }
 </script>
 {{ else }}
-<script>CKEDITOR.replace( 'content', {
+<script>
+CKEDITOR.replace( 'content', {
     allowedContent: true,
     dataIndentationChars: '  ',
     tabSpaces: 2,
-    fullPage: true,
-    extraPlugins: 'imagepaste'
+    fullPage: true
+    //extraPlugins: 'imagepaste'
 });
 </script>
 {{ end }}
