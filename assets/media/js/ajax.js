@@ -169,11 +169,11 @@ if( typeof AJAX == 'undefined' ){
             return AJAX.ajaxFull( url, callback, true );
         },  // end getText
 
-        postText : function( url, params, callback)
-        { return AJAX.ajaxPost( url, callback, params, true ); },
+        postText : function( url, params, callback, headers=[])
+        { return AJAX.ajaxPost( url, callback, params, true,'','', headers); },
 
         postTextBasicAuth : function( url, params, user, pass, callback)
-        { return AJAX.ajaxPost( url, callback, params, true, user, pass ); },
+        { return AJAX.ajaxPost( url, callback, params, true, user, pass, headers); },
 
         /**
          * Retrieves raw text from 'url' and attempts to set
@@ -226,11 +226,15 @@ if( typeof AJAX == 'undefined' ){
         },  // end setValueById
 
     /* ********  I N T E R N A L   F U N C T I O N S  ******** */
-        ajaxPost : function( url, callback, params, textInsteadOfXml, user='', pass='') {
+        ajaxPost : function( url, callback, params, textInsteadOfXml, user='', pass='', headers) {
         var request = AJAX.httprequest();
         if (user && pass) request.open("POST", url, true, user, pass);
         else request.open("POST", url, true);
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+         console.table(headers.length);
+        if (headers.length > 0) {
+         for (let i = 0; i < headers.length; i++) { request.setRequestHeader(headers[i][0], headers[i][1]) }
+        }
         // This caused error: Refused to set unsafe header
         //request.setRequestHeader("Content-length", params.length);
         //request.setRequestHeader("connection", "close");
