@@ -748,7 +748,7 @@ func HandleRequests() {
 	router.Handle("/savebookmark", isAuthorized(app.SaveBookMark)).Methods("GET")
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
 	//A random generator
-	router.Handle("/rand", app.GenRandNubmer).Method("GET")
+	router.HandleFunc("/rand", app.GenRandNumber).Methods("GET")
 
 	srv := &http.Server{
 		Addr: ":" + ServerPort,
