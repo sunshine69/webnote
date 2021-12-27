@@ -17,6 +17,8 @@ import (
 	"strings"
 	"time"
 
+	_ "time/tzdata"
+
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -24,7 +26,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
-	_ "time/tzdata"
 )
 
 var version, ServerPort, SSLKey, SSLCert string
@@ -746,6 +747,8 @@ func HandleRequests() {
 	//Save bookmark
 	router.Handle("/savebookmark", isAuthorized(app.SaveBookMark)).Methods("GET")
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
+	//A random generator
+	router.Handle("/rand", app.GenRandNubmer).Method("GET")
 
 	srv := &http.Server{
 		Addr: ":" + ServerPort,
