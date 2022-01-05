@@ -803,7 +803,7 @@ func main() {
 		flag.PrintDefaults()
 		msg := `
 		Quick start
-		To setup initial database use option '-db path-to-your-new-db.db -key path-to-ssl-key -cert path-to-cert-file -p port -setup'
+		To setup initial database use option '-db path-to-your-new-db.db -key mykey.key -cert mykey.crt -p port -setup'
 
 		The ssl cert and key if it does not exist then will be created automatically.
 

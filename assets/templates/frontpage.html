@@ -59,6 +59,36 @@ for(var i=0;i<count;i++){
 });
 </script>
 {{ end }}
+<script>
+    var isFormChanged = false;
+    function save_note() {
+        if (! isFormChanged) { return }
+        myform = document.getElementById('note');
+        if (CKEDITOR.instances['content']) {
+            CKEDITOR.instances['content'].updateElement();
+        }
+        note_content = document.getElementsByName('content')[0].value;
+        if (note_content == '') { return }
+        var request = new XMLHttpRequest();
+        request.open(myform.method, myform.action);
+        request.send(new FormData(myform));
+        isFormChanged = false;
+    }
+    if (CKEDITOR.instances['content']) {
+        // console.log("Need to use ckeditor to detect change event");
+        var content_editor = CKEDITOR.instances['content'];
+        content_editor.on( 'key', function() {
+            isFormChanged = true;
+        });
+    } else {
+        var form = document.getElementById("note");
+        form.addEventListener("input", function () {
+            // console.log("Form has changed!");
+            isFormChanged = true;
+        });
+    }
+    setInterval(save_note, 5000);
+</script>
     <tr>
         <TD><i>Url</i></TD>
         <td colspan="2"><input type="text" name="url" value="{{ .note.URL }}" size="55" /> </td>
@@ -99,7 +129,7 @@ for(var i=0;i<count;i++){
         </td>
         <td align="center" colspan="2">
             <!-- <input type="submit" name="sendmail" value="Email note"/> -->
-            <input type="submit" name="savenote" value="Save"/>
+            <input type="button" name="savenote" value="Save" onclick="save_note();"/>
         </td>
     </tr>
 </table>
