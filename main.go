@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"html/template"
@@ -834,6 +835,9 @@ func main() {
 	ServerPort = *port
 
 	os.Setenv("DBPATH", *dbPath)
+	if _, err := os.Stat(*dbPath); errors.Is(err, os.ErrNotExist) {
+		*setup = true 
+	}
 	if *setup {
 		m.SetupDefaultConfig()
 		m.SetupAppDatabase()
