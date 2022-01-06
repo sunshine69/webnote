@@ -817,7 +817,7 @@ func main() {
 
 		You have to run set_admin_otp to get the OTP QR image produced in the current directory and use it for admin login.
 
-		If a user is blacklisted form an IP (account lock) run sqlite3 path-to-your-db
+		If a user is blacklisted from an IP (account lock) run sqlite3 path-to-your-db
 		Then run this sql 'DELETE FROM appconfig WHERE key="blacklist_ips";'
 
 		Try to select * from appconfig to see what key you can do. The whitelist_ip is a list of IP that user does not need to use OTP to login.
@@ -836,7 +836,7 @@ func main() {
 
 	os.Setenv("DBPATH", *dbPath)
 	if _, err := os.Stat(*dbPath); errors.Is(err, os.ErrNotExist) {
-		*setup = true 
+		*setup = true
 	}
 	if *setup {
 		m.SetupDefaultConfig()
