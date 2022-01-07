@@ -799,6 +799,7 @@ func main() {
 	usergroup := flag.String("group", "", "User Group. Any of default|family|friend or coma separated ")
 	EnableCompression = flag.String("comp", "", "Enable server compression. Dont use it for https")
 	AttachmentDir := flag.String("attachmentdir", "", "Directory path to scan attachments for auto add attachment command '-cmd scan_attachment'")
+	rootUploadDir := flag.String("upload-dir", "uploads/", "Default Root dir for uploads files")
 
 	flag.Usage = func() {
 		flag.PrintDefaults()
@@ -826,6 +827,7 @@ func main() {
 	}
 
 	flag.Parse()
+	m.UpLoadPath = *rootUploadDir
 
 	if *getVersion {
 		fmt.Println(version)
@@ -836,6 +838,11 @@ func main() {
 
 	os.Setenv("DBPATH", *dbPath)
 	if _, err := os.Stat(*dbPath); errors.Is(err, os.ErrNotExist) {
+		*setup = true
+	}
+	if os.Getenv("RESET_STORAGE") == "yes" {
+		os.Remove(*dbPath)
+		os.Remove(fmt.Sprintf("%s-journal", *dbPath))
 		*setup = true
 	}
 	if *setup {

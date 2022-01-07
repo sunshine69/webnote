@@ -11,7 +11,7 @@ ADD . /app/
 WORKDIR /app
 ENV CGO_ENABLED=1 PATH=/usr/local/go/bin:/opt/go/bin:/usr/bin:/usr/sbin:/bin:/sbin
 
-ARG APP_VERSION=v1.0
+ARG APP_VERSION=v1.5
 RUN go build -trimpath -ldflags="-X main.version=$APP_VERSION -extldflags=-static -w -s" --tags "osusergo,netgo,sqlite_stat4,sqlite_foreign_keys,sqlite_json"
 CMD ["/app/webnote-go"]
 
@@ -22,5 +22,4 @@ COPY --from=BUILD_BASE /app/webnote-go /webnote-go
 COPY --from=BUILD_BASE /app/assets /assets
 ENV TZ=Australia/Brisbane
 EXPOSE 8080
-ENTRYPOINT [ "/webnote-go", "-db", "/home/webnote.sqlite3", "-p", "8080" ]
-
+ENTRYPOINT [ "/webnote-go", "-db", "/home/webnote.sqlite3", "-p", "8080", "-upload-dir", "/home/uploads" ]
