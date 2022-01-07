@@ -22,5 +22,4 @@ COPY --from=BUILD_BASE /app/webnote-go /webnote-go
 COPY --from=BUILD_BASE /app/assets /assets
 ENV TZ=Australia/Brisbane
 EXPOSE 8080
-ENTRYPOINT [ "/webnote-go", "-db", "/home/webnote.sqlite3", "-p", "8080" ]
-
+ENTRYPOINT [ "/webnote-go", "-db", "/home/webnote.sqlite3", "-p", "8080", "-upload-dir", "/home/uploads" ]
