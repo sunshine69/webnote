@@ -1,7 +1,7 @@
 FROM golang:alpine
 
 RUN apk update && \
-    apk add --no-cache git ca-certificates tzdata gcc musl-dev && \
+    apk add --no-cache git ca-certificates tzdata gcc musl-dev curl && \
     update-ca-certificates
 
 WORKDIR /work/
@@ -9,4 +9,4 @@ WORKDIR /work/
 COPY . .
 
 # Fetch dependencies.
-RUN go get -d -v
+RUN go get -d -v && rm -rf /work

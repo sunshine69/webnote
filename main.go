@@ -840,12 +840,16 @@ func main() {
 	if _, err := os.Stat(*dbPath); errors.Is(err, os.ErrNotExist) {
 		*setup = true
 	}
-	if os.Getenv("RESET_STORAGE") == "yes" {
-		os.Remove(*dbPath)
-		os.Remove(fmt.Sprintf("%s-journal", *dbPath))
+	switch os.Getenv("RESET_STORAGE") {
+	case "yes", "true":
+		journalPath := fmt.Sprintf("%s-journal", *dbPath)
+		log.Printf("RESET_STORAGE is set going to remove %s and %s\n", *dbPath, journalPath)
+		if err := os.Remove(*dbPath); err != nil { log.Printf("remove dbPath error: %v\n", err) }
+		if err := os.Remove(journalPath); err != nil { log.Printf("remove journalPath error: %v\n", err) }
 		*setup = true
 	}
 	if *setup {
+		log.Printf("SETUP is called and started\n")
 		m.SetupDefaultConfig()
 		m.SetupAppDatabase()
 		m.CreateAdminUser()

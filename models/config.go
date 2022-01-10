@@ -82,6 +82,15 @@ func GetDB(dbPath string) *sql.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	//_, err = DB.Exec(`PRAGMA page_size = 4096;
+	//PRAGMA journal_mode=wal;
+	//PRAGMA cache_size=5000;
+	//PRAGMA busy_timeout = 15000`)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//DB.SetMaxOpenConns(1)
+
 	return DB
 }
 
