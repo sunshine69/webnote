@@ -60,18 +60,34 @@ for(var i=0;i<count;i++){
 </script>
 {{ end }}
 <script>
+    var typingTimer;                //timer identifier
+    var doneTypingInterval = 5000;  //time in ms (5 seconds)
+    var myInput = document.getElementById('note');
     var isFormChanged = false;
+
+    //on keyup, start the countdown
+    // myInput.addEventListener('keyup', function() {
+    //     clearTimeout(typingTimer);
+    //     typingTimer = setTimeout(save_note, doneTypingInterval);
+
+    // });
+
+    //user is "finished typing," do something
+    // function doneTyping () {
+    //     // isFormChanged = true
+    //     save_note()
+    // }
+
     function save_note() {
         if (! isFormChanged) { return }
-        myform = document.getElementById('note');
         if (CKEDITOR.instances['content']) {
             CKEDITOR.instances['content'].updateElement();
         }
         note_content = document.getElementsByName('content')[0].value;
         if (note_content == '') { return }
         var request = new XMLHttpRequest();
-        request.open(myform.method, myform.action);
-        request.send(new FormData(myform));
+        request.open(myInput.method, myInput.action);
+        request.send(new FormData(myInput));
         isFormChanged = false;
     }
     if (CKEDITOR.instances['content']) {
@@ -79,15 +95,18 @@ for(var i=0;i<count;i++){
         var content_editor = CKEDITOR.instances['content'];
         content_editor.on( 'key', function() {
             isFormChanged = true;
+            isFormChanged = true;
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(save_note, doneTypingInterval);
         });
     } else {
-        var form = document.getElementById("note");
-        form.addEventListener("input", function () {
+        myInput.addEventListener("input", function () {
             // console.log("Form has changed!");
             isFormChanged = true;
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(save_note, doneTypingInterval);
         });
     }
-    setInterval(save_note, 5000);
 </script>
     <tr>
         <TD><i>Url</i></TD>
