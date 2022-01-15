@@ -850,8 +850,8 @@ func main() {
 	}
 	if *setup {
 		log.Printf("SETUP is called and started\n")
-		m.SetupDefaultConfig()
 		m.SetupAppDatabase()
+		m.SetupDefaultConfig()
 		m.CreateAdminUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
 			keyFileName := m.FileNameWithoutExtension(*sslKey)

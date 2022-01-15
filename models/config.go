@@ -1,6 +1,7 @@
 package models
 
 import (
+	"io"
 	"bytes"
 	"database/sql"
 	"fmt"
@@ -338,14 +339,41 @@ func SetupAppDatabase() {
 	);
 -- End Andrew account ledger
 	`
-	DB := GetDB("")
-	defer DB.Close()
+	var DB *sql.DB
+	if os.Getenv("DB_STORAGE_ON_CIFS") == "true" {
+		log.Printf("DB_STORAGE_ON_CIFS is true trying to work around with CIFS")
+		DB = GetDB("file:/tmp/tmp-gonote.sqlite3?cache=shared&mode=rwc&_journal_mode=WAL")
+	} else {
+		log.Printf("DB_STORAGE_ON_CIFS is not true setup normal")
+		DB = GetDB("")
+	}
+
 	tx, _ := DB.Begin()
 	if _, e := tx.Exec(SqlSetup); e != nil {
 		log.Fatalf("ERROR can not setup app db - %v\n", e)
 		tx.Rollback()
 	}
 	tx.Commit()
+	DB.Close()
+	if os.Getenv("DB_STORAGE_ON_CIFS") == "true" {
+		source, err := os.Open("/tmp/tmp-gonote.sqlite3")
+        if err != nil {
+            log.Fatalf("ERROR %v\n", err)
+        }
+        defer source.Close()
+
+        destination, err := os.Create(os.Getenv("DBPATH"))
+        if err != nil {
+            log.Fatalf("ERROR %v\n", err)
+        }
+        defer destination.Close()
+        nBytes, err := io.Copy(destination, source)
+		if err != nil {
+            log.Fatalf("ERROR %v\n", err)
+        }
+		log.Printf("Copy %d bytes", nBytes)
+		os.Remove("/tmp/tmp-gonote.sqlite3")
+	}
 }
 
 //CheckPerm - Check permission to do an operation on a object
