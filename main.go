@@ -759,6 +759,9 @@ func HandleRequests() {
 		IdleTimeout:  time.Second * 60,
 		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
 	}
+	if (*EnableCompression == "") && (os.Getenv("HTTP_ENABLE_COMPRESSION") == "true") {
+		*EnableCompression = "yes"
+	}
 	if *EnableCompression == "yes" {
 		srv.Handler = handlers.CompressHandler(protectionMiddleware(router))
 	} else {

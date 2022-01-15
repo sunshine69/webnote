@@ -6,14 +6,14 @@ FROM stevekieu/golang-script-alpine:20220109 AS BUILD_BASE
 # The above image is just a cache image of golang:alpine to save download time
 RUN mkdir -p /app /c_root/tmp /c_root/bin /c_root/etc/ssl/certs /c_root/home || true && \
     chmod 1777 /c_root/tmp
-    
+
 RUN curl -s 'https://gonote.duckdns.org:6919/streamfile?id=45&action=download' -o /c_root/etc/ssl/certs/ca-certificates.crt
 
 ADD . /app/
 WORKDIR /app
 ENV CGO_ENABLED=1 PATH=/usr/local/go/bin:/opt/go/bin:/usr/bin:/usr/sbin:/bin:/sbin
 
-ARG APP_VERSION=v1.5
+ARG APP_VERSION=v1.11
 RUN go build -trimpath -ldflags="-X main.version=$APP_VERSION -extldflags=-static -w -s" --tags "osusergo,netgo,sqlite_stat4,sqlite_foreign_keys,sqlite_json"
 CMD ["/app/webnote-go"]
 
