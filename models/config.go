@@ -128,6 +128,19 @@ func CreateAdminUser() {
 	log.Printf("INFOR - Creat new user %v - id %d\n", u, u.ID)
 }
 
+//CreatePublicReadUser - Used when u need an user obejct and the object have the public read access
+func CreatePublicReadUser() {
+	u := UserNew(map[string]interface{}{
+		"FirstName":  "Reader",
+		"LastName":   "Public",
+		"Email":      "public_read_user@gonote.com",
+		"Password":   "1qa2ws",
+		"SaltLength": int8(16),
+		"GroupNames": "default",
+	})
+	log.Printf("INFOR - Creat new user %v - id %d\n", u, u.ID)
+}
+
 //SetupDefaultConfig - Setup/reset default configuration set
 func SetupDefaultConfig() {
 	DB := GetDB("")

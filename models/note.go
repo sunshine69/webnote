@@ -153,7 +153,6 @@ func NoteNew(in map[string]interface{}) *Note {
 			titleText = strings.ReplaceAll(ct[0:_l], "\n", " ")
 		}
 	}
-
 	n.Content = ct
 	n.Title = titleText
 

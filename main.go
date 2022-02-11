@@ -750,6 +750,9 @@ func HandleRequests() {
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber).Methods("GET")
+	// Onetime secret share
+	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL).Methods("POST")
+	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret).Methods("GET")
 
 	srv := &http.Server{
 		Addr: ":" + ServerPort,
@@ -856,6 +859,7 @@ func main() {
 		m.SetupAppDatabase()
 		m.SetupDefaultConfig()
 		m.CreateAdminUser()
+		m.CreatePublicReadUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
 			keyFileName := m.FileNameWithoutExtension(*sslKey)
 			m.GenSelfSignedKey(keyFileName)

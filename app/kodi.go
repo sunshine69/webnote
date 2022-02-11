@@ -272,7 +272,7 @@ func KodiIsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Ha
 		userIP := m.ReadUserIP(r)
 		kodiNetwork := m.GetConfigSave("kodi_network", "127.0.0.1/8, 192.168.0.0/24")
 		if !m.CheckUserIPInWhiteList(userIP, kodiNetwork) {
-			fmt.Fprintf(w, "ERROR")
+			fmt.Fprintf(w, "ERROR NOT ALLOWED NETWORK")
 			return
 		}
 		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
