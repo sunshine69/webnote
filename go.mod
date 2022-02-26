@@ -14,8 +14,8 @@ require (
 	github.com/sergi/go-diff v1.2.0
 	github.com/sunshine69/golang-tools/utils v0.0.0-20220124052054-5710ad4db43b
 	github.com/sunshine69/kodirpc v0.0.2-0.20210806112756-5c0db1e32a95
-	github.com/yuin/goldmark v1.4.5
-	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2
+	github.com/yuin/goldmark v1.4.6
+	golang.org/x/crypto v0.0.0-20220213190939-1e6e3497d506
 )
 
 require (
