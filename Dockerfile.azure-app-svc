@@ -1,4 +1,4 @@
-FROM stevekieu/golang-script-alpine:20220109 AS BUILD_BASE
+FROM stevekieu/golang-script:20220602 AS BUILD_BASE
 # FROM localhost/build-golang-ubuntu20:20210807-1 AS BUILD_BASE
 # FROM golang:alpine AS BUILD_BASE
 # RUN apk add --no-cache musl-dev gcc sqlite-dev curl
@@ -13,7 +13,7 @@ ADD . /app/
 WORKDIR /app
 ENV CGO_ENABLED=1 PATH=/usr/local/go/bin:/opt/go/bin:/usr/bin:/usr/sbin:/bin:/sbin
 
-ARG APP_VERSION=v1.12
+ARG APP_VERSION=v1.13
 RUN go build -trimpath -ldflags="-X main.version=$APP_VERSION -extldflags=-static -w -s" --tags "osusergo,netgo,sqlite_stat4,sqlite_foreign_keys,sqlite_json"
 CMD ["/app/webnote-go"]
 
