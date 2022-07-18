@@ -1,45 +1,51 @@
 package models
 
 import (
-	"time"
 	"fmt"
-	"strings"
-	"strconv"
 	"log"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/pquerna/otp/totp"
+	u "github.com/sunshine69/golang-tools/utils"
 )
 
 type User struct {
-	ID int64
-	GroupNames string //coma sep group names
-	Groups []*Group
-	FirstName string
-	LastName string
-	Email string
-	Address string
+	ID           int64
+	GroupNames   string //coma sep group names
+	Groups       []*Group
+	FirstName    string
+	LastName     string
+	Email        string
+	Address      string
 	PasswordHash string
-	SaltLength int8
-	HomePhone string
-	WorkPhone string
-	MobilePhone string
-	ExtraInfo string
-	LastAttempt int64
+	SaltLength   int8
+	HomePhone    string
+	WorkPhone    string
+	MobilePhone  string
+	ExtraInfo    string
+	LastAttempt  int64
 	AttemptCount int8
-	LastLogin int64
-	PrefID int8
+	LastLogin    int64
+	PrefID       int8
 	TotpPassword string
 }
+
 //update - Only be called from the GetUserXXX which complete the user object with external objects, references etc.
 func (u *User) update() {
 	if u.GroupNames != "" {
-		for _, group := range( strings.Split(u.GroupNames, ",") ) {
-			if group == "" { continue }
+		for _, group := range strings.Split(u.GroupNames, ",") {
+			if group == "" {
+				continue
+			}
 			group = strings.TrimSpace(group)
 			log.Printf("INFO add user %v to group %s\n", u, group)
 			u.SetGroup(group)
 		}
 	}
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	rows, e := DB.Query(`SELECT
 		g.id,
 		g.name,
@@ -65,11 +71,12 @@ func (u *User) update() {
 
 //SetGroup -
 func (u *User) SetGroup(gnames ...string) {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	userID := u.ID
-	for _, gname := range(gnames) {
+	for _, gname := range gnames {
 		g := GetGroup(gname)
-		if g != nil{
+		if g != nil {
 			if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.ID).Scan(&g.ID); e != nil {
 				log.Printf("ERROR %v\n", e)
 				log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
@@ -88,27 +95,29 @@ func (u *User) SetGroup(gnames ...string) {
 }
 
 //UserNew - It will Call Save
-func UserNew(in map[string]interface{}) (*User) {
+func UserNew(in map[string]interface{}) *User {
 	n := User{}
-	n.GroupNames = GetMapByKey(in, "GroupNames", "default").(string)
-	n.FirstName = GetMapByKey(in, "FirstName", "").(string)
-	n.LastName = GetMapByKey(in, "LastName", "").(string)
-	n.Email = GetMapByKey(in, "Email", "").(string)
-	n.Address = GetMapByKey(in, "Address", "").(string)
-	// n.PasswordHash = GetMapByKey(in, "PasswordHash", "").(string)
-	n.SaltLength = GetMapByKey(in, "SaltLength", int8(12)).(int8)
-	n.HomePhone = GetMapByKey(in, "HomePhone", "").(string)
-	n.WorkPhone = GetMapByKey(in, "WorkPhone", "").(string)
-	n.MobilePhone = GetMapByKey(in, "MobilePhone", "").(string)
-	n.ExtraInfo = GetMapByKey(in, "ExtraInfo", "").(string)
-	n.LastAttempt = GetMapByKey(in, "LastAttempt", int64(0)).(int64)
-	n.AttemptCount = GetMapByKey(in, "AttemptCount", int8(0)).(int8)
-	n.LastLogin = GetMapByKey(in, "LastLogin", int64(0)).(int64)
-	n.PrefID = GetMapByKey(in, "PrefID", int8(0)).(int8)
-	// n.TotpPassword = GetMapByKey(in, "TotpPassword", "").(string)
+	n.GroupNames = u.GetMapByKey(in, "GroupNames", "default").(string)
+	n.FirstName = u.GetMapByKey(in, "FirstName", "").(string)
+	n.LastName = u.GetMapByKey(in, "LastName", "").(string)
+	n.Email = u.GetMapByKey(in, "Email", "").(string)
+	n.Address = u.GetMapByKey(in, "Address", "").(string)
+	// n.PasswordHash = u.GetMapByKey(in, "PasswordHash", "").(string)
+	n.SaltLength = u.GetMapByKey(in, "SaltLength", int8(12)).(int8)
+	n.HomePhone = u.GetMapByKey(in, "HomePhone", "").(string)
+	n.WorkPhone = u.GetMapByKey(in, "WorkPhone", "").(string)
+	n.MobilePhone = u.GetMapByKey(in, "MobilePhone", "").(string)
+	n.ExtraInfo = u.GetMapByKey(in, "ExtraInfo", "").(string)
+	n.LastAttempt = u.GetMapByKey(in, "LastAttempt", int64(0)).(int64)
+	n.AttemptCount = u.GetMapByKey(in, "AttemptCount", int8(0)).(int8)
+	n.LastLogin = u.GetMapByKey(in, "LastLogin", int64(0)).(int64)
+	n.PrefID = u.GetMapByKey(in, "PrefID", int8(0)).(int8)
+	// n.TotpPassword = u.GetMapByKey(in, "TotpPassword", "").(string)
 	n.Save()
-	Password := GetMapByKey(in, "Password", "").(string)
-	if Password != "" { n.SetUserPassword(Password) }
+	Password := u.GetMapByKey(in, "Password", "").(string)
+	if Password != "" {
+		n.SetUserPassword(Password)
+	}
 	return &n
 }
 
@@ -163,18 +172,18 @@ func (n *User) Save() {
 			salt_length = $12
 			WHERE email = $13`
 		_, e := tx.Exec(sql,
-			Ternary(n.FirstName != currentUser.FirstName, n.FirstName, currentUser.FirstName).(string),
-			Ternary(n.LastName != currentUser.LastName, n.LastName, currentUser.LastName).(string),
-			Ternary(n.Address != currentUser.Address, n.Address, currentUser.Address).(string),
-			Ternary(n.HomePhone != currentUser.HomePhone, n.HomePhone, currentUser.HomePhone).(string),
-			Ternary(n.WorkPhone != currentUser.WorkPhone, n.WorkPhone, currentUser.WorkPhone).(string),
-			Ternary(n.MobilePhone != currentUser.MobilePhone, n.MobilePhone, currentUser.MobilePhone).(string),
-			Ternary(n.ExtraInfo != currentUser.ExtraInfo, n.ExtraInfo, currentUser.ExtraInfo).(string),
-			Ternary(n.LastAttempt != currentUser.LastAttempt, n.LastAttempt, currentUser.LastAttempt).(int64),
-			Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount).(int8),
-			Ternary(n.LastLogin != currentUser.LastLogin, n.LastLogin, currentUser.LastLogin).(int64),
-			Ternary(n.PrefID != currentUser.PrefID, n.PrefID, currentUser.PrefID).(int8),
-			Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength).(int8),
+			u.Ternary(n.FirstName != currentUser.FirstName, n.FirstName, currentUser.FirstName).(string),
+			u.Ternary(n.LastName != currentUser.LastName, n.LastName, currentUser.LastName).(string),
+			u.Ternary(n.Address != currentUser.Address, n.Address, currentUser.Address).(string),
+			u.Ternary(n.HomePhone != currentUser.HomePhone, n.HomePhone, currentUser.HomePhone).(string),
+			u.Ternary(n.WorkPhone != currentUser.WorkPhone, n.WorkPhone, currentUser.WorkPhone).(string),
+			u.Ternary(n.MobilePhone != currentUser.MobilePhone, n.MobilePhone, currentUser.MobilePhone).(string),
+			u.Ternary(n.ExtraInfo != currentUser.ExtraInfo, n.ExtraInfo, currentUser.ExtraInfo).(string),
+			u.Ternary(n.LastAttempt != currentUser.LastAttempt, n.LastAttempt, currentUser.LastAttempt).(int64),
+			u.Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount).(int8),
+			u.Ternary(n.LastLogin != currentUser.LastLogin, n.LastLogin, currentUser.LastLogin).(int64),
+			u.Ternary(n.PrefID != currentUser.PrefID, n.PrefID, currentUser.PrefID).(int8),
+			u.Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength).(int8),
 			n.Email)
 		if e != nil {
 			tx.Rollback()
@@ -188,10 +197,10 @@ func (n *User) Save() {
 }
 
 //GetUserByID - always return an up-to-date user object in full, it will call .update() to update data not directly from database
-func GetUserByID(id int64) (*User) {
+func GetUserByID(id int64) *User {
 	DB := GetDB("")
 	defer DB.Close()
-	u := User{ ID: id }
+	u := User{ID: id}
 	if e := DB.QueryRow(`SELECT
 		id,
 		f_name,
@@ -218,10 +227,10 @@ func GetUserByID(id int64) (*User) {
 }
 
 //GetUser - by email always return an up-to-date user object in full, it will call .update() to update data not directly from database
-func GetUser(email string) (*User) {
+func GetUser(email string) *User {
 	DB := GetDB("")
 	defer DB.Close()
-	u := User{ Email: email }
+	u := User{Email: email}
 	if e := DB.QueryRow(`SELECT
 		id,
 		f_name,
@@ -261,26 +270,31 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 
 	if user != nil {
 		user.LastAttempt = time.Now().UnixNano()
-		if user.AttemptCount > 3 { user.Save(); return nil, fmt.Errorf("Max attempts reached") }
+		if user.AttemptCount > 3 {
+			user.Save()
+			return nil, fmt.Errorf("Max attempts reached")
+		}
 		user.AttemptCount = user.AttemptCount + 1
 		if user.SaltLength == 0 {
 			saltLengthStr := GetConfigSave("salt_length", "12")
 			saltLength, _ := strconv.Atoi(saltLengthStr)
 			user.SaltLength = int8(saltLength)
 		}
-		if ! VerifyHash(password, user.PasswordHash, int(user.SaltLength)) {
+		if !u.VerifyHash(password, user.PasswordHash, int(user.SaltLength)) {
 			user.Save()
 			return nil, fmt.Errorf("Fail Password")
 		}
 		if user.LastLogin == 0 {
-			user.LastLogin = time.Now().UnixNano(); user.AttemptCount = 0; user.ExtraInfo = user.ExtraInfo + " First Time Login "
+			user.LastLogin = time.Now().UnixNano()
+			user.AttemptCount = 0
+			user.ExtraInfo = user.ExtraInfo + " First Time Login "
 			user.Save()
 			return user, nil
 		}
 
 		whitelistIP := GetConfigSave("white_list_ips", "")
-		if (! CheckUserIPInWhiteList(userIP, whitelistIP)) {
-			if ! totp.Validate(otp, user.TotpPassword) {
+		if !CheckUserIPInWhiteList(userIP, whitelistIP) {
+			if !totp.Validate(otp, user.TotpPassword) {
 				user.Save()
 				return nil, fmt.Errorf("Fail OTP")
 			}
@@ -288,7 +302,7 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 	} else {
 		return nil, fmt.Errorf("User does not exist")
 	}
-	if user != nil{
+	if user != nil {
 		user.AttemptCount = 0
 		user.LastLogin = time.Now().UnixNano()
 		user.Save()
@@ -296,31 +310,33 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 	return user, nil
 }
 
-func (u *User) SetUserPassword(p string) {
-	salt := MakeSalt(u.SaltLength)
-	PasswordHash := ComputeHash(p, *salt)
-	DB := GetDB(""); defer DB.Close()
+func (user *User) SetUserPassword(p string) {
+	salt := u.MakeSalt(user.SaltLength)
+	PasswordHash := u.ComputeHash(p, *salt)
+	DB := GetDB("")
+	defer DB.Close()
 	tx, _ := DB.Begin()
 	sql := `UPDATE user SET
 			passwd = $1,
 			salt_length = $2
 			WHERE email = $3`
-	_, e := tx.Exec(sql, PasswordHash, u.SaltLength, u.Email)
+	_, e := tx.Exec(sql, PasswordHash, user.SaltLength, user.Email)
 	if e != nil {
 		tx.Rollback()
 		log.Fatalf("ERROR SetUserPassword can not update user %v\n", e)
 	}
 	tx.Commit()
-	u.PasswordHash = PasswordHash
+	user.PasswordHash = PasswordHash
 }
 
 func (u *User) SaveUserOTP() {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	tx, _ := DB.Begin()
 	sql := `UPDATE user SET
 			totp_passwd = $1
 			WHERE email = $2`
-		_, e := tx.Exec(sql, u.TotpPassword, u.Email)
+	_, e := tx.Exec(sql, u.TotpPassword, u.Email)
 	if e != nil {
 		tx.Rollback()
 		log.Fatalf("ERROR SaveUserOTP can not update user %v\n", e)
@@ -329,7 +345,8 @@ func (u *User) SaveUserOTP() {
 }
 
 func SearchUser(kw string) []*User {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	q := fmt.Sprintf(`SELECT
 		id,
 		f_name,

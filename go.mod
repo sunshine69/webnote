@@ -12,10 +12,10 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.18
 	github.com/pquerna/otp v1.3.0
 	github.com/sergi/go-diff v1.2.0
-	github.com/sunshine69/golang-tools/utils v0.0.0-20220401015903-937a1ec6ba28
+	github.com/sunshine69/golang-tools/utils v0.0.0-20220718102521-fa7376d3a915
 	github.com/sunshine69/kodirpc v0.0.2-0.20210806112756-5c0db1e32a95
 	github.com/yuin/goldmark v1.4.12
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 )
 
 require (
@@ -32,7 +32,7 @@ require (
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	golang.org/x/net v0.0.0-20220531201128-c960675eff93 // indirect
+	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

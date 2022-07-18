@@ -1,35 +1,38 @@
 package models
 
 import (
+	"errors"
+	"fmt"
+	"log"
+	"os"
 	"path/filepath"
 	"time"
-	"fmt"
-	"os"
-	"log"
-	"errors"
+
+	u "github.com/sunshine69/golang-tools/utils"
 )
 
 type Attachment struct {
 	Object
-	ID int64
-	Name string
-	Description string
-	Author *User
-	Group *Group
+	ID           int64
+	Name         string
+	Description  string
+	Author       *User
+	Group        *Group
 	AttachedFile string
-	FileSize int64
-	Mimetype string
-	Created int64
-	Updated int64
+	FileSize     int64
+	Mimetype     string
+	Created      int64
+	Updated      int64
 }
 
 func (a *Attachment) String() string {
-	txt :=  a.Name + " - " + a.Mimetype + "- Created by " + a.Author.FirstName + " " + a.Author.LastName + " on " + NsToTime(a.Created).Format(DateLayout)
+	txt := a.Name + " - " + a.Mimetype + "- Created by " + a.Author.FirstName + " " + a.Author.LastName + " on " + u.NsToTime(a.Created).Format(DateLayout)
 	return txt
 }
 
 func SearchAttachment(kw string, u *User) []*Attachment {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	var o []*Attachment
 
 	q := fmt.Sprintf(`SELECT
@@ -61,7 +64,7 @@ func SearchAttachment(kw string, u *User) []*Attachment {
 			log.Printf("ERROR search attachement, scanning %v\n", e)
 			continue
 		}
-		if pok:= CheckPerm(a.Object, u.ID, "r"); pok {
+		if pok := CheckPerm(a.Object, u.ID, "r"); pok {
 			a.Update()
 			o = append(o, &a)
 		}
@@ -75,12 +78,19 @@ func (a *Attachment) Update() {
 }
 
 func (a *Attachment) Save() {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	curAttachment := GetAttachement(a.Name)
 	if curAttachment == nil {
-		if a.Created == 0 { a.Created = time.Now().UnixNano() }
-		if a.Updated == 0 { a.Updated = time.Now().UnixNano() }
-		if a.AttachedFile == "" { a.AttachedFile = UpLoadPath + a.Name }
+		if a.Created == 0 {
+			a.Created = time.Now().UnixNano()
+		}
+		if a.Updated == 0 {
+			a.Updated = time.Now().UnixNano()
+		}
+		if a.AttachedFile == "" {
+			a.AttachedFile = UpLoadPath + a.Name
+		}
 		tx, _ := DB.Begin()
 		res, e := tx.Exec(`INSERT INTO attachment(
 			name,
@@ -124,7 +134,8 @@ func (a *Attachment) Save() {
 }
 
 func GetAttachement(aName string) *Attachment {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	a := Attachment{}
 	if e := DB.QueryRow(`SELECT
 		id,
@@ -140,15 +151,16 @@ func GetAttachement(aName string) *Attachment {
 		updated
 		FROM attachment
 		WHERE name = $1`, aName).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-			log.Printf("WARN No attachement %s found - %v\n", aName, e)
-			return nil
+		log.Printf("WARN No attachement %s found - %v\n", aName, e)
+		return nil
 	}
 	a.Update()
 	return &a
 }
 
 func GetAttachementByID(id int64) *Attachment {
-	DB := GetDB(""); defer DB.Close()
+	DB := GetDB("")
+	defer DB.Close()
 	a := Attachment{}
 	if e := DB.QueryRow(`SELECT
 		id,
@@ -164,16 +176,17 @@ func GetAttachementByID(id int64) *Attachment {
 		updated
 		FROM attachment
 		WHERE id = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-			log.Printf("WARN No attachement ID %d found - %v\n", id, e)
-			return nil
+		log.Printf("WARN No attachement ID %d found - %v\n", id, e)
+		return nil
 	}
 	a.Update()
 	return &a
 }
 
 func (a *Attachment) DeleteAttachment(u *User) error {
-	DB := GetDB(""); defer DB.Close()
-	if ! CheckPerm(a.Object, u.ID, "d") {
+	DB := GetDB("")
+	defer DB.Close()
+	if !CheckPerm(a.Object, u.ID, "d") {
 		return errors.New("Permission denied")
 	}
 	//Check if it has links to note
@@ -184,7 +197,9 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 		WHERE na.note_id = n.id
 		AND na.attachment_id = $1
 	`, a.ID)
-	if e != nil { return e }
+	if e != nil {
+		return e
+	}
 	noteList := []*Note{}
 	for rows.Next() {
 		n := Note{}
@@ -220,38 +235,40 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 }
 
 //ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
-func ScanAttachment(dir string, u *User) []*Attachment {
-	dir = Ternary(dir == "", "uploads", dir).(string)
+func ScanAttachment(dir string, user *User) []*Attachment {
+	dir = u.Ternary(dir == "", "uploads", dir).(string)
 	o := []*Attachment{}
 
 	err := filepath.Walk(dir,
 		func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() { return nil }
-
-		a := GetAttachement(info.Name())
-		if a == nil {
-			fmt.Printf("INFO Create new attachment for %s Size: %d - Name %s\n", path, info.Size(), info.Name())
-			a = &Attachment{
-				Name: info.Name(),
-				AttachedFile: path,
-				FileSize: info.Size(),
+			if err != nil {
+				return err
 			}
-			a.AuthorID = u.ID
-			a.GroupID = u.Groups[0].ID
-			a.Permission = int8(1)
-		} else {
-			fmt.Printf("INFO attachment exists. Updating file path and size only ...\n")
-			a.AttachedFile = path
-			a.FileSize = info.Size()
-		}
-		a.Save()
-		o = append(o, a)
-		return nil
-	})
+
+			if info.IsDir() {
+				return nil
+			}
+
+			a := GetAttachement(info.Name())
+			if a == nil {
+				fmt.Printf("INFO Create new attachment for %s Size: %d - Name %s\n", path, info.Size(), info.Name())
+				a = &Attachment{
+					Name:         info.Name(),
+					AttachedFile: path,
+					FileSize:     info.Size(),
+				}
+				a.AuthorID = user.ID
+				a.GroupID = user.Groups[0].ID
+				a.Permission = int8(1)
+			} else {
+				fmt.Printf("INFO attachment exists. Updating file path and size only ...\n")
+				a.AttachedFile = path
+				a.FileSize = info.Size()
+			}
+			a.Save()
+			o = append(o, a)
+			return nil
+		})
 
 	if err != nil {
 		log.Println(err)

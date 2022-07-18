@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/sergi/go-diff/diffmatchpatch"
+	u "github.com/sunshine69/golang-tools/utils"
 )
 
 //Object - Generic Object which has some special fields to allow us to check permissions etc...
@@ -141,8 +142,8 @@ func (n *Note) GetNoteAttachments() {
 func NoteNew(in map[string]interface{}) *Note {
 	n := Note{}
 
-	ct := GetMapByKey(in, "content", "").(string)
-	titleText := GetMapByKey(in, "title", "").(string)
+	ct := u.GetMapByKey(in, "content", "").(string)
+	titleText := u.GetMapByKey(in, "title", "").(string)
 
 	if titleText == "" {
 		if ct != "" {
@@ -174,15 +175,15 @@ func NoteNew(in map[string]interface{}) *Note {
 	}
 
 	n.Timestamp = time.Now().UnixNano()
-	n.Flags = GetMapByKey(in, "flags", "").(string)
-	n.URL = GetMapByKey(in, "url", "").(string)
+	n.Flags = u.GetMapByKey(in, "flags", "").(string)
+	n.URL = u.GetMapByKey(in, "url", "").(string)
 
-	n.AuthorID = GetMapByKey(in, "author_id", int64(0)).(int64)
+	n.AuthorID = u.GetMapByKey(in, "author_id", int64(0)).(int64)
 
-	n.GroupID = GetMapByKey(in, "group_id", int64(1)).(int64)
+	n.GroupID = u.GetMapByKey(in, "group_id", int64(1)).(int64)
 
-	n.Permission = GetMapByKey(in, "permission", int8(1)).(int8)
-	n.RawEditor = GetMapByKey(in, "raw_editor", int8(0)).(int8)
+	n.Permission = u.GetMapByKey(in, "permission", int8(1)).(int8)
+	n.RawEditor = u.GetMapByKey(in, "raw_editor", int8(0)).(int8)
 
 	n.Update()
 	return &n

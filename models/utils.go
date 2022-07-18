@@ -2,224 +2,45 @@ package models
 
 import (
 	"bufio"
-	"io/ioutil"
 	"bytes"
-	"image/png"
-	"os"
-	"os/exec"
-	"path/filepath"
 	"fmt"
-	"github.com/gorilla/mux"
-	"golang.org/x/crypto/ssh/terminal"
-	"github.com/pquerna/otp/totp"
-	"net/http"
-	"time"
-	"regexp"
+	"image/png"
+	"io/ioutil"
 	"net"
+	"net/http"
+	"os"
+	"regexp"
 	"strings"
-	"encoding/base64"
-	"crypto/sha512"
-	"log"
-	"encoding/binary"
-	crand "crypto/rand"
-	rand "math/rand"
 
-    "crypto/ecdsa"
-    "crypto/elliptic"
-   
-    "crypto/rsa"
-    "crypto/x509"
-    "crypto/x509/pkix"
-    "encoding/pem"
-    "math/big"
+	"github.com/pquerna/otp/totp"
+	u "github.com/sunshine69/golang-tools/utils"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
-//GetMapByKey -
-func GetMapByKey(in map[string]interface{}, key string, defaultValue interface{}) interface{} {
-	// log.Printf("%v - %v - %v\n", in, key, defaultValue )
-	var o interface{}
-	v, ok := in[key]
-	if !ok {
-		o = defaultValue
-	} else {
-		o = v
-	}
-	// log.Printf("RETURN: %v\n", o)
-	return o
-}
-
-//MakeRandNum -
-func MakeRandNum(max int) int {
-    var src cryptoSource
-    rnd := rand.New(src)
-	// fmt.Println(rnd.Intn(1000)) // a truly random number 0 to 999
-	return rnd.Intn(max)
-}
-
-type cryptoSource struct{}
-
-func (s cryptoSource) Seed(seed int64) {}
-
-func (s cryptoSource) Int63() int64 {
-    return int64(s.Uint64() & ^uint64(1<<63))
-}
-
-func (s cryptoSource) Uint64() (v uint64) {
-    err := binary.Read(crand.Reader, binary.BigEndian, &v)
-    if err != nil {
-        log.Fatal(err)
-    }
-    return v
-}
-
-//MakePassword -
-func MakePassword(length int) string {
-	b := make([]byte, length)
-	// seededRand := rand.New(rand.NewSource(time.Now().UnixNano() ))
-	const charset = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=`
-	for i := range b {
-	  b[i] = charset[MakeRandNum(len(charset))]
-	}
-	return string(b)
-}
-
-func ComputeHash(plainText string , salt []byte) (string) {
-	plainTextWithSalt := []byte(plainText)
-	plainTextWithSalt =  append(plainTextWithSalt, salt...)
-	sha_512 := sha512.New()
-	sha_512.Write(plainTextWithSalt)
-	out := sha_512.Sum(nil)
-	out = append(out, []byte(salt)...)
-	return base64.StdEncoding.EncodeToString(out)
-}
-
-func VerifyHash(password string, passwordHashString string, saltLength int) bool {
-	// log.Printf("DEBUG VerifyHash input pass: %s - Hash %s s_len %d\n", password, passwordHashString, saltLength)
-	passwordHash, _ := base64.StdEncoding.DecodeString(passwordHashString)
-	saltBytes := []byte(passwordHash[len(passwordHash) - saltLength:len(passwordHash)])
-	result := ComputeHash(password, saltBytes)
-	return result == passwordHashString
-}
-
-func MakeSalt(length int8) (salt *[]byte) {
-	asalt := make([]byte, length)
-	crand.Read(asalt)
-	return &asalt
-}
-
 //CheckUserIPInWhiteList - whitelist is a string coma sep list of network
-func CheckUserIPInWhiteList(ip, whitelist string) (bool) {
+func CheckUserIPInWhiteList(ip, whitelist string) bool {
 	listNetwork := strings.Split(whitelist, ",")
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	host := portPtn.ReplaceAllString(ip, "")
 	ipA := net.ParseIP(host)
-	if len(listNetwork) == 0 {return false}
-	for _, nwStr := range(listNetwork) {
+	if len(listNetwork) == 0 {
+		return false
+	}
+	for _, nwStr := range listNetwork {
 		nwStr = strings.TrimSpace(nwStr)
 		_, netB, _ := net.ParseCIDR(nwStr)
-		if (netB != nil) && netB.Contains(ipA) { return true }
+		if (netB != nil) && netB.Contains(ipA) {
+			return true
+		}
 	}
 	return false
 }
 
-//Time handling
-const (
-	millisPerSecond     = int64(time.Second / time.Millisecond)
-	nanosPerMillisecond = int64(time.Millisecond / time.Nanosecond)
-	nanosPerSecond      = int64(time.Second / time.Nanosecond)
-)
-
-//NsToTime -
-func NsToTime(ns int64) time.Time  {
-	secs := ns/nanosPerSecond
-	nanos := ns - secs * nanosPerSecond
-	return time.Unix(secs, nanos)
-}
-
-//ChunkString -
-func ChunkString(s string, chunkSize int) []string {
-	var chunks []string
-	runes := []rune(s)
-
-	if len(runes) == 0 {
-		return []string{s}
-	}
-	for i := 0; i < len(runes); i += chunkSize {
-		nn := i + chunkSize
-		if nn > len(runes) {
-			nn = len(runes)
-		}
-		chunks = append(chunks, string(runes[i:nn]))
-	}
-	return chunks
-}
-
-//GetRequestValue - Attempt to get a val by key from the request in all cases.
-//First from the mux variables in the route path such as /dosomething/{var1}/{var2}
-//Then check the query string values such as /dosomething?var1=x&var2=y
-//Then check the form values if any
-//Then check the default value if supplied to use as return value
-//For performance we split each type into each function so it can be called independantly
-func GetRequestValue(r *http.Request, key ...string) string {
-	o := GetMuxValue(r, key[0], "")
-	if o == "" {
-		o = GetQueryValue(r, key[0], "")
-	}
-	if o == "" {
-		o = GetFormValue(r, key[0], "")
-	}
-	if o == "" {
-		if len(key) > 1 {
-			o = key[1]
-		} else {
-			o = ""
-		}
-	}
-	return o
-}
-
-//GetMuxValue -
-func GetMuxValue(r *http.Request, key ...string) string {
-	vars := mux.Vars(r)
-	val, ok := vars[key[0]]
-	if !ok {
-		if len(key) > 1 {
-			return key[1]
-		}
-		return ""
-	}
-	return val
-}
-
-//GetFormValue -
-func GetFormValue(r *http.Request, key ...string) string {
-	val := r.FormValue(key[0])
-	if val == "" {
-		if len(key) > 1 {
-			return key[1]
-		}
-	}
-	return val
-}
-
-//GetQueryValue -
-func GetQueryValue(r *http.Request, key ...string) string {
-	vars := r.URL.Query()
-	val, ok := vars[key[0]]
-	if !ok {
-		if len(key) > 1 {
-			return key[1]
-		}
-		return ""
-	}
-	return val[0]
-}
-
 func AddUser(in map[string]interface{}) {
 	reader := bufio.NewReader(os.Stdin)
-	useremail := GetMapByKey(in, "Email", "").(string)
-	password := GetMapByKey(in, "Password", "").(string)
-	groupStr := GetMapByKey(in, "Group", "").(string)
+	useremail := u.GetMapByKey(in, "Email", "").(string)
+	password := u.GetMapByKey(in, "Password", "").(string)
+	groupStr := u.GetMapByKey(in, "Group", "").(string)
 
 	if useremail == "" {
 		fmt.Printf("\nEnter user email: ")
@@ -238,7 +59,7 @@ func AddUser(in map[string]interface{}) {
 	}
 	groups := strings.Split(groupStr, ",")
 
-	user := UserNew(map[string]interface{} {
+	user := UserNew(map[string]interface{}{
 		"Email": useremail,
 	})
 	user.Save()
@@ -256,7 +77,7 @@ func SetAdminPassword() {
 }
 
 func SetAdminEmail(email string) {
-	if (email == ""){
+	if email == "" {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Printf("\nEnter user email: ")
 		email, _ := reader.ReadString('\n')
@@ -269,10 +90,10 @@ func SetUserOTP(username string) *bytes.Buffer {
 	u := GetUser(username)
 	Issuer := Settings.BASE_URL
 	if Issuer == "" {
-		Issuer =  strings.Split(u.Email, `@`)[1]
+		Issuer = strings.Split(u.Email, `@`)[1]
 	}
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer: Issuer,
+		Issuer:      Issuer,
 		AccountName: u.Email,
 	})
 	if err != nil {
@@ -303,154 +124,12 @@ func SetAdminOTP() {
 }
 
 func ReadUserIP(r *http.Request) string {
-    IPAddress := r.Header.Get("X-Real-Ip")
-    if IPAddress == "" {
-        IPAddress = r.Header.Get("X-Forwarded-For")
-    }
-    if IPAddress == "" {
+	IPAddress := r.Header.Get("X-Real-Ip")
+	if IPAddress == "" {
+		IPAddress = r.Header.Get("X-Forwarded-For")
+	}
+	if IPAddress == "" {
 		IPAddress = r.RemoteAddr
-    }
-    return IPAddress
-}
-
-func ZipEncript(filePath ...string) string {
-	src, dest, key := filePath[0], "", ""
-	argCount := len(filePath)
-	if argCount > 1 {
-		dest = filePath[1]
-	} else {
-		dest = src + ".zip"
 	}
-	if argCount > 2 {
-		key = filePath[2]
-	} else {
-		key = MakePassword(42)
-	}
-	os.Remove(dest)
-	srcDir := filepath.Dir(src)
-	srcName := filepath.Base(src)
-	absDest, _ := filepath.Abs(dest)
-
-	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
-	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/zip -r -e -P '" +  key + "' " + absDest + " " + srcName)
-	_, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println(cmd.String())
-		log.Fatal(err)
-	}
-	return key
-}
-
-func ZipDecrypt(filePath ...string) error {
-	argCount := len(filePath)
-	if argCount < 2 { return fmt.Errorf("ERROR Must supply file name and key") }
-	src, key := filePath[0], filePath[1]
-
-	srcDir := filepath.Dir(src)
-	srcName := filepath.Base(src)
-
-	fmt.Printf("DEBUG srcDir %s - srcName %s\n", srcDir, srcName)
-	cmd := exec.Command("/bin/sh", "-c", "cd " + srcDir + "; /usr/bin/unzip -P '" +  key + "' " + srcName)
-
-	_, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println(cmd.String())
-		log.Printf("ERROR ZipDecrypt %v\n", err)
-		return fmt.Errorf("ERROR command unzip return error")
-	}
-	return nil
-}
-
-func Ternary(cond bool, first, second interface{}) interface{} {
-	if cond {
-		return first
-	} else {
-		return second
-	}
-}
-
-func RunSystemCommand(cmd string, verbose bool) string {
-	if verbose {
-		log.Printf("command: %s\n", cmd)
-	}
-	command := exec.Command("bash", "-c", cmd)
-
-	combinedOutput, err := command.CombinedOutput()
-	if err != nil {
-		log.Fatalf("error command: '%s' - %v\n    %s\n", cmd, err, combinedOutput)
-	}
-	output1 := fmt.Sprintf("%s", command.Stdout)
-	output1 = strings.TrimSuffix(output1, "\n")
-	return output1
-}
-
-func GenSelfSignedKey(keyfilename string) {
-	// priv, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
-	priv, err := ecdsa.GenerateKey(elliptic.P384(), crand.Reader)
-	if err != nil {
-		log.Fatal(err)
-	}
-	template := x509.Certificate{
-		SerialNumber: big.NewInt(1),
-		Subject: pkix.Name{
-			Organization: []string{"ABB PGES Co"},
-			CommonName:   "oidc-test",
-			Country:      []string{"AU"},
-			Locality:     []string{"Brisbane"},
-		},
-		NotBefore: time.Now(),
-		NotAfter:  time.Now().Add(time.Hour * 24 * 180),
-
-		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
-		BasicConstraintsValid: true,
-	}
-	derBytes, err := x509.CreateCertificate(crand.Reader, &template, &template, publicKey(priv), priv)
-	if err != nil {
-		log.Fatalf("Failed to create certificate: %s", err)
-	}
-	out := &bytes.Buffer{}
-	pem.Encode(out, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
-	// fmt.Println(out.String())
-	if err := ioutil.WriteFile(fmt.Sprintf("%s.crt", keyfilename), out.Bytes(), 0640); err != nil {
-		log.Fatalf("can not write public key %v\n", err)
-	}
-
-	out.Reset()
-	pem.Encode(out, pemBlockForKey(priv))
-	if err := ioutil.WriteFile(fmt.Sprintf("%s.key", keyfilename), out.Bytes(), 0600); err != nil {
-		log.Fatalf("can not write private key %v\n", err)
-	}
-	// fmt.Println(out.String())
-}
-
-func publicKey(priv interface{}) interface{} {
-	switch k := priv.(type) {
-	case *rsa.PrivateKey:
-		return &k.PublicKey
-	case *ecdsa.PrivateKey:
-		return &k.PublicKey
-	default:
-		return nil
-	}
-}
-
-func pemBlockForKey(priv interface{}) *pem.Block {	
-	switch k := priv.(type) {
-	case *rsa.PrivateKey:
-		return &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(k)}
-	case *ecdsa.PrivateKey:
-		b, err := x509.MarshalECPrivateKey(k)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Unable to marshal ECDSA private key: %v", err)
-			os.Exit(2)
-		}
-		return &pem.Block{Type: "EC PRIVATE KEY", Bytes: b}
-	default:
-		return nil
-	}
-}
-func FileNameWithoutExtension(fileName string) string {
-	// return strings.TrimSuffix(fileName, filepath.Ext(fileName))
-	return fileName[:len(fileName) - len(filepath.Ext(fileName))]
+	return IPAddress
 }

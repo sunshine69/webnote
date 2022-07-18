@@ -25,6 +25,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	jsoniter "github.com/json-iterator/go"
+	u "github.com/sunshine69/golang-tools/utils"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -50,8 +51,8 @@ func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *m.User {
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
-	raw_editor, _ := strconv.Atoi(m.GetRequestValue(r, "raw_editor", "1"))
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
+	raw_editor, _ := strconv.Atoi(u.GetRequestValue(r, "raw_editor", "1"))
 
 	var aNote *m.Note
 	u := GetCurrentUser(&w, r)
@@ -78,12 +79,12 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	user := GetCurrentUser(&w, r)
 
 	r.ParseForm()
-	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
-	ngroup := m.GetGroup(m.GetFormValue(r, "ngroup", "default"))
-	_permission, _ := strconv.Atoi(m.GetFormValue(r, "permission", "0"))
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
+	ngroup := m.GetGroup(u.GetFormValue(r, "ngroup", "default"))
+	_permission, _ := strconv.Atoi(u.GetFormValue(r, "permission", "0"))
 	permission := int8(_permission)
 
-	_raw_editor, _ := strconv.Atoi(m.GetFormValue(r, "raw_editor", "0"))
+	_raw_editor, _ := strconv.Atoi(u.GetFormValue(r, "raw_editor", "0"))
 	raw_editor := int8(_raw_editor)
 
 	var aNote *m.Note
@@ -117,7 +118,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			msg = "Permission denied."
 		}
 	}
-	isAjax := m.GetRequestValue(r, "is_ajax", "0")
+	isAjax := u.GetRequestValue(r, "is_ajax", "0")
 	if isAjax == "1" {
 		fmt.Fprintf(w, msg)
 	} else {
@@ -130,7 +131,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
-	keyword := m.GetRequestValue(r, "keyword", "")
+	keyword := u.GetRequestValue(r, "keyword", "")
 	u := GetCurrentUser(&w, r)
 	var attachments []*m.Attachment
 	if u != nil {
@@ -150,9 +151,9 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 
 //DoViewNote -
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
-	viewType := m.GetRequestValue(r, "t", "1")
+	viewType := u.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
-	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := m.GetNoteByID(noteID)
 
 	if aNote.Permission < 5 {
@@ -187,7 +188,7 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
-	noteIDStr := m.GetRequestValue(r, "id", "0")
+	noteIDStr := u.GetRequestValue(r, "id", "0")
 	msg := "OK"
 	if noteIDStr != "0" {
 		user := GetCurrentUser(&w, r)
@@ -201,9 +202,9 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 	} else {
 		msg = "Invalid noteID"
 	}
-	isAjax := m.GetRequestValue(r, "is_ajax", "0")
-	page := m.GetRequestValue(r, "page", "0")
-	keyword := m.GetRequestValue(r, "keyword", "")
+	isAjax := u.GetRequestValue(r, "is_ajax", "0")
+	page := u.GetRequestValue(r, "page", "0")
+	keyword := u.GetRequestValue(r, "keyword", "")
 	var redirectURL string
 	switch page {
 	case "frontpage":
@@ -242,10 +243,10 @@ var CSRF_TOKEN string
 //HandleRequests -
 
 func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
-	viewType := m.GetRequestValue(r, "t", "1")
+	viewType := u.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
 
-	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := m.GetNoteRevisionByID(noteID)
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
@@ -256,8 +257,8 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
-	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
-	revNoteID, _ := strconv.ParseInt(m.GetRequestValue(r, "rev_id", "0"), 10, 64)
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
+	revNoteID, _ := strconv.ParseInt(u.GetRequestValue(r, "rev_id", "0"), 10, 64)
 	n := m.GetNoteByID(noteID)
 	n1 := m.GetNoteRevisionByID(revNoteID)
 	nd := n1.Diff(n)
@@ -304,13 +305,13 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("Uploaded File: %+v\n", handler.Filename)
 			fmt.Printf("File Size: %+v\n", handler.Size)
 			fmt.Printf("MIME Header: %s\n", handler.Header["Content-Type"])
-			aName := m.GetRequestValue(r, "a"+cStr, "")
-			aDesc := m.GetRequestValue(r, "desc"+cStr, "")
+			aName := u.GetRequestValue(r, "a"+cStr, "")
+			aDesc := u.GetRequestValue(r, "desc"+cStr, "")
 			if aName == "" {
 				aName = handler.Filename
 			}
-			uploadPath := m.GetRequestValue(r, "upload_path"+cStr)
-			attachedFileDir := m.Ternary(uploadPath == "", m.UpLoadPath, filepath.Join(m.UpLoadPath, uploadPath)).(string)
+			uploadPath := u.GetRequestValue(r, "upload_path"+cStr)
+			attachedFileDir := u.Ternary(uploadPath == "", m.UpLoadPath, filepath.Join(m.UpLoadPath, uploadPath)).(string)
 			a := m.Attachment{
 				Name:         aName,
 				Description:  aDesc,
@@ -339,7 +340,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			mimetype = strings.ReplaceAll(mimetype, "[", "")
 			mimetype = strings.ReplaceAll(mimetype, "]", "")
 			a.Mimetype = mimetype
-			_p, _ := strconv.Atoi(m.GetRequestValue(r, "permission", "1"))
+			_p, _ := strconv.Atoi(u.GetRequestValue(r, "permission", "1"))
 			a.Permission = int8(_p)
 			a.Save()
 			aList = append(aList, &a)
@@ -378,7 +379,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCurrentNote(r *http.Request) *m.Note {
-	noteIDStr := m.GetRequestValue(r, "note_id", "")
+	noteIDStr := u.GetRequestValue(r, "note_id", "")
 	if noteIDStr != "" {
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
 		return m.GetNoteByID(noteID)
@@ -387,7 +388,7 @@ func GetCurrentNote(r *http.Request) *m.Note {
 }
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
-	kw := m.GetRequestValue(r, "keyword", "")
+	kw := u.GetRequestValue(r, "keyword", "")
 	aNote := GetCurrentNote(r)
 	u := GetCurrentUser(&w, r)
 	aList := m.SearchAttachment(kw, u)
@@ -404,33 +405,33 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
-	aIDStr := m.GetRequestValue(r, "id", "")
+	aIDStr := u.GetRequestValue(r, "id", "")
 	if aIDStr == "" {
 		return
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
-	u := GetCurrentUser(&w, r)
+	user := GetCurrentUser(&w, r)
 	a := m.GetAttachementByID(aID)
-	if e := a.DeleteAttachment(u); e != nil {
+	if e := a.DeleteAttachment(user); e != nil {
 		msg := fmt.Sprintf("ERROR Can not delete attachment - %v", e)
 		http.Error(w, msg, http.StatusOK)
 		return
 	}
-	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
+	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
 	if is_ajax == "1" {
 		fmt.Fprintf(w, "Deleted attachement ID %d", aID)
 	}
 }
 
 func DoStreamfile(w http.ResponseWriter, r *http.Request) {
-	aIDStr := m.GetRequestValue(r, "id", "")
+	aIDStr := u.GetRequestValue(r, "id", "")
 	if aIDStr == "" {
 		http.Error(w, "No aID provided", http.StatusBadRequest)
 		return
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
 	a := m.GetAttachementByID(aID)
-	u := GetCurrentUser(&w, r)
+	user := GetCurrentUser(&w, r)
 
 	if a.Permission < 5 {
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
@@ -441,8 +442,8 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/login?from_uri="+from_uri, http.StatusTemporaryRedirect)
 			return
 		}
-		if !m.CheckPerm(a.Object, u.ID, "r") {
-			log.Printf("ERROR - No Permission user %s - attachment name: %s\n", u, a.Name)
+		if !m.CheckPerm(a.Object, user.ID, "r") {
+			log.Printf("ERROR - No Permission user %s - attachment name: %s\n", user, a.Name)
 			fmt.Fprintf(w, "Permission denied")
 			return
 		}
@@ -456,7 +457,7 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// stream straight to client(browser)
 	w.Header().Set("Content-type", a.Mimetype)
-	action := m.GetRequestValue(r, "action", "")
+	action := u.GetRequestValue(r, "action", "")
 
 	if action == "download" {
 		w.Header().Set("Content-Disposition", "attachment; filename="+path.Base(a.AttachedFile))
@@ -468,22 +469,22 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
-	action := m.GetRequestValue(r, "action", "")
-	u := GetCurrentUser(&w, r)
+	action := u.GetRequestValue(r, "action", "")
+	user := GetCurrentUser(&w, r)
 	n := GetCurrentNote(r)
-	attachmentIDStr := m.GetRequestValue(r, "attachment_id", "")
+	attachmentIDStr := u.GetRequestValue(r, "attachment_id", "")
 	if attachmentIDStr == "" {
 		return
 	}
 	attachmentID, _ := strconv.ParseInt(attachmentIDStr, 10, 64)
 	if action == "unlink" {
-		if e := n.UnlinkAttachment(attachmentID, u); e != nil {
+		if e := n.UnlinkAttachment(attachmentID, user); e != nil {
 			msg := fmt.Sprintf("ERROR unlink attachment to note - %v\n", e)
 			fmt.Fprintf(w, msg)
 			return
 		}
 	} else {
-		if e := n.LinkAttachment(attachmentID, u); e != nil {
+		if e := n.LinkAttachment(attachmentID, user); e != nil {
 			log.Printf("ERROR link attachment to note - %v\n", e)
 			fmt.Fprintf(w, "ERROR")
 			return
@@ -505,22 +506,22 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			"allgroups": strings.Join(allGroups, ","),
 		})
 	case "POST":
-		action := m.GetRequestValue(r, "submit", "")
+		action := u.GetRequestValue(r, "submit", "")
 		cUser := GetCurrentUser(&w, r)
-		userEmail := m.GetRequestValue(r, "email", "")
-		password := m.GetRequestValue(r, "cur_password")
-		newPassword := m.GetRequestValue(r, "password")
+		userEmail := u.GetRequestValue(r, "email", "")
+		password := u.GetRequestValue(r, "cur_password")
+		newPassword := u.GetRequestValue(r, "password")
 		userData := map[string]interface{}{
-			"FirstName":   m.GetRequestValue(r, "f_name", ""),
-			"LastName":    m.GetRequestValue(r, "l_name", ""),
-			"Email":       m.GetRequestValue(r, "email"),
-			"HomePhone":   m.GetRequestValue(r, "h_phone"),
-			"WorkPhone":   m.GetRequestValue(r, "w_phone"),
-			"MobilePhone": m.GetRequestValue(r, "m_phone"),
-			"ExtraInfo":   m.GetRequestValue(r, "extra_info"),
-			"Address":     m.GetRequestValue(r, "address"),
+			"FirstName":   u.GetRequestValue(r, "f_name", ""),
+			"LastName":    u.GetRequestValue(r, "l_name", ""),
+			"Email":       u.GetRequestValue(r, "email"),
+			"HomePhone":   u.GetRequestValue(r, "h_phone"),
+			"WorkPhone":   u.GetRequestValue(r, "w_phone"),
+			"MobilePhone": u.GetRequestValue(r, "m_phone"),
+			"ExtraInfo":   u.GetRequestValue(r, "extra_info"),
+			"Address":     u.GetRequestValue(r, "address"),
 			"Password":    newPassword,
-			"GroupNames":  m.GetRequestValue(r, "group_names", "default"),
+			"GroupNames":  u.GetRequestValue(r, "group_names", "default"),
 		}
 		if cUser.Email != userEmail {
 			//We are updating other user, not current user. We need to be admin to do so
@@ -531,7 +532,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		//Checking admin password to confirm
-		if !m.VerifyHash(password, cUser.PasswordHash, int(cUser.SaltLength)) {
+		if !u.VerifyHash(password, cUser.PasswordHash, int(cUser.SaltLength)) {
 			log.Printf("ERROR Permission denied. Old/Admin password provided incorrect\n")
 			fmt.Fprintf(w, "Permission denied")
 			return
@@ -551,7 +552,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "Permission denied")
 				return
 			} else {
-				groups := strings.Split(m.GetRequestValue(r, "new_group_names"), `,`)
+				groups := strings.Split(u.GetRequestValue(r, "new_group_names"), `,`)
 				for _, gn := range groups {
 					gn = strings.TrimSpace(gn)
 					newGroup := m.Group{
@@ -573,12 +574,12 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoSearchUser(w http.ResponseWriter, r *http.Request) {
-	u := GetCurrentUser(&w, r)
-	if u.Email != m.Settings.ADMIN_EMAIL {
+	user := GetCurrentUser(&w, r)
+	if user.Email != m.Settings.ADMIN_EMAIL {
 		fmt.Fprint(w, "Permission denied")
 		return
 	}
-	kw := m.GetRequestValue(r, "kw", "")
+	kw := u.GetRequestValue(r, "kw", "")
 	foundUsers := m.SearchUser(kw)
 	if len(foundUsers) == 0 {
 		fmt.Fprint(w, "No user found")
@@ -596,7 +597,7 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
-	_aID := m.GetRequestValue(r, "id")
+	_aID := u.GetRequestValue(r, "id")
 	aID, _ := strconv.ParseInt(_aID, 10, 64)
 	a := m.GetAttachementByID(aID)
 	switch r.Method {
@@ -609,12 +610,12 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		user := GetCurrentUser(&w, r)
 		if m.CheckPerm(a.Object, user.ID, "w") {
-			action := m.GetRequestValue(r, "submit")
-			a.Name = m.GetRequestValue(r, "a_name")
-			a.Description = m.GetRequestValue(r, "a_desc")
-			_perm, _ := strconv.Atoi(m.GetRequestValue(r, "permission"))
+			action := u.GetRequestValue(r, "submit")
+			a.Name = u.GetRequestValue(r, "a_name")
+			a.Description = u.GetRequestValue(r, "a_desc")
+			_perm, _ := strconv.Atoi(u.GetRequestValue(r, "permission"))
 			a.Permission = int8(_perm)
-			g := m.GetGroup(m.GetRequestValue(r, "ngroup"))
+			g := m.GetGroup(u.GetRequestValue(r, "ngroup"))
 			a.GroupID = g.ID
 
 			switch action {
@@ -623,15 +624,15 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprint(w, "OK Attachment updated")
 				return
 			case "Encrypt with zip":
-				key := m.ZipEncript(a.AttachedFile, a.AttachedFile+".zip")
+				key := u.ZipEncript(a.AttachedFile, a.AttachedFile+".zip")
 				os.Remove(a.AttachedFile)
 				a.AttachedFile = a.AttachedFile + ".zip"
 				a.Save()
 				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
 				return
 			case "Decrypt with zip":
-				key := m.GetRequestValue(r, "zipkey", "")
-				if e := m.ZipDecrypt(a.AttachedFile, key); e == nil {
+				key := u.GetRequestValue(r, "zipkey", "")
+				if e := u.ZipDecrypt(a.AttachedFile, key); e == nil {
 					os.Remove(a.AttachedFile)
 					a.AttachedFile = strings.TrimSuffix(a.AttachedFile, ".zip")
 					a.Save()
@@ -668,7 +669,7 @@ func HandleRequests() {
 	}
 	app_domain, _, _ := net.SplitHostPort(_u.Host)
 	// router := StaticRouter()
-	CSRF_TOKEN := m.MakePassword(32)
+	CSRF_TOKEN := u.MakePassword(32)
 	csrf.MaxAge(4 * 3600)
 
 	// CSRF := csrf.Protect(
@@ -850,8 +851,12 @@ func main() {
 	case "yes", "true":
 		journalPath := fmt.Sprintf("%s-journal", *dbPath)
 		log.Printf("RESET_STORAGE is set going to remove %s and %s\n", *dbPath, journalPath)
-		if err := os.Remove(*dbPath); err != nil { log.Printf("remove dbPath error: %v\n", err) }
-		if err := os.Remove(journalPath); err != nil { log.Printf("remove journalPath error: %v\n", err) }
+		if err := os.Remove(*dbPath); err != nil {
+			log.Printf("remove dbPath error: %v\n", err)
+		}
+		if err := os.Remove(journalPath); err != nil {
+			log.Printf("remove journalPath error: %v\n", err)
+		}
 		*setup = true
 	}
 	if *setup {
@@ -861,8 +866,8 @@ func main() {
 		m.CreateAdminUser()
 		m.CreatePublicReadUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
-			keyFileName := m.FileNameWithoutExtension(*sslKey)
-			m.GenSelfSignedKey(keyFileName)
+			keyFileName := u.FileNameWithoutExtension(*sslKey)
+			u.GenSelfSignedKey(keyFileName)
 			*sslCert = fmt.Sprintf("%s.crt", keyFileName)
 		}
 	}
@@ -896,7 +901,7 @@ func main() {
 				"group":    *usergroup,
 			})
 		case "scan_attachment":
-			aDir := m.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
+			aDir := u.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
 			u := m.GetUser(m.Settings.ADMIN_EMAIL)
 			m.ScanAttachment(aDir, u)
 		}
@@ -904,7 +909,7 @@ func main() {
 		if *sessionKey == "" {
 			*sessionKey = m.GetConfig("session-key", "")
 			if *sessionKey == "" {
-				*sessionKey = m.MakePassword(64)
+				*sessionKey = u.MakePassword(64)
 				m.SetConfig("session-key", *sessionKey)
 			}
 		}
@@ -964,7 +969,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
-			from_uri := m.GetRequestValue(r, "from_uri", "")
+			from_uri := u.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 		}
@@ -992,7 +997,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			ses.Values["trycount"] = 0
 			ses.Values["useremail"] = useremail
 			ses.Save(r, w)
-			from_uri := m.GetRequestValue(r, "from_uri", "")
+			from_uri := u.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 			return
@@ -1025,7 +1030,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 
 func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Request, mapData *map[string]interface{}) {
 	user := GetCurrentUser(w, r)
-	keyword := m.GetRequestValue(r, "keyword", "")
+	keyword := u.GetRequestValue(r, "keyword", "")
 
 	var uGroups []*m.Group
 	var commonMapData map[string]interface{}

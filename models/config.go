@@ -1,23 +1,26 @@
 package models
 
 import (
-	"io"
 	"bytes"
 	"database/sql"
 	"fmt"
-	"github.com/gorilla/sessions"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/yuin/goldmark"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/sessions"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/microcosm-cc/bluemonday"
+	u "github.com/sunshine69/golang-tools/utils"
+	"github.com/yuin/goldmark"
 )
 
 const MaxUploadSizeInMemory = 4 * 1024 * 1024 // 4 MB
 const MaxUploadSize = 4 * 1024 * 1024 * 1024
+
 var UpLoadPath = "uploads/"
 
 //DateLayout - global
@@ -370,20 +373,20 @@ func SetupAppDatabase() {
 	DB.Close()
 	if os.Getenv("DB_STORAGE_ON_CIFS") == "true" {
 		source, err := os.Open("/tmp/tmp-gonote.sqlite3")
-        if err != nil {
-            log.Fatalf("ERROR %v\n", err)
-        }
-        defer source.Close()
-
-        destination, err := os.Create(os.Getenv("DBPATH"))
-        if err != nil {
-            log.Fatalf("ERROR %v\n", err)
-        }
-        defer destination.Close()
-        nBytes, err := io.Copy(destination, source)
 		if err != nil {
-            log.Fatalf("ERROR %v\n", err)
-        }
+			log.Fatalf("ERROR %v\n", err)
+		}
+		defer source.Close()
+
+		destination, err := os.Create(os.Getenv("DBPATH"))
+		if err != nil {
+			log.Fatalf("ERROR %v\n", err)
+		}
+		defer destination.Close()
+		nBytes, err := io.Copy(destination, source)
+		if err != nil {
+			log.Fatalf("ERROR %v\n", err)
+		}
 		log.Printf("Copy %d bytes", nBytes)
 		os.Remove("/tmp/tmp-gonote.sqlite3")
 	}
@@ -463,7 +466,7 @@ func LoadAllTemplates() {
 			return x + y
 		},
 		"time_fmt": func(timelayout string, timeticks int64) string {
-			return NsToTime(timeticks).Format(timelayout)
+			return u.NsToTime(timeticks).Format(timelayout)
 		},
 		"raw_html": func(html string) template.HTML {
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
@@ -479,7 +482,7 @@ func LoadAllTemplates() {
 			return template.HTML("<![endif]-->")
 		},
 		"truncatechars": func(length int, in string) template.HTML {
-			return template.HTML(ChunkString(in, length)[0])
+			return template.HTML(u.ChunkString(in, length)[0])
 		},
 		"cycle": func(idx int, vals ...string) template.HTML {
 			_idx := idx % len(vals)
