@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -18,11 +19,15 @@ func SaveBookMark(w http.ResponseWriter, r *http.Request) {
 	myurl := u.GetRequestValue(r, "url", "")
 	mytitle := u.GetRequestValue(r, "title", "")
 	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
+	log.Printf("[DEBUG] myurl: '%s'\n", myurl)
 	if myurl != "" {
 		//The marker text is the pattern
 		ptn := regexp.MustCompile(`(\<li\>[=]+ Form [=]+\<\/li\>)`)
-		newText := fmt.Sprintf("<li><a href=\"%s\" title=\"%s\">%s</a></li><a href=\"/delbookmark?url=%s\">remove</a>", myurl, mytitle, myurl, myurl)
-		if !strings.Contains(bmarkdNote.Content, `href="`+myurl+`"`) {
+		newText := fmt.Sprintf("\n<li><a href=\"%s\" title=\"%s\">%s</a></li>&nbsp&nbsp&nbsp&nbsp<a href=\"/delbookmark?url=%s\">remove</a>\n$1", myurl, mytitle, myurl, myurl)
+		if strings.Contains(bmarkdNote.Content, `href="`+myurl+`"`) {
+			log.Printf("bookmark '%s' exists\n", `href="`+myurl+`"`)
+		} else {
+			log.Printf("replace old content with new text '%s'\n", newText)
 			newCt := ptn.ReplaceAllString(bmarkdNote.Content, newText)
 			bmarkdNote.Content = newCt
 			bmarkdNote.Save()
@@ -39,7 +44,7 @@ func DeleteBookMark(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(myurl)
 	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
 	if myurl != "" {
-		lineToRemovePtn := regexp.MustCompile(fmt.Sprintf(`.*%s.*`, regexp.QuoteMeta(myurl)))
+		lineToRemovePtn := regexp.MustCompile(fmt.Sprintf(`\<li\>.*%s.*remove\<\/a\>`, regexp.QuoteMeta(myurl)))
 		newText := lineToRemovePtn.ReplaceAllString(bmarkdNote.Content, "")
 		bmarkdNote.Content = newText
 		bmarkdNote.Save()
