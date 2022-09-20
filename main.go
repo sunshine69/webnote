@@ -74,6 +74,23 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func GetFirstnChar(text string, n int) (o string) {
+	text = strings.TrimSpace(text)
+	ptn0 := regexp.MustCompile(`\<[^\<]+\>`)
+	text = ptn0.ReplaceAllString(text, "")
+	ptn := regexp.MustCompile(`([^\n]+)\n`)
+	text = strings.TrimSpace(text)
+	o1 := ptn.FindString(text)
+	o1 = strings.TrimSpace(o1)
+	l := len(o1)
+	if l > n {
+		o = o1[0:n]
+	} else {
+		o = o1
+	}
+	o = strings.TrimSpace(o)
+	return o
+}
 func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	msg := "OK note saved"
 	user := GetCurrentUser(&w, r)
@@ -88,13 +105,17 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	raw_editor := int8(_raw_editor)
 
 	var aNote *m.Note
-
+	content := r.FormValue("content")
+	title := r.FormValue("title")
+	if title == "" {
+		title = GetFirstnChar(content, 128)
+	}
 	if noteID == 0 { //New note created by current user
 		aNote = m.NoteNew(map[string]interface{}{
-			"title":      r.FormValue("title"),
+			"title":      title,
 			"datelog":    r.FormValue("datelog"),
 			"flags":      r.FormValue("flags"),
-			"content":    r.FormValue("content"),
+			"content":    content,
 			"url":        r.FormValue("url"),
 			"raw_editor": raw_editor, //If checked return string 1, otherwise empty string
 			"permission": permission,
@@ -149,7 +170,7 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-//DoViewNote -
+// DoViewNote -
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	viewType := u.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
