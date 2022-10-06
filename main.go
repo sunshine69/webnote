@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"html/template"
 	"io"
 	"log"
 	"net"
@@ -16,6 +15,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 
 	_ "time/tzdata"
@@ -288,7 +288,7 @@ func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
 	</html>
 	`)
 	if e := t.ExecuteTemplate(w, "diff", map[string]interface{}{
-		"htmlText": template.HTML(nd.String()),
+		"htmlText": template.HTMLEscapeString(nd.String()),
 	}); e != nil {
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 	}

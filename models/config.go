@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"database/sql"
 	"fmt"
-	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
@@ -23,34 +23,34 @@ const MaxUploadSize = 4 * 1024 * 1024 * 1024
 
 var UpLoadPath = "uploads/"
 
-//DateLayout - global
+// DateLayout - global
 var DateLayout string
 
-//WebNotePassword
+// WebNotePassword
 var WebNotePassword string
 
-//WebNoteUser
+// WebNoteUser
 var WebNoteUser string
 
 var SqlSetup, DBPATH string
 
-//SessionStore -
+// SessionStore -
 var SessionStore *sessions.CookieStore
 
-//AppSettings -
+// AppSettings -
 type AppSettings struct {
 	BASE_URL          string
 	ADMIN_EMAIL       string
 	UPLOAD_ITEM_COUNT int
 }
 
-//Settings -
+// Settings -
 var Settings *AppSettings
 
-//PermissionsList -
+// PermissionsList -
 var PermissionList *map[int8]string
 
-//GetSessionVal -
+// GetSessionVal -
 func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{} {
 	ses, e := SessionStore.Get(r, "auth-session")
 	if e != nil {
@@ -64,7 +64,7 @@ func GetSessionVal(r *http.Request, k string, defaultVal interface{}) interface{
 	return o
 }
 
-//SaveSessionVal -
+// SaveSessionVal -
 func SaveSessionVal(r *http.Request, w *http.ResponseWriter, k string, defaultVal interface{}) {
 	ses, e := SessionStore.Get(r, "auth-session")
 	if e != nil {
@@ -74,7 +74,7 @@ func SaveSessionVal(r *http.Request, w *http.ResponseWriter, k string, defaultVa
 	ses.Save(r, *w)
 }
 
-//GetDB -
+// GetDB -
 func GetDB(dbPath string) *sql.DB {
 	if dbPath == "" {
 		if DBPATH == "" {
@@ -98,8 +98,8 @@ func GetDB(dbPath string) *sql.DB {
 	return DB
 }
 
-//InitConfig - SetupDB. This is the initial point of config setup. Note init() does not work if it relies
-//on DbConn as at the time the DBPATH is not yet available
+// InitConfig - SetupDB. This is the initial point of config setup. Note init() does not work if it relies
+// on DbConn as at the time the DBPATH is not yet available
 func InitConfig() {
 	DateLayout = GetConfig("date_layout")
 	WebNoteUser = GetConfig("webnote_user")
@@ -118,7 +118,7 @@ func InitConfig() {
 	}
 }
 
-//CreateAdminUser -
+// CreateAdminUser -
 func CreateAdminUser() {
 	u := UserNew(map[string]interface{}{
 		"FirstName":  "Admin",
@@ -131,7 +131,7 @@ func CreateAdminUser() {
 	log.Printf("INFOR - Creat new user %v - id %d\n", u, u.ID)
 }
 
-//CreatePublicReadUser - Used when u need an user obejct and the object have the public read access
+// CreatePublicReadUser - Used when u need an user obejct and the object have the public read access
 func CreatePublicReadUser() {
 	u := UserNew(map[string]interface{}{
 		"FirstName":  "Reader",
@@ -144,7 +144,7 @@ func CreatePublicReadUser() {
 	log.Printf("INFOR - Creat new user %v - id %d\n", u, u.ID)
 }
 
-//SetupDefaultConfig - Setup/reset default configuration set
+// SetupDefaultConfig - Setup/reset default configuration set
 func SetupDefaultConfig() {
 	DB := GetDB("")
 	defer DB.Close()
@@ -182,7 +182,7 @@ func SetupDefaultConfig() {
 	}
 }
 
-//GetConfig - by key and return value. Give second arg as default value.
+// GetConfig - by key and return value. Give second arg as default value.
 func GetConfig(key ...string) string {
 	DB := GetDB("")
 	defer DB.Close()
@@ -199,7 +199,7 @@ func GetConfig(key ...string) string {
 	return val
 }
 
-//GetConfigSave -
+// GetConfigSave -
 func GetConfigSave(key ...string) string {
 	v := GetConfig(key...)
 	if len(key) == 2 && v == key[1] {
@@ -208,7 +208,7 @@ func GetConfigSave(key ...string) string {
 	return v
 }
 
-//SetConfig - Set a config key with value
+// SetConfig - Set a config key with value
 func SetConfig(key, val string) {
 	curVal := GetConfig(key, "NOTFOUND")
 	DB := GetDB("")
@@ -230,7 +230,7 @@ func SetConfig(key, val string) {
 	tx.Commit()
 }
 
-//DeleteConfig - delete the config key
+// DeleteConfig - delete the config key
 func DeleteConfig(key string) {
 	DB := GetDB("")
 	tx, _ := DB.Begin()
@@ -241,7 +241,7 @@ func DeleteConfig(key string) {
 	tx.Commit()
 }
 
-//SetupAppDatabase -
+// SetupAppDatabase -
 func SetupAppDatabase() {
 	SqlSetup = `
 	CREATE TABLE IF NOT EXISTS "note" (
@@ -392,9 +392,9 @@ func SetupAppDatabase() {
 	}
 }
 
-//CheckPerm - Check permission to do an operation on a object
-//obj must have fields :  Permission, AuthorID/Author,  GroupID/Group (similar to a note)
-//Action can be a string of 'r' (read), 'w' (write), 'rw' (read-write), 'd' (delete)
+// CheckPerm - Check permission to do an operation on a object
+// obj must have fields :  Permission, AuthorID/Author,  GroupID/Group (similar to a note)
+// Action can be a string of 'r' (read), 'w' (write), 'rw' (read-write), 'd' (delete)
 func CheckPerm(obj Object, UserID int64, Action string) bool {
 	if obj.Permission == 5 { //World read, everyone logged in can do anything
 		if Action == "r" {
@@ -451,7 +451,7 @@ func CheckPerm(obj Object, UserID int64, Action string) bool {
 	return false
 }
 
-//TemplateFuncMap - custom template func map
+// TemplateFuncMap - custom template func map
 var TemplateFuncMap *template.FuncMap
 var AllTemplates *template.Template
 
@@ -468,37 +468,37 @@ func LoadAllTemplates() {
 		"time_fmt": func(timelayout string, timeticks int64) string {
 			return u.NsToTime(timeticks).Format(timelayout)
 		},
-		"raw_html": func(html string) template.HTML {
+		"raw_html": func(html string) string {
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
-			return template.HTML(cleanupBytes)
+			return string(cleanupBytes)
 		},
-		"unsafe_raw_html": func(html string) template.HTML {
-			return template.HTML(html)
+		"unsafe_raw_html": func(html string) string {
+			return html
 		},
-		"if_ie": func() template.HTML {
-			return template.HTML("<!--[if IE]>")
+		"if_ie": func() string {
+			return "<!--[if IE]>"
 		},
-		"end_if_ie": func() template.HTML {
-			return template.HTML("<![endif]-->")
+		"end_if_ie": func() string {
+			return "<![endif]-->"
 		},
-		"truncatechars": func(length int, in string) template.HTML {
-			return template.HTML(u.ChunkString(in, length)[0])
+		"truncatechars": func(length int, in string) string {
+			return u.ChunkString(in, length)[0]
 		},
-		"cycle": func(idx int, vals ...string) template.HTML {
+		"cycle": func(idx int, vals ...string) string {
 			_idx := idx % len(vals)
-			return template.HTML(vals[_idx])
+			return vals[_idx]
 		},
-		"md2html": func(md string) template.HTML {
+		"md2html": func(md string) string {
 			var buf bytes.Buffer
 			if err := goldmark.Convert([]byte(md), &buf); err != nil {
 				panic(err)
 			}
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
-			return template.HTML(cleanupBytes)
+			return string(cleanupBytes)
 		},
-		"replace": func(old, new, data string) template.HTML {
+		"replace": func(old, new, data string) string {
 			o := strings.ReplaceAll(data, old, new)
-			return template.HTML(o)
+			return o
 		},
 		"contains": func(subStr, data string) bool {
 			return strings.Contains(data, subStr)
