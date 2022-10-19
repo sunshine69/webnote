@@ -3,11 +3,11 @@ package models
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/jbrodriguez/mlog"
 	u "github.com/sunshine69/golang-tools/utils"
 )
 
@@ -53,7 +53,7 @@ func SearchAttachment(kw string, u *User) []*Attachment {
 	// fmt.Printf("DEBUG SearchAttachment kw %s - query %s\n", kw, q)
 	rows, e := DB.Query(q)
 	if e != nil {
-		log.Printf("ERROR search attachement - %v\n", e)
+		mlog.Error(fmt.Errorf("search attachement - %s", e.Error()))
 		return o
 	}
 	defer rows.Close()
@@ -61,7 +61,7 @@ func SearchAttachment(kw string, u *User) []*Attachment {
 	for rows.Next() {
 		a := Attachment{}
 		if e := rows.Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-			log.Printf("ERROR search attachement, scanning %v\n", e)
+			mlog.Error(fmt.Errorf("search attachement, scanning %s", e.Error()))
 			continue
 		}
 		if pok := CheckPerm(a.Object, u.ID, "r"); pok {
@@ -106,7 +106,7 @@ func (a *Attachment) Save() {
 			VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.FileSize, a.Mimetype, a.Created, a.Updated)
 		if e != nil {
 			tx.Rollback()
-			log.Fatalf("ERROR can not insert attachment - %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("can not insert attachment - %s", e.Error()))
 		}
 		tx.Commit()
 		a.ID, _ = res.LastInsertId()
@@ -126,7 +126,7 @@ func (a *Attachment) Save() {
 			WHERE name = $11`, a.Name, a.Description, a.AuthorID, a.GroupID, a.Permission, a.AttachedFile, a.FileSize, a.Mimetype, a.Created, a.Updated, a.Name)
 		if e != nil {
 			tx.Rollback()
-			log.Fatalf("ERROR can not update attachment - %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("can not update attachment - %s", e.Error()))
 		}
 		tx.Commit()
 	}
@@ -151,7 +151,7 @@ func GetAttachement(aName string) *Attachment {
 		updated
 		FROM attachment
 		WHERE name = $1`, aName).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-		log.Printf("WARN No attachement %s found - %v\n", aName, e)
+		mlog.Warning("WARN No attachement %s found - %v\n", aName, e)
 		return nil
 	}
 	a.Update()
@@ -176,7 +176,7 @@ func GetAttachementByID(id int64) *Attachment {
 		updated
 		FROM attachment
 		WHERE id = $1`, id).Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-		log.Printf("WARN No attachement ID %d found - %v\n", id, e)
+		mlog.Warning("WARN No attachement ID %d found - %s\n", id, e.Error())
 		return nil
 	}
 	a.Update()
@@ -187,7 +187,7 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 	DB := GetDB("")
 	defer DB.Close()
 	if !CheckPerm(a.Object, u.ID, "d") {
-		return errors.New("Permission denied")
+		return errors.New("permission denied")
 	}
 	//Check if it has links to note
 	rows, e := DB.Query(`SELECT
@@ -204,7 +204,7 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 	for rows.Next() {
 		n := Note{}
 		if e := rows.Scan(&n.ID, &n.Title); e != nil {
-			log.Printf("ERROR scan in delete attachment %v\n", e)
+			mlog.Error(fmt.Errorf("scan in delete attachment %s", e.Error()))
 			continue
 		}
 		noteList = append(noteList, &n)
@@ -234,7 +234,7 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 	return nil
 }
 
-//ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
+// ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
 func ScanAttachment(dir string, user *User) []*Attachment {
 	dir = u.Ternary(dir == "", "uploads", dir).(string)
 	o := []*Attachment{}
@@ -271,7 +271,7 @@ func ScanAttachment(dir string, user *User) []*Attachment {
 		})
 
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 	}
 	return o
 }

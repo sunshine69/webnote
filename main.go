@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -24,53 +23,55 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/jbrodriguez/mlog"
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
 	"github.com/sunshine69/webnote-go/app"
-	m "github.com/sunshine69/webnote-go/models"
+	"github.com/sunshine69/webnote-go/models"
 )
 
 var version, ServerPort, SSLKey, SSLCert string
 var EnableCompression *string
 
 func init() {
-	SSLKey = m.GetConfig("ssl_key", "")
-	SSLCert = m.GetConfig("ssl_cert", "")
+	SSLKey = models.GetConfig("ssl_key", "")
+	SSLCert = models.GetConfig("ssl_cert", "")
+	mlog.Start(mlog.LevelInfo, "webnote.log")
 }
 
-func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *m.User {
-	isAuth := m.GetSessionVal(r, "authenticated", nil)
+func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *models.User {
+	isAuth := models.GetSessionVal(r, "authenticated", nil)
 	if isAuth == nil || !isAuth.(bool) {
 		return nil
 	}
-	useremail := m.GetSessionVal(r, "useremail", "").(string)
+	useremail := models.GetSessionVal(r, "useremail", "").(string)
 	if useremail == "" {
 		return nil
 	}
-	return m.GetUser(useremail)
+	return models.GetUser(useremail)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	raw_editor, _ := strconv.Atoi(u.GetRequestValue(r, "raw_editor", "1"))
 
-	var aNote *m.Note
+	var aNote *models.Note
 	u := GetCurrentUser(&w, r)
 	if noteID == 0 {
-		aNote = m.NoteNew(map[string]interface{}{
+		aNote = models.NoteNew(map[string]interface{}{
 			"ID":         noteID,
 			"group_id":   u.Groups[0].ID,
 			"raw_editor": int8(raw_editor),
 		})
 	} else {
-		aNote = m.GetNoteByID(noteID)
+		aNote = models.GetNoteByID(noteID)
 	}
 	CommonRenderTemplate("frontpage.html", &w, r, &map[string]interface{}{
 		"title":            "Webnote - note " + aNote.Title,
 		"page":             "frontpage",
 		"msg":              "",
 		"note":             aNote,
-		"first_time_login": m.GetSessionVal(r, "first_time_login", "no").(string),
+		"first_time_login": models.GetSessionVal(r, "first_time_login", "no").(string),
 	})
 }
 
@@ -97,21 +98,21 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	ngroup := m.GetGroup(u.GetFormValue(r, "ngroup", "default"))
+	ngroup := models.GetGroup(u.GetFormValue(r, "ngroup", "default"))
 	_permission, _ := strconv.Atoi(u.GetFormValue(r, "permission", "0"))
 	permission := int8(_permission)
 
 	_raw_editor, _ := strconv.Atoi(u.GetFormValue(r, "raw_editor", "0"))
 	raw_editor := int8(_raw_editor)
 
-	var aNote *m.Note
+	var aNote *models.Note
 	content := r.FormValue("content")
 	title := r.FormValue("title")
 	if title == "" {
 		title = GetFirstnChar(content, 128)
 	}
 	if noteID == 0 { //New note created by current user
-		aNote = m.NoteNew(map[string]interface{}{
+		aNote = models.NoteNew(map[string]interface{}{
 			"title":      title,
 			"datelog":    r.FormValue("datelog"),
 			"flags":      r.FormValue("flags"),
@@ -125,8 +126,8 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 		)
 		aNote.Save()
 	} else { //Existing note loaded. Need to check permmission
-		aNote = m.GetNoteByID(noteID)
-		if m.CheckPerm(aNote.Object, user.ID, "w") {
+		aNote = models.GetNoteByID(noteID)
+		if models.CheckPerm(aNote.Object, user.ID, "w") {
 			aNote.Title = r.FormValue("title")
 			aNote.Flags = r.FormValue("flags")
 			aNote.Content = r.FormValue("content")
@@ -141,10 +142,10 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	}
 	isAjax := u.GetRequestValue(r, "is_ajax", "0")
 	if isAjax == "1" {
-		fmt.Fprintf(w, msg)
+		fmt.Fprint(w, msg)
 	} else {
 		if msg != "OK note saved" {
-			fmt.Fprintf(w, msg)
+			fmt.Fprint(w, msg)
 		} else {
 			http.Redirect(w, r, fmt.Sprintf("/?id=%d", aNote.ID), http.StatusFound)
 		}
@@ -154,13 +155,13 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	keyword := u.GetRequestValue(r, "keyword", "")
 	u := GetCurrentUser(&w, r)
-	var attachments []*m.Attachment
+	var attachments []*models.Attachment
 	if u != nil {
-		attachments = m.SearchAttachment(keyword, u)
+		attachments = models.SearchAttachment(keyword, u)
 	} else {
-		attachments = []*m.Attachment{}
+		attachments = []*models.Attachment{}
 	}
-	notes := m.SearchNote(keyword, GetCurrentUser(&w, r))
+	notes := models.SearchNote(keyword, GetCurrentUser(&w, r))
 	CommonRenderTemplate("search_result.html", &w, r, &map[string]interface{}{
 		"title":       "Webnote - Search result",
 		"page":        "search_result",
@@ -175,20 +176,20 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	viewType := u.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	aNote := m.GetNoteByID(noteID)
+	aNote := models.GetNoteByID(noteID)
 
 	if aNote.Permission < 5 {
-		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		isAuth := models.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
-			log.Printf("ERROR - No session\n")
+			mlog.Error(fmt.Errorf("no session"))
 			from_uri := r.URL.RequestURI()
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/login?from_uri="+from_uri, http.StatusTemporaryRedirect)
 			return
 		}
 		u := GetCurrentUser(&w, r)
-		if !m.CheckPerm(aNote.Object, u.ID, "r") {
-			log.Printf("ERROR - No Permission\n")
+		if !models.CheckPerm(aNote.Object, u.ID, "r") {
+			mlog.Error(fmt.Errorf("no permission"))
 			fmt.Fprintf(w, "Permission denied")
 			return
 		}
@@ -199,7 +200,7 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 		"page":      "noteview",
 		"msg":       "",
 		"note":      aNote,
-		"revisions": m.GetNoteRevisions(aNote.ID),
+		"revisions": models.GetNoteRevisions(aNote.ID),
 	}
 	if len(aNote.Attachments) > 0 {
 		data["attachments"] = aNote.Attachments
@@ -214,8 +215,8 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 	if noteIDStr != "0" {
 		user := GetCurrentUser(&w, r)
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		aNote := m.GetNoteByID(noteID)
-		if m.CheckPerm(aNote.Object, user.ID, "d") {
+		aNote := models.GetNoteByID(noteID)
+		if models.CheckPerm(aNote.Object, user.ID, "d") {
 			aNote.Delete()
 		} else {
 			msg = "Permission denied."
@@ -234,12 +235,12 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 		redirectURL = "/search?keyword=" + keyword
 	}
 	if isAjax == "1" {
-		fmt.Fprintf(w, msg)
+		fmt.Fprint(w, msg)
 	} else {
 		if msg != "OK" {
-			fmt.Fprintf(w, msg)
+			fmt.Fprint(w, msg)
 		} else {
-			http.Redirect(w, r, fmt.Sprintf(redirectURL), http.StatusFound)
+			http.Redirect(w, r, fmt.Sprint(redirectURL), http.StatusFound)
 		}
 	}
 }
@@ -256,7 +257,7 @@ func ClearSession(w *http.ResponseWriter) {
 
 func DoLogout(w http.ResponseWriter, r *http.Request) {
 	ClearSession(&w)
-	http.Redirect(w, r, fmt.Sprintf("/"), http.StatusFound)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 var CSRF_TOKEN string
@@ -268,7 +269,7 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 	tName := "noteview" + viewType + ".html"
 
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	aNote := m.GetNoteRevisionByID(noteID)
+	aNote := models.GetNoteRevisionByID(noteID)
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
 		"page":  "noteview",
@@ -280,8 +281,8 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	revNoteID, _ := strconv.ParseInt(u.GetRequestValue(r, "rev_id", "0"), 10, 64)
-	n := m.GetNoteByID(noteID)
-	n1 := m.GetNoteRevisionByID(revNoteID)
+	n := models.GetNoteByID(noteID)
+	n1 := models.GetNoteRevisionByID(revNoteID)
 	nd := n1.Diff(n)
 	t, _ := template.New("diff").Parse(`<html>
 	<body>{{ .htmlText }}</body>
@@ -308,14 +309,14 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "ERROR", http.StatusForbidden)
 			return
 		}
-		var aList []*m.Attachment
+		var aList []*models.Attachment
 
-		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
+		if err := r.ParseMultipartForm(models.MaxUploadSizeInMemory); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		for count := 0; count < m.Settings.UPLOAD_ITEM_COUNT; count++ {
+		for count := 0; count < models.Settings.UPLOAD_ITEM_COUNT; count++ {
 			cStr := strconv.Itoa(count)
 			file, handler, err := r.FormFile("myFile" + cStr)
 			if err != nil {
@@ -332,8 +333,8 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 				aName = handler.Filename
 			}
 			uploadPath := u.GetRequestValue(r, "upload_path"+cStr)
-			attachedFileDir := u.Ternary(uploadPath == "", m.UpLoadPath, filepath.Join(m.UpLoadPath, uploadPath)).(string)
-			a := m.Attachment{
+			attachedFileDir := u.Ternary(uploadPath == "", models.UpLoadPath, filepath.Join(models.UpLoadPath, uploadPath)).(string)
+			a := models.Attachment{
 				Name:         aName,
 				Description:  aDesc,
 				AttachedFile: filepath.Join(attachedFileDir, handler.Filename),
@@ -342,13 +343,12 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			os.MkdirAll(attachedFileDir, os.ModePerm)
 
 			f, err := os.OpenFile(a.AttachedFile, os.O_WRONLY|os.O_CREATE, 0666)
-			if err != nil {
-				log.Fatalf("ERROR can not open file to save attachment - %v\n", err)
-			}
+			mlog.FatalIfError(err)
+
 			copyFile := func(f *os.File, file io.Reader) {
 				bWritten, e := io.Copy(f, file)
 				if e != nil {
-					log.Printf("ERROR Copied %d and got error %v\n", bWritten, e)
+					mlog.Error(fmt.Errorf("copied %d and got error %s", bWritten, e.Error()))
 					return
 				}
 				f.Close()
@@ -392,18 +392,18 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 		</body></html>`
 		t := template.Must(template.New("a").Parse(tmplStr))
 		t.Execute(w, map[string]interface{}{
-			"settings":    m.Settings,
+			"settings":    models.Settings,
 			"attachments": aList,
 		})
 		return
 	}
 }
 
-func GetCurrentNote(r *http.Request) *m.Note {
+func GetCurrentNote(r *http.Request) *models.Note {
 	noteIDStr := u.GetRequestValue(r, "note_id", "")
 	if noteIDStr != "" {
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		return m.GetNoteByID(noteID)
+		return models.GetNoteByID(noteID)
 	}
 	return nil
 }
@@ -412,7 +412,7 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := u.GetRequestValue(r, "keyword", "")
 	aNote := GetCurrentNote(r)
 	u := GetCurrentUser(&w, r)
-	aList := m.SearchAttachment(kw, u)
+	aList := models.SearchAttachment(kw, u)
 	data := map[string]interface{}{
 		"title":       "Webnote - List attachements",
 		"page":        "list_attachement",
@@ -432,7 +432,7 @@ func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
 	user := GetCurrentUser(&w, r)
-	a := m.GetAttachementByID(aID)
+	a := models.GetAttachementByID(aID)
 	if e := a.DeleteAttachment(user); e != nil {
 		msg := fmt.Sprintf("ERROR Can not delete attachment - %v", e)
 		http.Error(w, msg, http.StatusOK)
@@ -451,20 +451,20 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
-	a := m.GetAttachementByID(aID)
+	a := models.GetAttachementByID(aID)
 	user := GetCurrentUser(&w, r)
 
 	if a.Permission < 5 {
-		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		isAuth := models.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
-			log.Printf("ERROR - No session\n")
+			mlog.Error(fmt.Errorf("no session"))
 			from_uri := r.URL.RequestURI()
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/login?from_uri="+from_uri, http.StatusTemporaryRedirect)
 			return
 		}
-		if !m.CheckPerm(a.Object, user.ID, "r") {
-			log.Printf("ERROR - No Permission user %s - attachment name: %s\n", user, a.Name)
+		if !models.CheckPerm(a.Object, user.ID, "r") {
+			mlog.Error(fmt.Errorf("no permission user %s - attachment name: %s", user, a.Name))
 			fmt.Fprintf(w, "Permission denied")
 			return
 		}
@@ -501,12 +501,12 @@ func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
 	if action == "unlink" {
 		if e := n.UnlinkAttachment(attachmentID, user); e != nil {
 			msg := fmt.Sprintf("ERROR unlink attachment to note - %v\n", e)
-			fmt.Fprintf(w, msg)
+			fmt.Fprint(w, msg)
 			return
 		}
 	} else {
 		if e := n.LinkAttachment(attachmentID, user); e != nil {
-			log.Printf("ERROR link attachment to note - %v\n", e)
+			mlog.Error(fmt.Errorf("link attachment to note - %s", e.Error()))
 			fmt.Fprintf(w, "ERROR")
 			return
 		}
@@ -518,7 +518,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		allGroups := []string{}
-		for _, gn := range m.GetAllGroups() {
+		for _, gn := range models.GetAllGroups() {
 			allGroups = append(allGroups, gn.Name)
 		}
 		CommonRenderTemplate("edituser.html", &w, r, &map[string]interface{}{
@@ -546,37 +546,37 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 		}
 		if cUser.Email != userEmail {
 			//We are updating other user, not current user. We need to be admin to do so
-			if cUser.Email != m.Settings.ADMIN_EMAIL {
-				log.Printf("ERROR Permission denied. Only admin has right to update other user\n")
+			if cUser.Email != models.Settings.ADMIN_EMAIL {
+				mlog.Error(fmt.Errorf("permission denied. Only admin has right to update other user"))
 				fmt.Fprintf(w, "Permission denied")
 				return
 			}
 		}
 		//Checking admin password to confirm
 		if !u.VerifyHash(password, cUser.PasswordHash, int(cUser.SaltLength)) {
-			log.Printf("ERROR Permission denied. Old/Admin password provided incorrect\n")
+			mlog.Error(fmt.Errorf("permission denied. Old/Admin password provided incorrect"))
 			fmt.Fprintf(w, "Permission denied")
 			return
 		}
 		switch action {
 		case "Add/Edit User":
-			user := m.UserNew(userData)
+			user := models.UserNew(userData)
 			fmt.Fprintf(w, "OK user detail updated for %s. You need to generate TOP QR code using previous form", user.Email)
 		case "Generate new OTP QR image":
-			user := m.GetUser(userEmail)
-			pngImageBuff := m.SetUserOTP(user.Email)
+			user := models.GetUser(userEmail)
+			pngImageBuff := models.SetUserOTP(user.Email)
 			w.Write(pngImageBuff.Bytes())
 			return
 		case "Add Groups":
-			if cUser.Email != m.Settings.ADMIN_EMAIL {
-				log.Printf("ERROR Permission denied. Only admin has right to add more groups\n")
+			if cUser.Email != models.Settings.ADMIN_EMAIL {
+				mlog.Error(fmt.Errorf("permission denied. Only admin has right to add more groups"))
 				fmt.Fprintf(w, "Permission denied")
 				return
 			} else {
 				groups := strings.Split(u.GetRequestValue(r, "new_group_names"), `,`)
 				for _, gn := range groups {
 					gn = strings.TrimSpace(gn)
-					newGroup := m.Group{
+					newGroup := models.Group{
 						Name: gn,
 					}
 					newGroup.Save()
@@ -585,7 +585,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		case "Unlock Account":
-			user := m.UserNew(userData)
+			user := models.UserNew(userData)
 			user.AttemptCount = 1
 			user.Save()
 			fmt.Fprintf(w, "Account %s is unlocked", user.Email)
@@ -596,12 +596,12 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 
 func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 	user := GetCurrentUser(&w, r)
-	if user.Email != m.Settings.ADMIN_EMAIL {
+	if user.Email != models.Settings.ADMIN_EMAIL {
 		fmt.Fprint(w, "Permission denied")
 		return
 	}
 	kw := u.GetRequestValue(r, "kw", "")
-	foundUsers := m.SearchUser(kw)
+	foundUsers := models.SearchUser(kw)
 	if len(foundUsers) == 0 {
 		fmt.Fprint(w, "No user found")
 		return
@@ -610,17 +610,16 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	o, e := json.MarshalToString(foundUser)
 	if e != nil {
-		log.Printf("ERROR can not create json %v\n", e)
+		mlog.Error(fmt.Errorf("can not create json %s", e.Error()))
 		return
 	}
-	fmt.Fprintf(w, o)
-	return
+	fmt.Fprint(w, o)
 }
 
 func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 	_aID := u.GetRequestValue(r, "id")
 	aID, _ := strconv.ParseInt(_aID, 10, 64)
-	a := m.GetAttachementByID(aID)
+	a := models.GetAttachementByID(aID)
 	switch r.Method {
 	case "GET":
 		CommonRenderTemplate("editattachment.html", &w, r, &map[string]interface{}{
@@ -630,13 +629,13 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 		})
 	case "POST":
 		user := GetCurrentUser(&w, r)
-		if m.CheckPerm(a.Object, user.ID, "w") {
+		if models.CheckPerm(a.Object, user.ID, "w") {
 			action := u.GetRequestValue(r, "submit")
 			a.Name = u.GetRequestValue(r, "a_name")
 			a.Description = u.GetRequestValue(r, "a_desc")
 			_perm, _ := strconv.Atoi(u.GetRequestValue(r, "permission"))
 			a.Permission = int8(_perm)
-			g := m.GetGroup(u.GetRequestValue(r, "ngroup"))
+			g := models.GetGroup(u.GetRequestValue(r, "ngroup"))
 			a.GroupID = g.ID
 
 			switch action {
@@ -672,18 +671,53 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 
 func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
 	u := GetCurrentUser(&w, r)
-	if u.Email != m.Settings.ADMIN_EMAIL {
-		http.Error(w, "Permission denied", 403)
+	if u.Email != models.Settings.ADMIN_EMAIL {
+		http.Error(w, "Permission denied", http.StatusForbidden)
 		return
 	}
-	o := m.ScanAttachment("uploads/", u)
+	o := models.ScanAttachment("uploads/", u)
 	fmt.Fprintf(w, "Add / Update list: %v", o)
-	return
+}
+
+func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
+	sql := u.GetRequestValue(r, "sql")
+	ptn := regexp.MustCompile(`^[\s]*(UPDATE|update|DELETE|delete) `)
+	if !ptn.MatchString(sql) {
+		fmt.Fprintf(w, "Invalid sql provided")
+		mlog.Warning("Invalid sql provided - %s", sql)
+		return
+	}
+	if !strings.Contains(sql, " WHERE id in ") {
+		fmt.Fprintf(w, "Invalid sql provided. No WHERE clause")
+		mlog.Warning("Invalid sql provided No WHERE clause - %s", sql)
+		return
+	}
+	mlog.Info("going to run sql: %s\n", sql)
+	DB := models.GetDB("")
+	defer DB.Close()
+	tx, err := DB.Begin()
+	if err != nil {
+		mlog.IfError(err)
+		fmt.Fprintf(w, "Can not start TX. See app log for details")
+		return
+	}
+	_, err = tx.Exec(sql)
+	if err != nil {
+		mlog.IfError(err)
+		fmt.Fprintf(w, "Can not exec sql. See app log for details")
+		return
+	}
+	if err := tx.Commit(); err != nil {
+		mlog.IfError(err)
+		fmt.Fprintf(w, "Can not commit sql. See app log for details")
+		return
+	}
+	fmt.Fprintf(w, "Success!")
 }
 
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
-	base_url := m.GetConfig("base_url", "")
+	base_url := models.GetConfig("base_url", "")
 	_u, _e := url.Parse(base_url)
 	if _e != nil {
 		panic(_e)
@@ -757,6 +791,8 @@ func HandleRequests() {
 	//User management
 	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
 	router.Handle("/searchuser", isAuthorized(DoSearchUser)).Methods("GET")
+	// With selected - handle bulk ops from the search result
+	router.Handle("/on_selected_run_sql", isAuthorized(OnSelectedRunSql)).Methods("POST")
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
@@ -794,11 +830,11 @@ func HandleRequests() {
 	}
 
 	if SSLKey != "" {
-		log.Printf("Start SSL/TLS server on port %s\n", ServerPort)
-		log.Fatal(srv.ListenAndServeTLS(SSLCert, SSLKey))
+		mlog.Info("Start SSL/TLS server on port %s\n", ServerPort)
+		mlog.FatalIfError(srv.ListenAndServeTLS(SSLCert, SSLKey))
 	} else {
-		log.Printf("Start server on port %s\n", ServerPort)
-		log.Fatal(srv.ListenAndServe())
+		mlog.Info("Start server on port %s\n", ServerPort)
+		mlog.FatalIfError(srv.ListenAndServe())
 	}
 }
 
@@ -837,7 +873,7 @@ func main() {
 
 		The ssl cert and key if it does not exist then will be created automatically.
 
-		The default admin email to login is admin@admin.com. To change this use option '-cmd set_admin_email'
+		The default admin email to login is admin@admin.comodels. To change this use option '-cmd set_admin_email'
 		The default password for admin@admin.com is 1qa2ws. When logged in follow the instructions on screen to change password and generate QR OTP image for MFA.
 
 		Next run remove the option -setup to start the app
@@ -851,11 +887,11 @@ func main() {
 
 		Try to select * from appconfig to see what key you can do. The whitelist_ip is a list of IP that user does not need to use OTP to login.
 		`
-		fmt.Fprintf(os.Stderr, msg)
+		fmt.Fprint(os.Stderr, msg)
 	}
 
 	flag.Parse()
-	m.UpLoadPath = *rootUploadDir
+	models.UpLoadPath = *rootUploadDir
 
 	if *getVersion {
 		fmt.Println(version)
@@ -871,21 +907,21 @@ func main() {
 	switch os.Getenv("RESET_STORAGE") {
 	case "yes", "true":
 		journalPath := fmt.Sprintf("%s-journal", *dbPath)
-		log.Printf("RESET_STORAGE is set going to remove %s and %s\n", *dbPath, journalPath)
+		mlog.Info("RESET_STORAGE is set going to remove %s and %s\n", *dbPath, journalPath)
 		if err := os.Remove(*dbPath); err != nil {
-			log.Printf("remove dbPath error: %v\n", err)
+			mlog.Info("remove dbPath error: %v\n", err)
 		}
 		if err := os.Remove(journalPath); err != nil {
-			log.Printf("remove journalPath error: %v\n", err)
+			mlog.Info("remove journalPath error: %v\n", err)
 		}
 		*setup = true
 	}
 	if *setup {
-		log.Printf("SETUP is called and started\n")
-		m.SetupAppDatabase()
-		m.SetupDefaultConfig()
-		m.CreateAdminUser()
-		m.CreatePublicReadUser()
+		mlog.Info("SETUP is called and started\n")
+		models.SetupAppDatabase()
+		models.SetupDefaultConfig()
+		models.CreateAdminUser()
+		models.CreatePublicReadUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
 			keyFileName := u.FileNameWithoutExtension(*sslKey)
 			u.GenSelfSignedKey(keyFileName)
@@ -893,11 +929,11 @@ func main() {
 		}
 	}
 
-	SSLKey = m.GetConfigSave("ssl_key", *sslKey)
-	SSLCert = m.GetConfigSave("ssl_cert", *sslCert)
-	m.GetConfigSave("base_url", *base_url)
+	SSLKey = models.GetConfigSave("ssl_key", *sslKey)
+	SSLCert = models.GetConfigSave("ssl_cert", *sslCert)
+	models.GetConfigSave("base_url", *base_url)
 
-	m.InitConfig()
+	models.InitConfig()
 
 	if *cmd != "" {
 		//Run command utils
@@ -910,54 +946,54 @@ func main() {
 			add_user - take more opt username, password, group
 			scan_attachment - take option attachmentdir or leave it empty to use the default 'uploads' folder`)
 		case "set_admin_password":
-			m.SetAdminPassword()
+			models.SetAdminPassword()
 		case "set_admin_otp":
-			m.SetAdminOTP()
+			models.SetAdminOTP()
 		case "set_admin_email":
-			m.SetAdminEmail("")
+			models.SetAdminEmail("")
 		case "add_user":
-			m.AddUser(map[string]interface{}{
+			models.AddUser(map[string]interface{}{
 				"username": *useremail,
 				"password": *userpassword,
 				"group":    *usergroup,
 			})
 		case "scan_attachment":
 			aDir := u.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
-			u := m.GetUser(m.Settings.ADMIN_EMAIL)
-			m.ScanAttachment(aDir, u)
+			u := models.GetUser(models.Settings.ADMIN_EMAIL)
+			models.ScanAttachment(aDir, u)
 		}
 	} else { //Server mode
 		if *sessionKey == "" {
-			*sessionKey = m.GetConfig("session-key", "")
+			*sessionKey = models.GetConfig("session-key", "")
 			if *sessionKey == "" {
 				*sessionKey = u.MakePassword(64)
-				m.SetConfig("session-key", *sessionKey)
+				models.SetConfig("session-key", *sessionKey)
 			}
 		}
-		m.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
-		m.SessionStore.Options = &sessions.Options{
+		models.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
+		models.SessionStore.Options = &sessions.Options{
 			Path:     "/",
 			MaxAge:   3600 * 4,
 			HttpOnly: true,
 		}
 		// log.Println(*sessionKey)
-		m.LoadAllTemplates()
+		models.LoadAllTemplates()
 		HandleRequests()
 	}
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
-	trycount := m.GetSessionVal(r, "trycount", 0).(int)
-	_userIP := m.ReadUserIP(r)
+	trycount := models.GetSessionVal(r, "trycount", 0).(int)
+	_userIP := models.ReadUserIP(r)
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	userIP := portPtn.ReplaceAllString(_userIP, "")
-	ses, _ := m.SessionStore.Get(r, "auth-session")
+	ses, _ := models.SessionStore.Get(r, "auth-session")
 
-	currentBlackList := m.GetConfig("blacklist_ips", "")
+	currentBlackList := models.GetConfig("blacklist_ips", "")
 
 	if trycount >= 30 {
 		currentBlackList = currentBlackList + "," + userIP
-		m.SetConfig("blacklist_ips", currentBlackList)
+		models.SetConfig("blacklist_ips", currentBlackList)
 	}
 	if strings.Contains(currentBlackList, userIP) {
 		ses.Values = make(map[interface{}]interface{}, 1) //Empty session values
@@ -969,9 +1005,9 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	trycount = trycount + 1
-	m.SaveSessionVal(r, &w, "trycount", trycount)
+	models.SaveSessionVal(r, &w, "trycount", trycount)
 
-	isAuthenticated := m.GetSessionVal(r, "authenticated", nil)
+	isAuthenticated := models.GetSessionVal(r, "authenticated", nil)
 
 	switch r.Method {
 	case "GET":
@@ -986,7 +1022,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				"client_ip":      userIP,
 				"from_uri":       from_uri,
 			}
-			if err := m.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
+			if err := models.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
@@ -999,12 +1035,12 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		useremail := r.FormValue("username")
 		password := r.FormValue("password")
 
-		var user *m.User
+		var user *models.User
 
 		totop := r.FormValue("totp_number")
-		log.Printf("INFO user input totp %s\n", totop)
-		user, err := m.VerifyLogin(useremail, password, totop, userIP)
-		ses, _ := m.SessionStore.Get(r, "auth-session")
+		mlog.Info("user input totp %s\n", totop)
+		user, err := models.VerifyLogin(useremail, password, totop, userIP)
+		ses, _ := models.SessionStore.Get(r, "auth-session")
 		if user != nil {
 			if strings.Contains(user.ExtraInfo, " First Time Login ") {
 				ses.Values["first_time_login"] = "yes"
@@ -1013,7 +1049,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			} else {
 				ses.Values["first_time_login"] = "no"
 			}
-			log.Printf("INFO Verified user %v\n", user)
+			mlog.Info("Verified user %v\n", user)
 			ses.Values["authenticated"] = true
 			ses.Values["trycount"] = 0
 			ses.Values["useremail"] = useremail
@@ -1023,7 +1059,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 			return
 		} else {
-			log.Printf("INFO Failed To Verify user %s - %s\n", useremail, err.Error())
+			mlog.Info("Failed To Verify user %s - %s\n", useremail, err.Error())
 			ses.Values["authenticated"] = false
 			ses.Values["useremail"] = ""
 			ses.Save(r, w)
@@ -1035,9 +1071,9 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		isAuth := m.GetSessionVal(r, "authenticated", nil)
+		isAuth := models.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
-			log.Printf("ERROR - No session\n")
+			mlog.Error(fmt.Errorf("no session"))
 			uri := r.RequestURI
 			// uri = url.PathEscape(uri)
 			uri = strings.TrimPrefix(uri, "/")
@@ -1053,7 +1089,7 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	user := GetCurrentUser(w, r)
 	keyword := u.GetRequestValue(r, "keyword", "")
 
-	var uGroups []*m.Group
+	var uGroups []*models.Group
 	var commonMapData map[string]interface{}
 
 	if user != nil {
@@ -1061,25 +1097,25 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 		commonMapData = map[string]interface{}{
 			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
-			"settings":        m.Settings,
+			"settings":        models.Settings,
 			"user":            user,
 			"groups":          uGroups,
-			"permission_list": m.PermissionList,
-			"date_layout":     m.DateLayout,
+			"permission_list": models.PermissionList,
+			"date_layout":     models.DateLayout,
 		}
 	} else {
 		commonMapData = map[string]interface{}{
 			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
-			"settings":        m.Settings,
-			"permission_list": m.PermissionList,
-			"date_layout":     m.DateLayout,
+			"settings":        models.Settings,
+			"permission_list": models.PermissionList,
+			"date_layout":     models.DateLayout,
 		}
 	}
 	for _k, _v := range *mapData {
 		commonMapData[_k] = _v
 	}
-	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
+	if err := models.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}
 }

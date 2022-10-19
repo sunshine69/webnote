@@ -4,7 +4,7 @@ forget about these build script using quirky docker compose build :). If you run
 distro you can run
 
 ```
-go build -trimpath -ldflags="-X main.version=v1.0 -extldflags=-static -w -s" --tags "osusergo,netgo,sqlite_stat4,sqlite_foreign_keys,sqlite_json"
+go build -trimpath --tags "json1 fts5 secure_delete osusergo netgo sqlite_stat4 sqlite_foreign_keys" -ldflags="-X main.version=v1.0 -extldflags=-static -w -s"
 ```
 
 and the binary will be produced `webnote-go`.

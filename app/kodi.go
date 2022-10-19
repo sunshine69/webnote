@@ -2,17 +2,17 @@ package app
 
 import (
 	"fmt"
-	"github.com/json-iterator/go"
-	"github.com/sunshine69/kodirpc"
-	m "github.com/sunshine69/webnote-go/models"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jbrodriguez/mlog"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/sunshine69/kodirpc"
+	m "github.com/sunshine69/webnote-go/models"
 )
 
 var json jsoniter.API
@@ -31,7 +31,7 @@ func GetKodiClient() *kodirpc.Client {
 	return client
 }
 
-//GetCurrentPlayList -
+// GetCurrentPlayList -
 func GetCurrentPlayList(playerID int) int {
 	client := GetKodiClient()
 	defer client.Close()
@@ -99,7 +99,7 @@ func InsertToPlayList(listID int, entry string, position int) {
 	fmt.Println(res)
 }
 
-//GetActivePlayer -
+// GetActivePlayer -
 func GetActivePlayer() int {
 	client := GetKodiClient()
 	defer client.Close()
@@ -109,11 +109,11 @@ func GetActivePlayer() int {
 		panic(err)
 	}
 	//First use json Marshal and print the string. Then define this type. Not sure what is better and cleaner way to convert cast it though.
-	type Player struct {
-		Playerid   int
-		Playertype string
-		Type       string
-	}
+	// type Player struct {
+	// 	Playerid   int
+	// 	Playertype string
+	// 	Type       string
+	// }
 
 	o, _ := json.Marshal(res)
 	o1 := json.Get(o, 0, "playerid")
@@ -180,7 +180,6 @@ func HandleAddToPlayList(w http.ResponseWriter, r *http.Request) {
 	playerID := GetActivePlayer()
 	listID := GetCurrentPlayList(playerID)
 	if playerID == 0 {
-		// log.Printf("DEBUG playserid %d\n", playerID)
 		PlayYoutube(url)
 	} else {
 		if positionstr == "" {
@@ -212,11 +211,11 @@ func HandlePlay(w http.ResponseWriter, r *http.Request) {
 func HandleLoadList(w http.ResponseWriter, r *http.Request) {
 	ParseCommon(w, r)
 	listName := r.FormValue("list_name")
-	data, e := ioutil.ReadFile(listName + ".list")
+	data, e := os.ReadFile(listName + ".list")
 	if e != nil {
 		fmt.Fprintf(w, "ERROR list does not exists")
 	} else {
-		fmt.Fprintf(w, string(data))
+		fmt.Fprint(w, string(data))
 	}
 }
 
@@ -224,7 +223,7 @@ func HandleSaveList(w http.ResponseWriter, r *http.Request) {
 	ParseCommon(w, r)
 	list_text := r.FormValue("list_text")
 	list_name := r.FormValue("list_name")
-	ioutil.WriteFile(list_name+".list", []byte(list_text), 0755)
+	os.WriteFile(list_name+".list", []byte(list_text), 0755)
 	fmt.Fprintf(w, "OK")
 }
 
@@ -235,7 +234,6 @@ func HandlePlayList(w http.ResponseWriter, r *http.Request) {
 	listUrls := strings.Split(data, "\n")
 	playerID := GetActivePlayer()
 	listID := GetCurrentPlayList(playerID)
-	// log.Printf("DEBUG: ListID %d\n", listID)
 	if action == "play" {
 		ClearCurrentList(listID)
 	}
@@ -259,11 +257,11 @@ func HandlePlayList(w http.ResponseWriter, r *http.Request) {
 func SaveRecentList(url string) {
 	f, err := os.OpenFile("recent.list", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println(err)
+		mlog.Error(err)
 	}
 	defer f.Close()
 	if _, err := f.WriteString(url + "\n"); err != nil {
-		log.Println(err)
+		mlog.Error(err)
 	}
 }
 

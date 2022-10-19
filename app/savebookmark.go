@@ -2,11 +2,11 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
 
+	"github.com/jbrodriguez/mlog"
 	u "github.com/sunshine69/golang-tools/utils"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -19,15 +19,15 @@ func SaveBookMark(w http.ResponseWriter, r *http.Request) {
 	myurl := u.GetRequestValue(r, "url", "")
 	mytitle := u.GetRequestValue(r, "title", "")
 	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
-	log.Printf("[DEBUG] myurl: '%s'\n", myurl)
+	mlog.Info("[DEBUG] myurl: '%s'\n", myurl)
 	if myurl != "" {
 		//The marker text is the pattern
 		ptn := regexp.MustCompile(`(\<li\>[=]+ Form [=]+\<\/li\>)`)
 		newText := fmt.Sprintf("\n<li><a href=\"%s\" title=\"%s\">%s</a></li>&nbsp&nbsp&nbsp&nbsp<a href=\"/delbookmark?url=%s\">remove</a>\n$1", myurl, mytitle, myurl, myurl)
 		if strings.Contains(bmarkdNote.Content, `href="`+myurl+`"`) {
-			log.Printf("bookmark '%s' exists\n", `href="`+myurl+`"`)
+			mlog.Info("bookmark '%s' exists\n", `href="`+myurl+`"`)
 		} else {
-			log.Printf("replace old content with new text '%s'\n", newText)
+			mlog.Info("replace old content with new text '%s'\n", newText)
 			newCt := ptn.ReplaceAllString(bmarkdNote.Content, newText)
 			bmarkdNote.Content = newCt
 			bmarkdNote.Save()

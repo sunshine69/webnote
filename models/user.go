@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jbrodriguez/mlog"
 	"github.com/pquerna/otp/totp"
 	u "github.com/sunshine69/golang-tools/utils"
 )
@@ -32,7 +33,7 @@ type User struct {
 	TotpPassword string
 }
 
-//update - Only be called from the GetUserXXX which complete the user object with external objects, references etc.
+// update - Only be called from the GetUserXXX which complete the user object with external objects, references etc.
 func (u *User) update() {
 	if u.GroupNames != "" {
 		for _, group := range strings.Split(u.GroupNames, ",") {
@@ -40,7 +41,7 @@ func (u *User) update() {
 				continue
 			}
 			group = strings.TrimSpace(group)
-			log.Printf("INFO add user %v to group %s\n", u, group)
+			mlog.Info("add user %v to group %s\n", u, group)
 			u.SetGroup(group)
 		}
 	}
@@ -69,7 +70,7 @@ func (u *User) update() {
 	u.GroupNames = strings.Join(gNames, `,`)
 }
 
-//SetGroup -
+// SetGroup -
 func (u *User) SetGroup(gnames ...string) {
 	DB := GetDB("")
 	defer DB.Close()
@@ -78,8 +79,8 @@ func (u *User) SetGroup(gnames ...string) {
 		g := GetGroup(gname)
 		if g != nil {
 			if e := DB.QueryRow(`SELECT group_id FROM user_group WHERE user_id = $1 AND group_id = $2`, userID, g.ID).Scan(&g.ID); e != nil {
-				log.Printf("ERROR %v\n", e)
-				log.Printf("INFO SetGroup can not get the group. Going to insert new one - %v\n", e)
+				mlog.Error(fmt.Errorf(" %v", e))
+				mlog.Info("SetGroup can not get the group. Going to insert new one - %v\n", e)
 				tx, _ := DB.Begin()
 				res, e := tx.Exec(`INSERT INTO user_group(user_id, group_id) VALUES($1, $2)`, userID, g.ID)
 				if e != nil {
@@ -88,13 +89,13 @@ func (u *User) SetGroup(gnames ...string) {
 				}
 				tx.Commit()
 				id, _ := res.LastInsertId()
-				log.Printf("INFO Insert one row to user_group - ID %d - , user ID %d\n", id, userID)
+				mlog.Info("Insert one row to user_group - ID %d - , user ID %d\n", id, userID)
 			}
 		}
 	}
 }
 
-//UserNew - It will Call Save
+// UserNew - It will Call Save
 func UserNew(in map[string]interface{}) *User {
 	n := User{}
 	n.GroupNames = u.GetMapByKey(in, "GroupNames", "default").(string)
@@ -121,7 +122,7 @@ func UserNew(in map[string]interface{}) *User {
 	return &n
 }
 
-//Save a User. If new User then create on. If existing User then update.
+// Save a User. If new User then create on. If existing User then update.
 func (n *User) Save() {
 	currentUser := GetUser(n.Email)
 	DB := GetDB("")
@@ -130,7 +131,7 @@ func (n *User) Save() {
 
 	tx, _ := DB.Begin()
 	if currentUser == nil {
-		log.Printf("INFO New User %s\n", n.Email)
+		mlog.Info("New User %s\n", n.Email)
 		sql = `INSERT INTO user(
 			f_name,
 			l_name,
@@ -156,7 +157,7 @@ func (n *User) Save() {
 		}
 		n.ID, _ = res.LastInsertId()
 	} else {
-		log.Printf("INFO Update the User %s\n", n.Email)
+		mlog.Info("Update the User %s\n", n.Email)
 		sql = `UPDATE user SET
 			f_name = $1,
 			l_name = $2,
@@ -196,7 +197,7 @@ func (n *User) Save() {
 	n.update()
 }
 
-//GetUserByID - always return an up-to-date user object in full, it will call .update() to update data not directly from database
+// GetUserByID - always return an up-to-date user object in full, it will call .update() to update data not directly from database
 func GetUserByID(id int64) *User {
 	DB := GetDB("")
 	defer DB.Close()
@@ -219,14 +220,14 @@ func GetUserByID(id int64) *User {
 		last_login,
 		pref_id
 		FROM user WHERE id = $1`, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.SaltLength, &u.TotpPassword, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID); e != nil {
-		log.Printf("INFO - Can not find user ID '%d' - %v\n", id, e)
+		mlog.Info("- Can not find user ID '%d' - %v\n", id, e)
 		return nil
 	}
 	u.update()
 	return &u
 }
 
-//GetUser - by email always return an up-to-date user object in full, it will call .update() to update data not directly from database
+// GetUser - by email always return an up-to-date user object in full, it will call .update() to update data not directly from database
 func GetUser(email string) *User {
 	DB := GetDB("")
 	defer DB.Close()
@@ -249,7 +250,7 @@ func GetUser(email string) *User {
 		last_login,
 		pref_id
 		FROM user WHERE email = $1`, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Address, &u.PasswordHash, &u.SaltLength, &u.TotpPassword, &u.HomePhone, &u.WorkPhone, &u.MobilePhone, &u.ExtraInfo, &u.LastAttempt, &u.AttemptCount, &u.LastLogin, &u.PrefID); e != nil {
-		log.Printf("INFO - Can not find user email '%s' - %v\n", email, e)
+		mlog.Info("- Can not find user email '%s' - %v\n", email, e)
 		return nil
 	}
 	u.update()
@@ -264,7 +265,7 @@ func (n *User) String() string {
 	}
 }
 
-//VerifyLogin -
+// VerifyLogin -
 func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 	user := GetUser(username)
 
@@ -272,7 +273,7 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 		user.LastAttempt = time.Now().UnixNano()
 		if user.AttemptCount > 3 {
 			user.Save()
-			return nil, fmt.Errorf("Max attempts reached")
+			return nil, fmt.Errorf("max attempts reached")
 		}
 		user.AttemptCount = user.AttemptCount + 1
 		if user.SaltLength == 0 {
@@ -282,7 +283,7 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 		}
 		if !u.VerifyHash(password, user.PasswordHash, int(user.SaltLength)) {
 			user.Save()
-			return nil, fmt.Errorf("Fail Password")
+			return nil, fmt.Errorf("fail Password")
 		}
 		if user.LastLogin == 0 {
 			user.LastLogin = time.Now().UnixNano()
@@ -296,7 +297,7 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 		if !CheckUserIPInWhiteList(userIP, whitelistIP) {
 			if !totp.Validate(otp, user.TotpPassword) {
 				user.Save()
-				return nil, fmt.Errorf("Fail OTP")
+				return nil, fmt.Errorf("fail OTP")
 			}
 		}
 	} else {

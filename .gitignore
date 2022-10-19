@@ -1,4 +1,5 @@
 webnote-go
+*.log
 webnote-linux-amd64-static
 uploads/*
 *.bak
