@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"image/png"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -14,10 +13,10 @@ import (
 
 	"github.com/pquerna/otp/totp"
 	u "github.com/sunshine69/golang-tools/utils"
-	"golang.org/x/crypto/ssh/terminal"
+	terminal "golang.org/x/term"
 )
 
-//CheckUserIPInWhiteList - whitelist is a string coma sep list of network
+// CheckUserIPInWhiteList - whitelist is a string coma sep list of network
 func CheckUserIPInWhiteList(ip, whitelist string) bool {
 	listNetwork := strings.Split(whitelist, ",")
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
@@ -72,7 +71,6 @@ func SetAdminPassword() {
 	u := GetUser(Settings.ADMIN_EMAIL)
 	fmt.Printf("please type in the password (mandatory): ")
 	password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
-	// log.Printf("DEBUG pass %s\n", string(password))
 	u.SetUserPassword(string(password))
 }
 
@@ -80,7 +78,7 @@ func SetAdminEmail(email string) {
 	if email == "" {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Printf("\nEnter user email: ")
-		email, _ := reader.ReadString('\n')
+		email, _ = reader.ReadString('\n')
 		email = strings.Replace(email, "\n", "", -1)
 	}
 	SetConfig("admin_email", email)
@@ -109,7 +107,7 @@ func SetUserOTP(username string) *bytes.Buffer {
 
 	// display the QR code to the user.
 	filename := fmt.Sprintf("%s@%s-OTP.png", u.Email, Issuer)
-	ioutil.WriteFile(filename, buf.Bytes(), 0600)
+	os.WriteFile(filename, buf.Bytes(), 0600)
 	fmt.Printf("PNG QR encoded file name %s has been generated in the current folder\n", filename)
 	// Now Validate that the user's successfully added the passcode.
 	// fmt.Printf("The OTP Sec is: '%s'\n", key.Secret())

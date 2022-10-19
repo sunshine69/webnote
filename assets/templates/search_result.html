@@ -13,8 +13,8 @@ function select_all(obj) {
 	}
 }
 function on_selected_run_sql(sql='') {
-	var msg = "Info. Table name: note\nField: title, content, url flags, as text, group_id ";
-	if (sql == '')	sql = prompt(msg + "\nEnter the sql statement. Only work Update / Delete statement", 'UPDATE webnote_note set ');
+	var msg = "Info. Table name: note\nField: title, content, url flags, as text, group_id. The system will append the expression `WHERE id in <list of note id from the selected rows>` for you";
+	if (sql == '')	sql = prompt(msg + "\nEnter the sql statement. Only work Update / Delete statement", 'UPDATE note set ');
 	if (sql == '') return;
 	var where_str = '';
 	if ( sql.search(/where/i) == -1) where_str = " WHERE id in ";
@@ -34,18 +34,18 @@ function on_selected_run_sql(sql='') {
 
 function on_selected_set_permisions() {
 	var val = prompt("Enter permission value in number\n0:only owner, 1:group read, 2:group rw, 3:group w all read, 4:all rw, 5: World read, all rw\n", '3');
-	if (val != '') on_selected_run_sql("UPDATE webnote_note set permission=" + val);
+	if (val != '') on_selected_run_sql("UPDATE note set permission=" + val);
 
 }
 
 function on_selected_delete() {
-	if (confirm("Are you sure to delete these selected notes") ) on_selected_run_sql("DELETE from webnote_note ");
+	if (confirm("Are you sure to delete these selected notes") ) on_selected_run_sql("DELETE from note ");
 }
 
 function on_selected_set_flags() {
 	var f = prompt("Enter FLAGS value: ", '');
 	if (f == '') return;
-	on_selected_run_sql("UPDATE webnote_note set flags='" + f + "'" );
+	on_selected_run_sql("UPDATE note set flags='" + f + "'" );
 }
 
 function process_selected(o) {

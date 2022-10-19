@@ -7,6 +7,7 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
+	github.com/jbrodriguez/mlog v0.0.0-20180805173533-cbd5ae8e9c53
 	github.com/json-iterator/go v1.1.12
 	github.com/mattn/go-sqlite3 v1.14.13
 	github.com/microcosm-cc/bluemonday v1.0.18

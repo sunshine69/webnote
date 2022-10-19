@@ -3,26 +3,26 @@ package models
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/jbrodriguez/mlog"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	u "github.com/sunshine69/golang-tools/utils"
 )
 
-//Object - Generic Object which has some special fields to allow us to check permissions etc...
-//All other types (except user and group itself) should embed this type. Example: Note, Attachment
+// Object - Generic Object which has some special fields to allow us to check permissions etc...
+// All other types (except user and group itself) should embed this type. Example: Note, Attachment
 type Object struct {
 	Permission int8
 	AuthorID   int64
 	GroupID    int64
 }
 
-//Note -
+// Note -
 type Note struct {
 	Object
 	ID            int64
@@ -40,7 +40,7 @@ type Note struct {
 	Attachments   []*Attachment
 }
 
-//Update - Populate dynamic fields such as Author, Group, etc. Not allowed saving data into DB
+// Update - Populate dynamic fields such as Author, Group, etc. Not allowed saving data into DB
 func (n *Note) Update() {
 	if n.AuthorID != 0 {
 		n.Author = GetUserByID(n.AuthorID)
@@ -53,11 +53,11 @@ func (n *Note) Update() {
 
 func (n *Note) UnlinkAttachment(aID int64, u *User) error {
 	if pok := CheckPerm(n.Object, u.ID, "w"); !pok {
-		return errors.New("Permission denied")
+		return errors.New("permission denied")
 	}
 	a := GetAttachementByID(aID)
 	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
-		return errors.New("Permission denied")
+		return errors.New("permission denied")
 	}
 	DB := GetDB("")
 	defer DB.Close()
@@ -77,11 +77,11 @@ func (n *Note) UnlinkAttachment(aID int64, u *User) error {
 
 func (n *Note) LinkAttachment(aID int64, u *User) error {
 	if pok := CheckPerm(n.Object, u.ID, "w"); !pok {
-		return errors.New("Permission denied")
+		return errors.New("permission denied")
 	}
 	a := GetAttachementByID(aID)
 	if pok := CheckPerm(a.Object, u.ID, "r"); !pok {
-		return errors.New("Permission denied")
+		return errors.New("permission denied")
 	}
 	DB := GetDB("")
 	defer DB.Close()
@@ -120,7 +120,7 @@ func (n *Note) GetNoteAttachments() {
 		AND na.note_id = $1
 	`, n.ID)
 	if e != nil {
-		log.Fatalf("ERROR GetNoteAttachments - %v\n", e)
+		mlog.FatalIfError(fmt.Errorf("GetNoteAttachments - %s", e.Error()))
 	}
 
 	defer rows.Close()
@@ -130,7 +130,7 @@ func (n *Note) GetNoteAttachments() {
 	for rows.Next() {
 		a := Attachment{}
 		if e := rows.Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
-			log.Fatalf("ERROR GetNoteAttachments can not fetch attachments - %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("GetNoteAttachments can not fetch attachments - %s", e.Error()))
 		}
 		a.Update()
 		o = append(o, &a)
@@ -138,7 +138,7 @@ func (n *Note) GetNoteAttachments() {
 	n.Attachments = o
 }
 
-//NoteNew
+// NoteNew
 func NoteNew(in map[string]interface{}) *Note {
 	n := Note{}
 
@@ -162,7 +162,7 @@ func NoteNew(in map[string]interface{}) *Note {
 		case string:
 			dateLog, e := time.Parse(DateLayout, v)
 			if e != nil {
-				log.Printf("ERROR can not parse date\n")
+				mlog.Error(fmt.Errorf("can not parse date"))
 				n.Datelog = time.Now().UnixNano()
 			} else {
 				n.Datelog = dateLog.UnixNano()
@@ -199,8 +199,8 @@ func (nd *NoteDiff) String() string {
 	return fmt.Sprintf("f: %s<br/>c: %s<br/>u: %s", nd.Flags, nd.Content, nd.URL)
 }
 
-//Diff - Compare two same title notes and find out the diff. If they are the same then return nil
-//Only compare Flags, Content and URL
+// Diff - Compare two same title notes and find out the diff. If they are the same then return nil
+// Only compare Flags, Content and URL
 func (n *Note) Diff(n1 *Note) *NoteDiff {
 	nd := NoteDiff{}
 	if n.Flags == n1.Flags && n.Content == n1.Content && n.URL == n1.URL {
@@ -223,7 +223,7 @@ func (n *Note) Diff(n1 *Note) *NoteDiff {
 	return &nd
 }
 
-//Save a note. If new note then create one. If existing note then create a revisions before update.
+// Save a note. If new note then create one. If existing note then create a revisions before update.
 func (n *Note) Save() {
 	currentNote := GetNote(n.Title) //This needs to be outside the BEGIN block othewise we get deadlock as Begin TX lock the whole db even for read (different from sqlite3)
 	DB := GetDB("")
@@ -239,7 +239,7 @@ func (n *Note) Save() {
 				n.Title = strings.ReplaceAll(n.Content[0:_l], "\n", " ")
 			}
 		}
-		log.Printf("INFO new note title %s\n", n.Title)
+		mlog.Info("new note title %s\n", n.Title)
 		tx, _ := DB.Begin()
 		sql = `INSERT INTO note(
 			title,
@@ -257,7 +257,7 @@ func (n *Note) Save() {
 		res, e := tx.Exec(sql, n.Title, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor)
 		if e != nil {
 			tx.Rollback()
-			log.Fatalf("ERROR can not insert note - %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("can not insert note - %s", e.Error()))
 		}
 		n.ID, _ = res.LastInsertId()
 		tx.Commit()
@@ -281,10 +281,10 @@ func (n *Note) Save() {
 			permission,
 			raw_editor) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 		tx, _ := DB.Begin()
-		res, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission, currentNote.RawEditor)
+		_, e := tx.Exec(sql, currentNote.ID, time.Now().UnixNano(), currentNote.Flags, currentNote.Content, currentNote.URL, currentNote.AuthorID, currentNote.GroupID, currentNote.Permission, currentNote.RawEditor)
 		if e != nil {
 			tx.Rollback()
-			log.Fatalf("ERROR can not insert note %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("can not insert note %v", e))
 		}
 		tx.Commit()
 		//Cleanup too old revision
@@ -293,14 +293,14 @@ func (n *Note) Save() {
 
 		if e := DB.QueryRow(`SELECT timestamp FROM note_revision WHERE note_id = $1 ORDER BY timestamp ASC LIMIT 1 OFFSET $2`, currentNote.ID, revisionToKeep).Scan(&timestampMark); e != nil {
 			tx, _ = DB.Begin()
-			res, e = tx.Exec(`DELETE FROM note_revision WHERE timestamp < $1`, timestampMark)
+			res, e := tx.Exec(`DELETE FROM note_revision WHERE timestamp < $1`, timestampMark)
 			if e != nil {
 				tx.Rollback()
-				log.Fatalf("ERROR can not delete note_revision - %v\n", e)
+				mlog.FatalIfError(fmt.Errorf("can not delete note_revision - %v", e))
 			}
 			af, _ := res.RowsAffected()
 			tx.Commit()
-			log.Printf("INFO Cleanup %d rows in note_revision\n", af)
+			mlog.Info("Cleanup %d rows in note_revision\n", af)
 		}
 		//Update the note
 		tx, _ = DB.Begin()
@@ -316,10 +316,10 @@ func (n *Note) Save() {
 			group_id = $9,
 			permission = $10,
 			raw_editor = $11 WHERE title = $12`
-		res, e = tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
+		_, e = tx.Exec(sql, n.Flags, n.Content, n.URL, n.Datelog, n.ReminderTicks, n.Timestamp, n.TimeSpent, n.AuthorID, n.GroupID, n.Permission, n.RawEditor, n.Title)
 		if e != nil {
 			tx.Rollback()
-			log.Fatalf("ERROR can not update note %v\n", e)
+			mlog.FatalIfError(fmt.Errorf("can not update note %v", e))
 		}
 		tx.Commit()
 	}
@@ -368,7 +368,7 @@ func GetNote(title string) *Note {
 		permission,
 		raw_editor
 		FROM note WHERE title = $1`, title).Scan(&n.ID, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
-		// log.Printf("INFO - Can not find note title %s - %v\n", title, e)
+		mlog.Info("Can not find note title %s - %v\n", title, e)
 		return nil
 	}
 	n.Update()
@@ -383,14 +383,14 @@ func GetNoteRevisionByID(id int64) *Note {
 	defer DB.Close()
 
 	if e := DB.QueryRow(`SELECT id, timestamp, flags, url, content, author_id, group_id, permission, raw_editor FROM note_revision WHERE id = $1`, id).Scan(&n.ID, &n.Datelog, &n.Flags, &n.URL, &n.Content, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor); e != nil {
-		log.Printf("ERROR can not get note revision - %v\n", e)
+		mlog.Error(fmt.Errorf("can not get note revision - %v", e))
 	} else {
 		n.Update()
 	}
 	return &n
 }
 
-//GetNoteRevision - Get all revision of a note. Pass in identity which can be note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
+// GetNoteRevision - Get all revision of a note. Pass in identity which can be note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
 func GetNoteRevisions(noteIdentity interface{}) []Note {
 	o := []Note{}
 	var cNote *Note
@@ -400,7 +400,7 @@ func GetNoteRevisions(noteIdentity interface{}) []Note {
 	} else {
 		title, ok := noteIdentity.(string)
 		if !ok {
-			log.Printf("WARN GetNoteRevisions does not have correct type. It needs to be an noteID or note title - \n")
+			mlog.Warning("WARN GetNoteRevisions does not have correct type. It needs to be an noteID or note title - \n")
 			return o
 		}
 		cNote = GetNote(title)
@@ -414,7 +414,7 @@ func GetNoteRevisions(noteIdentity interface{}) []Note {
 
 	res, e := DB.Query(`SELECT id, timestamp, flags, url, content, author_id, group_id,	permission FROM note_revision WHERE note_id = $1 ORDER BY timestamp DESC LIMIT 200`, noteID)
 	if e != nil {
-		log.Fatalf("ERROR can not get note revision - %v\n", e)
+		mlog.FatalIfError(fmt.Errorf("can not get note revision - %v", e))
 	}
 	for res.Next() {
 		n := Note{}
@@ -437,7 +437,7 @@ func NoteDeleteByID(id int64) bool {
 	_, e := tx.Exec(`DELETE FROM note WHERE id = $1`, id)
 	if e != nil {
 		tx.Rollback()
-		log.Printf("WARN Can not delete note ID %d\n", id)
+		mlog.Warning("WARN Can not delete note ID %d\n", id)
 		o = false
 	} else {
 		tx.Commit()
@@ -446,7 +446,7 @@ func NoteDeleteByID(id int64) bool {
 	return o
 }
 
-//Delete - Delete note
+// Delete - Delete note
 func (n *Note) Delete() {
 	DB := GetDB("")
 	defer DB.Close()
@@ -454,15 +454,15 @@ func (n *Note) Delete() {
 	_, e := tx.Exec(`DELETE FROM note WHERE title = $1`, n.Title)
 	if e != nil {
 		tx.Rollback()
-		log.Printf("WARN Can not delete note %v - %v\n", n, e)
+		mlog.Warning("WARN Can not delete note %v - %v\n", n, e)
 	} else {
 		tx.Commit()
 	}
 }
 
-//Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B
-//then `A & !B` or `A & -B`
-//You can search by note flags only, by prefix then using `f:` or `F:`, `FLAGS:`
+// Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B
+// then `A & !B` or `A & -B`
+// You can search by note flags only, by prefix then using `f:` or `F:`, `FLAGS:`
 func SearchNote(keyword string, u *User) []Note {
 	keyword = strings.TrimSpace(keyword)
 	splitPtn := regexp.MustCompile(`[\s]+[\&\+][\s]+`)
@@ -516,9 +516,8 @@ func SearchNote(keyword string, u *User) []Note {
 	DB := GetDB("")
 	defer DB.Close()
 	res, e := DB.Query(q)
-	if e != nil {
-		log.Fatalf("ERROR query - %v\n", e)
-	}
+	mlog.FatalIfError(e)
+
 	o := []Note{}
 
 	for res.Next() {

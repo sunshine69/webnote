@@ -3,19 +3,23 @@ package app
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/jbrodriguez/mlog"
 	u "github.com/sunshine69/golang-tools/utils"
 	m "github.com/sunshine69/webnote-go/models"
 )
 
-//Credential Application. To setup in the browser access https://<your_dns>:<your_port>/cred?action=setup and follow the instruction
-//This is a simple onepage app to store/search credentials (password management)
-//This is per webnote user and each user has no view of other user credential
+func init() {
+	mlog.Start(mlog.LevelInfo, "webnote.log")
+}
+
+// Credential Application. To setup in the browser access https://<your_dns>:<your_port>/cred?action=setup and follow the instruction
+// This is a simple onepage app to store/search credentials (password management)
+// This is per webnote user and each user has no view of other user credential
 func DoCredApp(w http.ResponseWriter, r *http.Request) {
 	action := u.GetRequestValue(r, "action", "")
 	switch action {
@@ -75,9 +79,9 @@ func DoCredDelete(w *http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 	if id != -1 {
 		if uc := GetUrlCredByID(id); uc != nil {
-			log.Println(uc)
+			mlog.Warning("%v", uc)
 			c := uc.Credential
-			log.Println(c)
+			mlog.Warning("%v", c)
 			if c.User_id == user.ID {
 				uc.Delete()
 			} else {
@@ -85,7 +89,7 @@ func DoCredDelete(w *http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	fmt.Fprintf(*w, msg)
+	fmt.Fprint(*w, msg)
 }
 
 func DoCredSearch(w *http.ResponseWriter, r *http.Request) {
@@ -138,14 +142,14 @@ func SetupSchema(w *http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		tx.Rollback()
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
-		log.Printf("ERROR setup schema for cred app %v\n", err)
+		mlog.Error(fmt.Errorf("setup schema for cred app %v", err))
 	}
 	tx.Commit()
-	uitext, _ := ioutil.ReadFile("./app/cred.html")
+	uitext, _ := os.ReadFile("./app/cred.html")
 	responseText := fmt.Sprintf(`Database schema setup completed successfully. Below is the UI text. Copy this and create a note with that content with title you wish. When save and then use view2 you will see the GUI of the app.
 	>>>>> UI TEXT <<<<<
 	%s`, uitext)
-	fmt.Fprintf(*w, responseText)
+	fmt.Fprint(*w, responseText)
 }
 
 type Credential struct {
@@ -196,7 +200,7 @@ func (uc *UrlCred) Save() {
 	res, err := tx.Exec(q, uc.Cred_id, uc.Url_id, uc.Note, uc.Datelog, uc.Qrlink)
 	if err != nil {
 		tx.Rollback()
-		log.Printf("WARN - Save insert url_cred %v\n", err)
+		mlog.Warning("WARN - Save insert url_cred %v\n", err)
 	} else {
 		tx.Commit()
 		uc.Id, _ = res.LastInsertId()
@@ -213,7 +217,7 @@ func UrlNew(url string) *Url {
 	res, e := tx.Exec(q, url)
 	if e != nil {
 		tx.Rollback()
-		log.Printf("WARN can not insert into url - %v\n", e)
+		mlog.Warning("can not insert into url - %v\n", e)
 	} else {
 		tx.Commit()
 		u.Id, _ = res.LastInsertId()
@@ -235,7 +239,7 @@ func GetUrlCredByID(id int64) *UrlCred {
 	`
 	uc := UrlCred{}
 	if e := DB.QueryRow(q, id).Scan(&uc.Id, &uc.Cred_id, &uc.Url_id, &uc.Note, &uc.Datelog, &uc.Qrlink); e != nil {
-		log.Printf("ERROR can not get url-cred %v\n", e)
+		mlog.Error(fmt.Errorf("can not get url-cred %v", e))
 		return nil
 	}
 	uc.Update()
@@ -256,7 +260,7 @@ func GetUrlCred(cred_id, url_id int64) *UrlCred {
 	`
 	uc := UrlCred{}
 	if e := DB.QueryRow(q, cred_id, url_id).Scan(&uc.Id, &uc.Cred_id, &uc.Url_id, &uc.Note, &uc.Datelog, &uc.Qrlink); e != nil {
-		log.Printf("ERROR can not get url-cred %v\n", e)
+		mlog.Warning("ERROR can not get url-cred %v\n", e)
 		uc.Id, uc.Cred_id, uc.Url_id = int64(-1), cred_id, url_id
 	}
 	return &uc
@@ -288,7 +292,7 @@ func (uc *UrlCred) Delete() {
 	_, e := tx.Exec(q, uc.Id)
 	if e != nil {
 		tx.Rollback()
-		log.Printf("ERROR removing url_cred %d\n", uc.Id)
+		mlog.Warning("ERROR removing url_cred %d\n", uc.Id)
 		return
 	}
 	tx.Commit()
@@ -308,12 +312,12 @@ func (u *Url) Delete() {
 		tx, _ := DB.Begin()
 		if _, e := tx.Exec(`DELETE FROM url WHERE id = $1`, u.Id); e != nil {
 			tx.Rollback()
-			log.Printf("ERROR can not remove url %v\n", e)
+			mlog.Warning("ERROR can not remove url %v\n", e)
 		} else {
 			tx.Commit()
 		}
 	} else {
-		log.Printf("INFO url not delete because in use\n")
+		mlog.Info("url not delete because in use\n")
 	}
 }
 
@@ -324,12 +328,12 @@ func (c *Credential) Delete() {
 		tx, _ := DB.Begin()
 		q := `DELETE FROM credential WHERE id = $1`
 		if _, e := tx.Exec(q, c.Id); e != nil {
-			log.Printf("ERROR can not remove cred %v\n", e)
+			mlog.Warning("ERROR can not remove cred %v\n", e)
 		} else {
 			tx.Commit()
 		}
 	} else {
-		log.Printf("INFO cred not delete because in use\n")
+		mlog.Info(" cred not delete because in use\n")
 	}
 
 }
@@ -342,7 +346,7 @@ func GetUrl(url string) *Url {
 	url FROM url WHERE url = $1`
 	u := Url{}
 	if e := DB.QueryRow(q, url).Scan(&u.Id, &u.Url); e != nil {
-		log.Printf("WARN GetUrlByID %v\n", e)
+		mlog.Warning("GetUrlByID %v\n", e)
 		u.Url = url
 	}
 	return &u
@@ -356,7 +360,7 @@ func GetUrlByID(id int64) *Url {
 	url FROM url WHERE id = $1`
 	u := Url{}
 	if e := DB.QueryRow(q, id).Scan(&u.Id, &u.Url); e != nil {
-		log.Printf("WARN GetUrlByID %v\n", e)
+		mlog.Warning("GetUrlByID %v\n", e)
 		return nil
 	}
 	return &u
@@ -380,10 +384,10 @@ func SearchCredentials(kw string, UserID int64) *[]UrlCred {
 		OR (u.note LIKE "%%%s%%")
 	)
 	`, UserID, kw, kw)
-	// log.Println(q)
+	// mlog.Warning("%v", q)
 	rows, err := DB.Query(q, UserID, kw)
 	if err != nil {
-		log.Printf("WARN Error searching url-cred - %v\n", err)
+		mlog.Warning("Error searching url-cred - %v\n", err)
 		return nil
 	}
 	o := []UrlCred{}
@@ -392,7 +396,7 @@ func SearchCredentials(kw string, UserID int64) *[]UrlCred {
 		if err := rows.Scan(
 			&UrlCred.Id, &UrlCred.Cred_id, &UrlCred.Url_id, &UrlCred.Note, &UrlCred.Datelog, &UrlCred.Qrlink,
 		); err != nil {
-			log.Printf("WARN Error searching url-cred - %v\n", err)
+			mlog.Warning("Error searching url-cred - %v\n", err)
 			return &o
 		}
 		UrlCred.Update()
@@ -412,7 +416,7 @@ func GetCredential(userID int64, credUserName, credPassword string) *Credential 
 	FROM credential WHERE user_id = $1 AND cred_username = $2 AND cred_password = $3`
 	cred := Credential{}
 	if err := DB.QueryRow(q, userID, credUserName, credPassword).Scan(&cred.Id, &cred.User_id, &cred.Cred_username, &cred.Cred_password); err != nil {
-		log.Printf("WARN Can not get cred from db.  %v\n", err)
+		mlog.Warning("Can not get cred from db.  %v\n", err)
 		cred.Id = -1
 		cred.User_id = userID
 		cred.Cred_username = credUserName
@@ -432,7 +436,7 @@ func GetCredentialByID(id int64) *Credential {
 	FROM credential WHERE id = $1`
 	cred := Credential{}
 	if err := DB.QueryRow(q, id).Scan(&cred.Id, &cred.User_id, &cred.Cred_username, &cred.Cred_password); err != nil {
-		log.Printf("WARN Can not get cred with this ID %d, %v\n", id, err)
+		mlog.Warning("Can not get cred with this ID %d, %v\n", id, err)
 		return nil
 	}
 	return &cred
@@ -447,8 +451,8 @@ func CredentialNew(in map[string]interface{}) *Credential {
 	return c
 }
 
-//Save -
-//Always add new row or dont do anything. We need some sql to remove dangling cred later on
+// Save -
+// Always add new row or dont do anything. We need some sql to remove dangling cred later on
 func (c *Credential) Save() {
 	DB := m.GetDB("")
 	defer DB.Close()
@@ -461,7 +465,7 @@ func (c *Credential) Save() {
 	res, e := tx.Exec(q, c.User_id, c.Cred_username, c.Cred_password)
 	if e != nil {
 		tx.Rollback()
-		log.Printf("WARN save Cred %v\n", e)
+		mlog.Warning("save Cred %v\n", e)
 	} else {
 		tx.Commit()
 		c.Id, _ = res.LastInsertId()

@@ -1,19 +1,20 @@
 package models
 
 import (
-	"time"
-	"os"
-	"log"
 	"database/sql"
+	"os"
+	"time"
+
+	"github.com/jbrodriguez/mlog"
 )
 
 func Migrate() {
 	os.Setenv("DBPATH", "/home/stevek/src/webnote-go/testwebnote.db")
 	sqlite3File := "/home/stevek/webnote.sqlite3"
 	DB, e := sql.Open("sqlite3", sqlite3File)
-	if e != nil {
-		log.Fatalf("ERROR opening sqlite")
-	}
+
+	mlog.FatalIfError(e)
+
 	defer DB.Close()
 	q := `SELECT
 		title,
@@ -27,9 +28,8 @@ func Migrate() {
 	FROM webnote_note
 	`
 	rows, e := DB.Query(q)
-	if e != nil {
-		log.Fatalf("ERROR run Query %v\n", e)
-	}
+	mlog.FatalIfError(e)
+
 	for rows.Next() {
 		aNote := Note{}
 		aNote.AuthorID = int64(1)
@@ -40,13 +40,23 @@ func Migrate() {
 			&aNote.Title, &dateLog, &nContent, &nURL,
 			&nFlags, &timeStamp, &aNote.Permission, &aNote.RawEditor,
 		); err != nil {
-			log.Fatalf("ERROR Scan result %v\n", err)
+			mlog.Fatal("Scan result %v\n", err)
 		}
-		if nContent.Valid {	aNote.Content = nContent.String	}
-		if nURL.Valid { aNote.URL = nURL.String }
-		if nFlags.Valid { aNote.Flags = nFlags.String }
-		if dateLog.Valid { aNote.Datelog = dateLog.Int64 * int64(time.Second / time.Nanosecond) }
-		if timeStamp.Valid { aNote.Timestamp = timeStamp.Int64 * int64(time.Second / time.Nanosecond) }
+		if nContent.Valid {
+			aNote.Content = nContent.String
+		}
+		if nURL.Valid {
+			aNote.URL = nURL.String
+		}
+		if nFlags.Valid {
+			aNote.Flags = nFlags.String
+		}
+		if dateLog.Valid {
+			aNote.Datelog = dateLog.Int64 * int64(time.Second/time.Nanosecond)
+		}
+		if timeStamp.Valid {
+			aNote.Timestamp = timeStamp.Int64 * int64(time.Second/time.Nanosecond)
+		}
 		aNote.Save()
 	}
 }
