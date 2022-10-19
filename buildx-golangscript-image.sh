@@ -7,6 +7,8 @@
 # https://github.com/docker/buildx/releases
 
 # Install qemu - apt-get install -y qemu-user-static
+TAG=$(date '+%Y%m%d')
 docker buildx create --name mybuilder
 docker buildx use mybuilder
-docker buildx build -t stevekieu/webnote-azure-app:v1.13 --platform linux/amd64,linux/arm64 --push -f Dockerfile.azure-app-svc .
+docker buildx build -t stevekieu/golang-script:${TAG} --platform linux/amd64,linux/arm64 --push -f Dockerfile.alpine .
+

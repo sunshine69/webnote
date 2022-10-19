@@ -1,4 +1,4 @@
-FROM stevekieu/golang-script:20220602 AS BUILD_BASE
+FROM stevekieu/golang-script:20221019 AS BUILD_BASE
 # FROM localhost/build-golang-ubuntu20:20210807-1 AS BUILD_BASE
 # FROM golang:alpine AS BUILD_BASE
 # RUN apk add --no-cache musl-dev gcc sqlite-dev curl
@@ -7,7 +7,7 @@ FROM stevekieu/golang-script:20220602 AS BUILD_BASE
 RUN mkdir -p /app /c_root/tmp /c_root/bin /c_root/etc/ssl/certs /c_root/home || true && \
     chmod 1777 /c_root/tmp
 
-RUN curl -s 'https://gonote.duckdns.org:6919/streamfile?id=45&action=download' -o /c_root/etc/ssl/certs/ca-certificates.crt
+RUN curl -s 'https://note22.duckdns.org/streamfile?id=100&action=download' -o /c_root/etc/ssl/certs/ca-certificates.crt
 
 ADD . /app/
 WORKDIR /app
