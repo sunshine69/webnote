@@ -530,3 +530,32 @@ func SearchNote(keyword string, u *User) []Note {
 	}
 	return o
 }
+
+func Query(sqlwhere string, user *User, without_content bool) []Note {
+	DB := GetDB("")
+	defer DB.Close()
+	var sql string
+	if without_content {
+		sql = "SELECT id as note_id, title, flags, url, datelog, reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE " + sqlwhere
+	} else {
+		sql = "SELECT id as note_id, title, flags, content, url, datelog, reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE " + sqlwhere
+	}
+	res, err := DB.Query(sql)
+	if u.CheckErrNonFatal(err, "Query") != nil {
+		return []Note{}
+	}
+	o := []Note{}
+	for res.Next() {
+		n := Note{}
+		if without_content {
+			res.Scan(&n.ID, &n.Title, &n.Flags, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
+		} else {
+			res.Scan(&n.ID, &n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
+		}
+		if pok := CheckPerm(n.Object, user.ID, "r"); pok {
+			n.Update()
+			o = append(o, n)
+		}
+	}
+	return o
+}

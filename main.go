@@ -154,10 +154,10 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 	keyword := u.GetRequestValue(r, "keyword", "")
-	u := GetCurrentUser(&w, r)
+	user := GetCurrentUser(&w, r)
 	var attachments []*models.Attachment
-	if u != nil {
-		attachments = models.SearchAttachment(keyword, u)
+	if user != nil {
+		attachments = models.SearchAttachment(keyword, user)
 	} else {
 		attachments = []*models.Attachment{}
 	}
@@ -270,6 +270,11 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	aNote := models.GetNoteRevisionByID(noteID)
+	user := GetCurrentUser(&w, r)
+	if !models.CheckPerm(aNote.Object, user.ID, "r") {
+		fmt.Fprintf(w, "ERROR Permission denied")
+		return
+	}
 	CommonRenderTemplate(tName, &w, r, &map[string]interface{}{
 		"title": "Webnote - " + aNote.Title,
 		"page":  "noteview",
@@ -282,6 +287,11 @@ func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
 	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
 	revNoteID, _ := strconv.ParseInt(u.GetRequestValue(r, "rev_id", "0"), 10, 64)
 	n := models.GetNoteByID(noteID)
+	user := GetCurrentUser(&w, r)
+	if !models.CheckPerm(n.Object, user.ID, "r") {
+		fmt.Fprintf(w, "ERROR Permission denied")
+		return
+	}
 	n1 := models.GetNoteRevisionByID(revNoteID)
 	nd := n1.Diff(n)
 	t, _ := template.New("diff").Parse(`<html>
@@ -319,8 +329,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 		for count := 0; count < models.Settings.UPLOAD_ITEM_COUNT; count++ {
 			cStr := strconv.Itoa(count)
 			file, handler, err := r.FormFile("myFile" + cStr)
-			if err != nil {
-				// fmt.Printf("Error Retrieving the File %v\n", err)
+			if u.CheckErrNonFatal(err, "Error Retrieving the File") != nil {
 				continue
 			}
 			defer file.Close()
@@ -399,20 +408,24 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetCurrentNote(r *http.Request) *models.Note {
+func GetCurrentNote(w http.ResponseWriter, r *http.Request) *models.Note {
 	noteIDStr := u.GetRequestValue(r, "note_id", "")
 	if noteIDStr != "" {
+		user := GetCurrentUser(&w, r)
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		return models.GetNoteByID(noteID)
+		n := models.GetNoteByID(noteID)
+		if models.CheckPerm(n.Object, user.ID, "r") {
+			return n
+		}
 	}
 	return nil
 }
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 	kw := u.GetRequestValue(r, "keyword", "")
-	aNote := GetCurrentNote(r)
-	u := GetCurrentUser(&w, r)
-	aList := models.SearchAttachment(kw, u)
+	aNote := GetCurrentNote(w, r)
+	user := GetCurrentUser(&w, r)
+	aList := models.SearchAttachment(kw, user)
 	data := map[string]interface{}{
 		"title":       "Webnote - List attachements",
 		"page":        "list_attachement",
@@ -492,7 +505,7 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
 	action := u.GetRequestValue(r, "action", "")
 	user := GetCurrentUser(&w, r)
-	n := GetCurrentNote(r)
+	n := GetCurrentNote(w, r)
 	attachmentIDStr := u.GetRequestValue(r, "attachment_id", "")
 	if attachmentIDStr == "" {
 		return
@@ -692,6 +705,8 @@ func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
 		mlog.Warning("Invalid sql provided No WHERE clause - %s", sql)
 		return
 	}
+	user := GetCurrentUser(&w, r)
+	sql = fmt.Sprintf("%s AND author_id = %d", sql, user.ID)
 	mlog.Info("going to run sql: %s\n", sql)
 	DB := models.GetDB("")
 	defer DB.Close()
@@ -713,6 +728,27 @@ func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "Success!")
+}
+
+// Sync with gnote. gnote will send a request to get notes with titles and ids - and check itself to see if it has these titles
+// and then make a decision to pull or not. Then it will send to get full notes by ids
+// Search notes but only return a list of note titles and ids. Search based on time range, and/or some other condition
+func DoGetNoteTitles(w http.ResponseWriter, r *http.Request) {
+	duration := u.GetRequestValue(r, "duration", "")
+	tzString := u.GetRequestValue(r, "tz", "Australia/Brisbane")
+	starttime, endtime := u.ParseTimeRange(duration, tzString)
+	sqlwhere := fmt.Sprintf("datelog >= %d AND datelog <= %d", starttime.UnixNano(), endtime.UnixNano() )
+	user := GetCurrentUser(&w, r)
+	notes := models.Query(sqlwhere, user, true)
+	fmt.Fprint(w, u.JsonDump(notes, "") )
+}
+
+func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
+	listIdStr := u.GetRequestValue(r, "ids", "") // should get example (1,4,5,6)
+	sqlwhere := "id in " + listIdStr
+	user := GetCurrentUser(&w, r)
+	notes := models.Query(sqlwhere, user, false)
+	fmt.Fprint(w, u.JsonDump(notes, "") )
 }
 
 func HandleRequests() {
@@ -788,6 +824,9 @@ func HandleRequests() {
 	router.HandleFunc("/streamfile", DoStreamfile).Methods("GET")
 	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
 	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
+	router.Handle("/get_notes_titles", isAuthorized(DoGetNoteTitles)).Methods("GET")
+	router.Handle("/get_notes_by_id", isAuthorized(DoGetNotesByIds)).Methods("GET")
+
 	//User management
 	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
 	router.Handle("/searchuser", isAuthorized(DoSearchUser)).Methods("GET")
