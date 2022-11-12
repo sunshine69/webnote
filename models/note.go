@@ -538,7 +538,7 @@ func Query(sqlwhere string, user *User, without_content bool) []Note {
 	if without_content {
 		sql = "SELECT id as note_id, title, flags, url, datelog, reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE " + sqlwhere
 	} else {
-		sql = "SELECT id as note_id, title, flags, content, url, datelog, reminder_ticks, timestamp, time_spent, group_id ,permission, raw_editor from note WHERE " + sqlwhere
+		sql = "SELECT id as note_id, title, flags, content, url, datelog, reminder_ticks, timestamp, time_spent, author_id,group_id ,permission, raw_editor from note WHERE " + sqlwhere
 	}
 	res, err := DB.Query(sql)
 	if u.CheckErrNonFatal(err, "Query") != nil {
