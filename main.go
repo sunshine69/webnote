@@ -789,8 +789,7 @@ func HandleRequests() {
 
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Use some kind of condition here to see if the router should use
-			// the CSRF protection. For the sake of this example, we'll check
-			// the path prefix.
+			// the CSRF protection. we'll check the path prefix.
 			if !strings.HasPrefix(r.URL.Path, "/nocsrf") {
 				protectionFn(handler).ServeHTTP(w, r)
 				return

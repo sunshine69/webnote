@@ -538,7 +538,7 @@ func Query(sqlwhere string, user *User, without_content bool) []Note {
 	if without_content {
 		sql = "SELECT id as note_id, title, flags, url, datelog, reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE " + sqlwhere
 	} else {
-		sql = "SELECT id as note_id, title, flags, content, url, datelog, reminder_ticks, timestamp, time_spent, author_id, group_id ,permission, raw_editor from note WHERE " + sqlwhere
+		sql = "SELECT id as note_id, title, flags, content, url, datelog, reminder_ticks, timestamp, time_spent, group_id ,permission, raw_editor from note WHERE " + sqlwhere
 	}
 	res, err := DB.Query(sql)
 	if u.CheckErrNonFatal(err, "Query") != nil {
@@ -553,7 +553,9 @@ func Query(sqlwhere string, user *User, without_content bool) []Note {
 			res.Scan(&n.ID, &n.Title, &n.Flags, &n.Content, &n.URL, &n.Datelog, &n.ReminderTicks, &n.Timestamp, &n.TimeSpent, &n.AuthorID, &n.GroupID, &n.Permission, &n.RawEditor)
 		}
 		if pok := CheckPerm(n.Object, user.ID, "r"); pok {
-			n.Update()
+			// We do not need to update to get extra link infor lie author etc - this query func is explicitly return only note data. For full note, use GetNoteByID or searchNote instead
+			// This func is only used when interfacng with external system, like gnote.
+			// n.Update()
 			o = append(o, n)
 		}
 	}
