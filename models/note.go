@@ -304,6 +304,7 @@ func (n *Note) Save() {
 		}
 		//Update the note
 		tx, _ = DB.Begin()
+		n.Timestamp = time.Now().UnixNano()
 		sql = `UPDATE note SET
 			flags = $1,
 			content = $2,
