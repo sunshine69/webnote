@@ -111,6 +111,11 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	if title == "" {
 		title = GetFirstnChar(content, 128)
 	}
+	TimeStamp, err := strconv.ParseInt(u.GetFormValue(r, "timestamp", "0"), 10, 64)
+	if u.CheckErrNonFatal(err, "ParseInt") != nil || TimeStamp == 0 {
+		TimeStamp = time.Now().UnixNano()
+	}
+
 	if noteID == 0 { //New note created by current user
 		aNote = models.NoteNew(map[string]interface{}{
 			"title":      title,
@@ -122,6 +127,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			"permission": permission,
 			"author_id":  user.ID,
 			"group_id":   ngroup.ID,
+			"timestamp": TimeStamp,
 		},
 		)
 		aNote.Save()
@@ -135,6 +141,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			aNote.RawEditor = raw_editor //If checked return string 1, otherwise empty string
 			aNote.Permission = permission
 			aNote.GroupID = ngroup.ID
+			aNote.Timestamp = TimeStamp
 			aNote.Save()
 		} else {
 			msg = "Permission denied."

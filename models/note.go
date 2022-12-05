@@ -173,8 +173,11 @@ func NoteNew(in map[string]interface{}) *Note {
 	} else {
 		n.Datelog = time.Now().UnixNano()
 	}
-
-	n.Timestamp = time.Now().UnixNano()
+	if TimeStamp, ok := in["timestamp"]; ok {
+		n.Timestamp = TimeStamp.(int64)
+	} else {
+		n.Timestamp = time.Now().UnixNano()
+	}
 	n.Flags = u.GetMapByKey(in, "flags", "").(string)
 	n.URL = u.GetMapByKey(in, "url", "").(string)
 
@@ -304,7 +307,6 @@ func (n *Note) Save() {
 		}
 		//Update the note
 		tx, _ = DB.Begin()
-		n.Timestamp = time.Now().UnixNano()
 		sql = `UPDATE note SET
 			flags = $1,
 			content = $2,
