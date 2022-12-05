@@ -463,6 +463,22 @@ func (n *Note) Delete() {
 	}
 }
 
+// return a new note clean up all infor except the main note content field. Suitable to dump without leaking security info
+func (n *Note) Sanitize() Note {
+	return Note{
+		ID:            n.ID,
+		Title:         n.Title,
+		Datelog:       n.Datelog,
+		Content:       n.Content,
+		URL:           n.URL,
+		ReminderTicks: n.ReminderTicks,
+		Flags:         n.Flags,
+		Timestamp:     n.Timestamp,
+		TimeSpent:     n.TimeSpent,
+		RawEditor:     n.RawEditor,
+	}
+}
+
 // Search by keyword. Type a keyword it will search that kw. To search for `needlA` and `needB` type `needleA & needleB`. If search `A` but exclude B
 // then `A & !B` or `A & -B`
 // You can search by note flags only, by prefix then using `f:` or `F:`, `FLAGS:`

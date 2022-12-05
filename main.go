@@ -127,7 +127,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			"permission": permission,
 			"author_id":  user.ID,
 			"group_id":   ngroup.ID,
-			"timestamp": TimeStamp,
+			"timestamp":  TimeStamp,
 		},
 		)
 		aNote.Save()
@@ -182,9 +182,18 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	viewType := u.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	aNote := models.GetNoteByID(noteID)
 
+	var aNote *models.Note
+	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
+	if noteID == 0 {
+		noteTitle := u.GetRequestValue(r, "title", "")
+		aNote = models.GetNote(noteTitle)
+	} else {
+		aNote = models.GetNoteByID(noteID)
+	}
+	if aNote == nil {
+		return
+	}
 	if aNote.Permission < 5 {
 		isAuth := models.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
@@ -212,8 +221,12 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 	if len(aNote.Attachments) > 0 {
 		data["attachments"] = aNote.Attachments
 	}
-	CommonRenderTemplate(tName, &w, r, &data)
-
+	isAjax := u.GetRequestValue(r, "is_ajax", "0")
+	if isAjax == "0" {
+		CommonRenderTemplate(tName, &w, r, &data)
+	} else {
+		fmt.Fprint(w, u.JsonDump(aNote.Sanitize(), "  "))
+	}
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
@@ -744,10 +757,10 @@ func DoGetNoteTitles(w http.ResponseWriter, r *http.Request) {
 	duration := u.GetRequestValue(r, "duration", "")
 	tzString := u.GetRequestValue(r, "tz", "Australia/Brisbane")
 	starttime, endtime := u.ParseTimeRange(duration, tzString)
-	sqlwhere := fmt.Sprintf("datelog >= %d AND datelog <= %d", starttime.UnixNano(), endtime.UnixNano() )
+	sqlwhere := fmt.Sprintf("datelog >= %d AND datelog <= %d", starttime.UnixNano(), endtime.UnixNano())
 	user := GetCurrentUser(&w, r)
 	notes := models.Query(sqlwhere, user, true)
-	fmt.Fprint(w, u.JsonDump(notes, "") )
+	fmt.Fprint(w, u.JsonDump(notes, ""))
 }
 
 func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
@@ -755,7 +768,7 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 	sqlwhere := "id in " + listIdStr
 	user := GetCurrentUser(&w, r)
 	notes := models.Query(sqlwhere, user, false)
-	fmt.Fprint(w, u.JsonDump(notes, "") )
+	fmt.Fprint(w, u.JsonDump(notes, ""))
 }
 
 func HandleRequests() {
