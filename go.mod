@@ -9,13 +9,13 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/jbrodriguez/mlog v0.0.0-20180805173533-cbd5ae8e9c53
 	github.com/json-iterator/go v1.1.12
-	github.com/mattn/go-sqlite3 v1.14.15
-	github.com/microcosm-cc/bluemonday v1.0.21
-	github.com/pquerna/otp v1.3.0
-	github.com/sergi/go-diff v1.2.0
+	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/microcosm-cc/bluemonday v1.0.22
+	github.com/pquerna/otp v1.4.0
+	github.com/sergi/go-diff v1.3.1
 	github.com/sunshine69/golang-tools/utils v0.0.0-20221019025034-d2467f2eea8e
-	github.com/sunshine69/kodirpc v0.0.1
-	github.com/yuin/goldmark v1.5.2
+	github.com/sunshine69/kodirpc v0.0.2
+	github.com/yuin/goldmark v1.5.4
 	golang.org/x/term v0.5.0
 )
 
@@ -33,7 +33,7 @@ require (
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible // indirect
 	github.com/stvoidit/gosmtp v1.0.6 // indirect
-	golang.org/x/crypto v0.0.0-20221012134737-56aed061732a // indirect
+	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
