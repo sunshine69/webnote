@@ -16,11 +16,27 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	u "github.com/sunshine69/golang-tools/utils"
 	"github.com/yuin/goldmark"
+    "github.com/yuin/goldmark/extension"
+    "github.com/yuin/goldmark/parser"
+    "github.com/yuin/goldmark/renderer/html"
 )
+
+var markdown goldmark.Markdown
 
 func init() {
 	mlog.Start(mlog.LevelInfo, "webnote.log")
+	markdown = goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
+		),
+	)
 }
+
 const MaxUploadSizeInMemory = 4 * 1024 * 1024 // 4 MB
 const MaxUploadSize = 4 * 1024 * 1024 * 1024
 
@@ -493,7 +509,7 @@ func LoadAllTemplates() {
 		},
 		"md2html": func(md string) template.HTML {
 			var buf bytes.Buffer
-			if err := goldmark.Convert([]byte(md), &buf); err != nil {
+			if err := markdown.Convert([]byte(md), &buf); err != nil {
 				panic(err)
 			}
 			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
