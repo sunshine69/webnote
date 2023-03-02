@@ -1029,9 +1029,12 @@ func main() {
 			}
 		}
 		models.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
+		sessionMaxAgeStr := models.GetConfigSave("session_max_age_hour", "8")
+		sessionMaxAge, err := strconv.Atoi(sessionMaxAgeStr)
+		u.CheckErr(err, "Can not parse session_max_age_hour")
 		models.SessionStore.Options = &sessions.Options{
 			Path:     "/",
-			MaxAge:   3600 * 4,
+			MaxAge:   3600 * sessionMaxAge,
 			HttpOnly: true,
 		}
 		// log.Println(*sessionKey)
