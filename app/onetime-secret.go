@@ -21,7 +21,7 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "ERROR length should be a integer");
 			return
 		}
-		secret = u.GenRandomString(password_len)
+		secret = u.GenRandomStringV2(password_len)
 	} else {
 		secret = u.GetRequestValue(r, "sec_content", "")
 		fmt.Printf("DEBUG sec is %s\n", secret)
