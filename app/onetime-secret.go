@@ -1,13 +1,14 @@
 package app
 
 import (
-	"math/big"
 	"crypto/rand"
-	"strconv"
-	"net/http"
 	"fmt"
-	m "github.com/sunshine69/webnote-go/models"
+	"math/big"
+	"net/http"
+	"strconv"
+
 	u "github.com/sunshine69/golang-tools/utils"
+	m "github.com/sunshine69/webnote-go/models"
 )
 
 func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
@@ -18,10 +19,10 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 		length_str := u.GetRequestValue(r, "password_len", "12")
 		password_len, err := strconv.Atoi(length_str)
 		if u.CheckErrNonFatal(err, "GenerateOnetimeSecURL") != nil {
-			fmt.Fprintf(w, "ERROR length should be a integer");
+			fmt.Fprintf(w, "ERROR length should be a integer")
 			return
 		}
-		secret = u.GenRandomStringV2(password_len)
+		secret = u.GenRandomString(password_len)
 	} else {
 		secret = u.GetRequestValue(r, "sec_content", "")
 		fmt.Printf("DEBUG sec is %s\n", secret)
@@ -30,13 +31,16 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	var note_title string
 	for {
 		gen_number, _ := rand.Int(rand.Reader, big.NewInt(922337203685477580))
-		note_title =  fmt.Sprintf("%d", gen_number)
+		note_title = fmt.Sprintf("%d", gen_number)
+		// check if we already have a note with this title - if we do then loop to generate a new title; otherwise exit this loop
 		anote = m.GetNote(note_title)
-		if anote == nil { break }
+		if anote == nil {
+			break
+		}
 	}
 	secnote := m.NoteNew(map[string]interface{}{
-		"content": secret,
-		"title": note_title,
+		"content":    secret,
+		"title":      note_title,
 		"permission": int8(0),
 	})
 	secnote.Save()
@@ -47,9 +51,15 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 
 func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
 	note_id_str := u.GetRequestValue(r, "secret_id", "-1")
-	if note_id_str == "-1" { fmt.Fprintf(w, "ERROR got -1 in id"); return }
+	if note_id_str == "-1" {
+		fmt.Fprintf(w, "ERROR got -1 in id")
+		return
+	}
 	note_sec := m.GetNote(note_id_str)
-	if note_sec == nil { fmt.Fprintf(w, "ERROR"); return }
+	if note_sec == nil {
+		fmt.Fprintf(w, "ERROR")
+		return
+	}
 	sec := note_sec.Content
 	note_sec.Delete()
 	fmt.Fprint(w, sec)

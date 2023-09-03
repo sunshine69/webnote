@@ -9,14 +9,14 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/jbrodriguez/mlog v0.0.0-20180805173533-cbd5ae8e9c53
 	github.com/json-iterator/go v1.1.12
-	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/microcosm-cc/bluemonday v1.0.23
+	github.com/mattn/go-sqlite3 v1.14.17
+	github.com/microcosm-cc/bluemonday v1.0.25
 	github.com/pquerna/otp v1.4.0
 	github.com/sergi/go-diff v1.3.1
-	github.com/sunshine69/golang-tools/utils v0.0.0-20230312095033-5f2a526bb13a
+	github.com/sunshine69/golang-tools/utils v0.0.0-20230903080424-1e5144ab4f87
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/yuin/goldmark v1.5.4
-	golang.org/x/term v0.6.0
+	github.com/yuin/goldmark v1.5.6
+	golang.org/x/term v0.11.0
 )
 
 require (
@@ -31,10 +31,10 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
-	github.com/sendgrid/sendgrid-go v3.12.0+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.13.0+incompatible // indirect
 	github.com/stvoidit/gosmtp v1.0.6 // indirect
-	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

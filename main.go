@@ -866,6 +866,7 @@ func HandleRequests() {
 	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber).Methods("GET")
+	router.HandleFunc("/rand2", app.GenRandNumberV2).Methods("GET")
 	// Onetime secret share
 	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL).Methods("POST")
 	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret).Methods("GET")

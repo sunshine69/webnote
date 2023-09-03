@@ -1,114 +1,115 @@
-
 <html>
+
 <head>
   <title></title>
-<style>
-
-/*
+  <style>
+    /*
  * Form fixes
  */
 
-/* Only one input per row */
-select, input, button {
-   display: block;
-   margin-bottom: 1em;
-   max-width: 80%;
-   font-size: 120%;
-}
+    /* Only one input per row */
+    select,
+    input,
+    button {
+      display: block;
+      margin-bottom: 1em;
+      max-width: 80%;
+      font-size: 120%;
+    }
 
-/* Follow the size of input elements */
-label {
-   font-size: 120%;
-}
+    /* Follow the size of input elements */
+    label {
+      font-size: 120%;
+    }
 
-/* Checkbox is still inline */
-input[type=checkbox] {
-    display: inline;
-}
+    /* Checkbox is still inline */
+    input[type=checkbox] {
+      display: inline;
+    }
 
-.bt{
-  background: #333;
-  color: #fdfdfd;
-  min-height: 45px;
-  min-width: 45px;
-  margin: 0;
-  border-radius: 3px;
-  border: 0;
-  line-height: 35px;
-  text-align: center;
-  margin: .5em 0 .5em 0;
-
-}
-
-a.bt{
-  display: inline;
-  padding: 7px 10px 7px 10px;
-}
-
-.bt:hover{
-  background: #000;
-}
-
-@media only screen and (max-width:480px) {
-  .bt {
-    width: 100%;
-  }
-
-  a.bt{
-    display: block;
-    padding: 0;
-  }
-}
-</style>
-<script language="javascript">
-function castIchingTrigram() {
-
-  var output = ""; // orig
-  var output2 = ""; // change
-  var hao_dong = "";
-
-  subjectQuestion = window.prompt("Type your question in details: ")
-  for (c=1; c<=6; c++) {
-    response = alert(subjectQuestion + "\n\n" + 'Click to cast the line ' + c );
-    res = cast_line();//return the number of the non letter face of the three coins
-//alert(res);
-    if (res == 0) { // Jin move
-      output += "0";
-      output2 += "1";
-      hao_dong += c + "-" ;
-
-    } else if (res == 3) { // Yang move
-      output += "1";
-      output2 += "0"; // Move from jin to yang etc..
-      hao_dong += c + "-";
-
-    } else {
-      var _temp = res % 2;
-      output += _temp;
-      output2 += _temp;
+    .bt {
+      background: #333;
+      color: #fdfdfd;
+      min-height: 45px;
+      min-width: 45px;
+      margin: 0;
+      border-radius: 3px;
+      border: 0;
+      line-height: 35px;
+      text-align: center;
+      margin: .5em 0 .5em 0;
 
     }
 
-  }
-  // remember count from bottom to top for the key
-  var hao_to_que = {
-    "111": "Kien",
-    "010": "Kham",
-    "001": "Can",
-    "100": "Chan",
-    "011": "Ton",
-    "101": "Ly",
-    "000": "Khon",
-    "110": "Doai"
-  };
+    a.bt {
+      display: inline;
+      padding: 7px 10px 7px 10px;
+    }
 
-  que_ha = hao_to_que[output.slice(0,3)];
-  que_thuong = hao_to_que[output.slice(3)];
-  que_ha_bien = hao_to_que[output2.slice(0,3)];
-  que_thuong_bien = hao_to_que[output2.slice(3)];
+    .bt:hover {
+      background: #000;
+    }
 
-  var date_casted = new Date().toLocaleString();
-  var result_string = `
+    @media only screen and (max-width:480px) {
+      .bt {
+        width: 100%;
+      }
+
+      a.bt {
+        display: block;
+        padding: 0;
+      }
+    }
+  </style>
+  <script language="javascript">
+    function castIchingTrigram() {
+
+      var output = ""; // orig
+      var output2 = ""; // change
+      var hao_dong = "";
+
+      subjectQuestion = window.prompt("Type your question in details: ")
+      for (c = 1; c <= 6; c++) {
+        response = alert(subjectQuestion + "\n\n" + 'Click to cast the line ' + c);
+        res = cast_line();//return the number of the non letter face of the three coins
+        //alert(res);
+        if (res == 0) { // Jin move
+          output += "0";
+          output2 += "1";
+          hao_dong += c + "-";
+
+        } else if (res == 3) { // Yang move
+          output += "1";
+          output2 += "0"; // Move from jin to yang etc..
+          hao_dong += c + "-";
+
+        } else {
+          var _temp = res % 2;
+          output += _temp;
+          output2 += _temp;
+
+        }
+
+      }
+      // remember count from bottom to top for the key
+      var hao_to_que = {
+        "111": "Kien",
+        "010": "Kham",
+        "001": "Can",
+        "100": "Chan",
+        "011": "Ton",
+        "101": "Ly",
+        "000": "Khon",
+        "110": "Doai"
+      };
+
+      que_ha = hao_to_que[output.slice(0, 3)];
+      que_thuong = hao_to_que[output.slice(3)];
+      que_ha_bien = hao_to_que[output2.slice(0, 3)];
+      que_thuong_bien = hao_to_que[output2.slice(3)];
+
+      var date_casted = new Date().toLocaleString();
+      var result_string = `
 
 <pre>${subjectQuestion}</pre>
 <hr/>
@@ -125,70 +126,73 @@ Casted on ${date_casted} <br/>
 
 `;
 
-document.getElementById("display").innerHTML = result_string;
+      document.getElementById("display").innerHTML = result_string;
 
-}
+    }
 
-function cast_one_coin() {
-  // return 0 or 1 randomly (jin or yang)
+    function cast_one_coin() {
+      // return 0 or 1 randomly (jin or yang)
 
-  var array = new Uint32Array(1);
-  window.crypto.getRandomValues(array);
-  return array[0] % 2;
-  //return getRandomInt(0,999999999999) % 4;
-}
-function cast_one_coin_external1() {
-  var request = new XMLHttpRequest();
-  request.open('GET', 'https://gonote.duckdns.org:6919/rand', false);  // `false` makes the request synchronous
-  request.send(null);
-  if (request.status === 200) {
-    console.log(request.responseText);
-    return parseInt(request.responseText) % 2
-  } else {
-    alert("cast_one_coin_external return error")
-  }
-}
+      var array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      return array[0] % 2;
+      //return getRandomInt(0,999999999999) % 4;
+    }
+    function cast_one_coin_externalV2() {
+      var request = new XMLHttpRequest();
+      request.open('GET', '/rand', false);  // `false` makes the request synchronous
+      request.send(null);
+      if (request.status === 200) {
+        console.log(request.responseText);
+        return parseInt(request.responseText) % 2
+      } else {
+        alert("cast_one_coin_external return error")
+      }
+    }
+    // Depricated - this url limit 1 req per sec and will be down soon. Should use cast_one_coin_externalV2
+    function cast_one_coin_external() {
+      var request = new XMLHttpRequest();
+      request.open('GET', 'https://qrng.anu.edu.au/API/jsonI.php?length=1&type=uint16', false);  // `false` makes the request synchronous
+      request.send(null);
+      if (request.status === 200) {
+        //console.log(request.responseText);
+        var resJson = JSON.parse(request.responseText);
+        var rand_num = resJson.data[0];
+        return rand_num % 2;
+      } else {
+        alert("cast_one_coin_external return error")
+      }
+    }
 
-function cast_one_coin_external() {
-  var request = new XMLHttpRequest();
-  request.open('GET', 'https://qrng.anu.edu.au/API/jsonI.php?length=1&type=uint16', false);  // `false` makes the request synchronous
-  request.send(null);
-  if (request.status === 200) {
-    //console.log(request.responseText);
-    var resJson = JSON.parse(request.responseText);
-    var rand_num = resJson.data[0];
-    return rand_num % 2;
-  } else {
-    alert("cast_one_coin_external return error")
-  }
-}
 
+    function cast_line() {
 
-function cast_line() {
+      // return 0 or 1 randomly - the number of the face down coin
 
-// return 0 or 1 randomly - the number of the face down coin
+      var _temp = [cast_one_coin_externalV2(), cast_one_coin_externalV2(), cast_one_coin_externalV2()];
+      var out = 0;
+      for (var i = 0; i < _temp.length; i++) out += _temp[i];
+      return out;
+      //return _temp. reduce((a,b) => a + b, 0);
 
-var _temp = [cast_one_coin_external(),cast_one_coin_external(),cast_one_coin_external()];
-var out=0;
-for (var i=0; i<_temp.length; i++) out += _temp[i];
-return out;
-//return _temp. reduce((a,b) => a + b, 0);
+    }
 
-}
+    function getRandomInt(min, max) {
+      return "Not use it";
+      /*  min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+      */
+    }
 
-function getRandomInt(min, max) {
-return "Not use it";
-/*  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-*/
-}
-
-</script>
+  </script>
 </head>
-<body style="font-size: 150%">
-<p align="center"><input name="cast_iching_trigram" onclick="castIchingTrigram();" type="button" class="bt" value="Cast Trigram" /></p>
 
-<div align="center" id="display">&nbsp;</div>
+<body style="font-size: 150%">
+  <p align="center"><input name="cast_iching_trigram" onclick="castIchingTrigram();" type="button" class="bt"
+      value="Cast Trigram" /></p>
+
+  <div align="center" id="display">&nbsp;</div>
 </body>
+
 </html>

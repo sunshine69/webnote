@@ -19,3 +19,12 @@ func GenRandNumber(w http.ResponseWriter, r *http.Request) {
 	gen_number, _ := rand.Int(rand.Reader, big.NewInt(max_num))
 	fmt.Fprintf(w, "%d", gen_number)
 }
+
+func GenRandNumberV2(w http.ResponseWriter, r *http.Request) {
+	gen_number := u.GetRandomNumberUseQrng(1)
+	if len(gen_number) > 0 {
+		fmt.Fprintf(w, "%d", gen_number[0])
+	} else {
+		fmt.Fprintf(w, "%s", "ERROR")
+	}
+}
