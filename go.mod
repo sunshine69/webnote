@@ -16,7 +16,7 @@ require (
 	github.com/sunshine69/golang-tools/utils v0.0.0-20230903080424-1e5144ab4f87
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/yuin/goldmark v1.5.6
-	golang.org/x/term v0.13.0
+	golang.org/x/term v0.15.0
 )
 
 require (
@@ -33,8 +33,8 @@ require (
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.13.0+incompatible // indirect
 	github.com/stvoidit/gosmtp v1.0.6 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
