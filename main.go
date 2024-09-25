@@ -21,7 +21,6 @@ import (
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/jbrodriguez/mlog"
 	jsoniter "github.com/json-iterator/go"
@@ -772,7 +771,7 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleRequests() {
-	router := mux.NewRouter().StrictSlash(true)
+	router := http.NewServeMux()
 	base_url := models.GetConfig("base_url", "")
 	_u, _e := url.Parse(base_url)
 	if _e != nil {
@@ -820,56 +819,60 @@ func HandleRequests() {
 
 	staticFS := http.FileServer(http.Dir("./assets"))
 	//Not sure why this line wont work but the one after that works for serving static
-	// router.Handle("/assets/", http.StripPrefix("/assets/", staticFS)).Methods("GET")
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", staticFS))
+	// router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
+	router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
 
-	router.HandleFunc("/login", DoLogin).Methods("GET", "POST")
-	router.Handle("/", isAuthorized(HomePage)).Methods("GET")
+	router.HandleFunc("/login", DoLogin)
+	router.HandleFunc("/", HomePage)
+
+	bypass_authorized_paths_pattern = []*regexp.Regexp{
+		regexp.MustCompile(`\/(view|login|kodi|assets|rand|nocsrf)`),
+	}
 
 	//All routes handlers
-	router.Handle("/savenote", isAuthorized(DoSaveNote)).Methods("POST")
-	router.Handle("/search", isAuthorized(DoSearchNote)).Methods("POST", "GET")
+	router.HandleFunc("/savenote", DoSaveNote)
+	router.HandleFunc("/search", DoSearchNote)
 	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func
-	router.HandleFunc("/view", DoViewNote).Methods("GET", "POST")
-	router.Handle("/view_rev", isAuthorized(DoViewRevNote)).Methods("GET")
-	router.Handle("/view_diff", isAuthorized(DoViewDiffNote)).Methods("GET")
-	router.Handle("/delete", isAuthorized(DoDeleteNote)).Methods("POST", "GET")
-	router.Handle("/logout", isAuthorized(DoLogout)).Methods("POST", "GET")
-	router.Handle("/upload", isAuthorized(DoUpload)).Methods("POST", "GET")
-	router.Handle("/list_attachment", isAuthorized(DoListAttachment)).Methods("GET")
-	router.Handle("/edit_attachment", isAuthorized(DoEditAttachment)).Methods("GET", "POST")
-	router.Handle("/auto_scan_attachment", isAuthorized(DoAutoScanAttachment)).Methods("GET", "POST")
-	router.Handle("/delete_attachment", isAuthorized(DoDeleteAttachment)).Methods("GET")
-	router.HandleFunc("/streamfile", DoStreamfile).Methods("GET")
-	router.Handle("/add_attachment_to_note", isAuthorized(DoAttachmentToNote)).Methods("GET")
-	router.Handle("/delete_note_attachment", isAuthorized(DoAttachmentToNote)).Methods("GET")
-	router.Handle("/get_notes_titles", isAuthorized(DoGetNoteTitles)).Methods("GET")
-	router.Handle("/get_notes_by_id", isAuthorized(DoGetNotesByIds)).Methods("GET")
+	router.HandleFunc("/view", DoViewNote)
+	router.HandleFunc("/view_rev", DoViewRevNote)
+	router.HandleFunc("/view_diff", DoViewDiffNote)
+	router.HandleFunc("/delete", DoDeleteNote)
+	router.HandleFunc("/logout", DoLogout)
+	router.HandleFunc("/upload", DoUpload)
+	router.HandleFunc("/list_attachment", DoListAttachment)
+	router.HandleFunc("/edit_attachment", DoEditAttachment)
+	router.HandleFunc("/auto_scan_attachment", DoAutoScanAttachment)
+	router.HandleFunc("/delete_attachment", DoDeleteAttachment)
+	router.HandleFunc("/streamfile", DoStreamfile)
+	router.HandleFunc("/add_attachment_to_note", DoAttachmentToNote)
+	router.HandleFunc("/delete_note_attachment", DoAttachmentToNote)
+	router.HandleFunc("/get_notes_titles", DoGetNoteTitles)
+	router.HandleFunc("/get_notes_by_id", DoGetNotesByIds)
 
 	//User management
-	router.Handle("/edituser", isAuthorized(DoEditUser)).Methods("GET", "POST")
-	router.Handle("/searchuser", isAuthorized(DoSearchUser)).Methods("GET")
+	router.HandleFunc("/edituser", DoEditUser)
+	router.HandleFunc("/searchuser", DoSearchUser)
 	// With selected - handle bulk ops from the search result
-	router.Handle("/on_selected_run_sql", isAuthorized(OnSelectedRunSql)).Methods("POST")
+	router.HandleFunc("/on_selected_run_sql", OnSelectedRunSql)
 
 	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
-	router.Handle("/cred", isAuthorized(app.DoCredApp)).Methods("POST", "GET")
+	router.HandleFunc("/cred", app.DoCredApp)
 
 	//kodi send. Dont need to authenticate via note app but its own (via IP)
-	router.Handle("/kodi/add", app.KodiIsAuthorized(app.HandleAddToPlayList)).Methods("POST")
-	router.Handle("/kodi/play", app.KodiIsAuthorized(app.HandlePlay)).Methods("POST")
-	router.Handle("/kodi/loadlist", app.KodiIsAuthorized(app.HandleLoadList)).Methods("POST")
-	router.Handle("/kodi/savelist", app.KodiIsAuthorized(app.HandleSaveList)).Methods("POST")
-	router.Handle("/kodi/playlist", app.KodiIsAuthorized(app.HandlePlayList)).Methods("POST")
+	router.Handle("/kodi/add", app.KodiIsAuthorized(app.HandleAddToPlayList))
+	router.Handle("/kodi/play", app.KodiIsAuthorized(app.HandlePlay))
+	router.Handle("/kodi/loadlist", app.KodiIsAuthorized(app.HandleLoadList))
+	router.Handle("/kodi/savelist", app.KodiIsAuthorized(app.HandleSaveList))
+	router.Handle("/kodi/playlist", app.KodiIsAuthorized(app.HandlePlayList))
 	//Save bookmark
-	router.Handle("/savebookmark", isAuthorized(app.SaveBookMark)).Methods("GET")
-	router.Handle("/delbookmark", isAuthorized(app.DeleteBookMark)).Methods("GET")
+	router.HandleFunc("/savebookmark", app.SaveBookMark)
+	router.HandleFunc("/delbookmark", app.DeleteBookMark)
 	//A random generator
-	router.HandleFunc("/rand", app.GenRandNumber).Methods("GET")
-	router.HandleFunc("/rand2", app.GenRandNumberV2).Methods("GET")
+	router.HandleFunc("/rand", app.GenRandNumber)
+	router.HandleFunc("/rand2", app.GenRandNumberV2)
 	// Onetime secret share
-	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL).Methods("POST")
-	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret).Methods("GET")
+	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL)
+	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret)
 
 	srv := &http.Server{
 		Addr: ":" + ServerPort,
@@ -885,7 +888,7 @@ func HandleRequests() {
 	if *EnableCompression == "yes" {
 		srv.Handler = handlers.CompressHandler(protectionMiddleware(router))
 	} else {
-		srv.Handler = protectionMiddleware(router)
+		srv.Handler = protectionMiddleware(isAuthorized(router))
 	}
 
 	if SSLKey != "" {
@@ -932,7 +935,7 @@ func main() {
 
 		The ssl cert and key if it does not exist then will be created automatically.
 
-		The default admin email to login is admin@admin.comodels. To change this use option '-cmd set_admin_email'
+		The default admin email to login is admin@admin.com odels. To change this use option '-cmd set_admin_email'
 		The default password for admin@admin.com is 1qa2ws. When logged in follow the instructions on screen to change password and generate QR OTP image for MFA.
 
 		Next run remove the option -setup to start the app
@@ -1131,8 +1134,16 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
+var bypass_authorized_paths_pattern []*regexp.Regexp
+
+func isAuthorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		for _, ptn := range bypass_authorized_paths_pattern {
+			if ptn.MatchString(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
 		isAuth := models.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
 			mlog.Error(fmt.Errorf("no session"))
@@ -1143,7 +1154,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 			return
 		}
 		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
-		endpoint(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
 
