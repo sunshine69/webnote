@@ -131,6 +131,10 @@ github.com/sunshine69/golang-tools/utils v0.0.0-20230903080424-1e5144ab4f87 h1:V
 github.com/sunshine69/golang-tools/utils v0.0.0-20230903080424-1e5144ab4f87/go.mod h1:+E+W8YeWR0+/IS+dTOW5wgmraJ4VsH8NCL4neSPL6Gs=
 github.com/sunshine69/golang-tools/utils v0.0.0-20240808105540-8d228a91d388 h1:k5hMchGizd/O2pwIQFqM/tWS6zYhraGBcnU9Wqma0bM=
 github.com/sunshine69/golang-tools/utils v0.0.0-20240808105540-8d228a91d388/go.mod h1:+aWQc+pqgiJ6J4zVNYFBslyUrxkwgW+QSdUh0ibdqM8=
+github.com/sunshine69/golang-tools/utils v0.0.0-20240926102853-7d6a34948c82 h1:22m3HmkQKOGpTayAGr2Du0IxssS/NcABLxKME1vhA8o=
+github.com/sunshine69/golang-tools/utils v0.0.0-20240926102853-7d6a34948c82/go.mod h1:+aWQc+pqgiJ6J4zVNYFBslyUrxkwgW+QSdUh0ibdqM8=
+github.com/sunshine69/golang-tools/utils v0.0.0-20240926103530-7d97bcbdbc85 h1:4vTjXGwzGqBY+qQbwJOCvuu3tz4cBh4/ag/lxqrCA6Y=
+github.com/sunshine69/golang-tools/utils v0.0.0-20240926103530-7d97bcbdbc85/go.mod h1:TZu9lXtwd8Yy4ATES49zWlrq5hFu7YmGRt47LuMGc6E=
 github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQitcs=
 github.com/sunshine69/kodirpc v0.0.2/go.mod h1:uqh8S9JHoYzbLfqTQ6pIaGSq+Xyt8u926Tu5L3W9uZs=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=

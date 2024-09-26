@@ -50,7 +50,8 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
-	note_id_str := u.GetRequestValue(r, "secret_id", "-1")
+	note_id_str := r.PathValue("secret_id")
+
 	if note_id_str == "-1" {
 		fmt.Fprintf(w, "ERROR got -1 in id")
 		return

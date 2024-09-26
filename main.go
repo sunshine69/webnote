@@ -31,6 +31,7 @@ import (
 
 var version, ServerPort, SSLKey, SSLCert string
 var EnableCompression *string
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func init() {
 	SSLKey = models.GetConfig("ssl_key", "")
@@ -639,7 +640,6 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	foundUser := foundUsers[0]
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	o, e := json.MarshalToString(foundUser)
 	if e != nil {
 		mlog.Error(fmt.Errorf("can not create json %s", e.Error()))
@@ -886,7 +886,7 @@ func HandleRequests() {
 		*EnableCompression = "yes"
 	}
 	if *EnableCompression == "yes" {
-		srv.Handler = handlers.CompressHandler(protectionMiddleware(router))
+		srv.Handler = handlers.CompressHandler(protectionMiddleware(isAuthorized(router)))
 	} else {
 		srv.Handler = protectionMiddleware(isAuthorized(router))
 	}
@@ -935,7 +935,7 @@ func main() {
 
 		The ssl cert and key if it does not exist then will be created automatically.
 
-		The default admin email to login is admin@admin.com odels. To change this use option '-cmd set_admin_email'
+		The default admin email to login is admin@admin.com . To change this use option '-cmd set_admin_email'
 		The default password for admin@admin.com is 1qa2ws. When logged in follow the instructions on screen to change password and generate QR OTP image for MFA.
 
 		Next run remove the option -setup to start the app
