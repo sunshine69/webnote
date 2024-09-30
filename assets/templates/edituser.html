@@ -66,15 +66,15 @@
 </TR>
 <TR>
     <TD><font color=red><b>Email*: </b></font></TD>
-    <td><input type="text" name='email' value="{{ .user.Email }}"/></td>
+    <td><input title="Your login email. Please note this can not be changed. If you changed this field and click Add/Edit user it will add a new user with that email login but the existing user still exists" type="text" name='email' value="{{ .user.Email }}"/></td>
 </TR>
 <TR>
-    <TD>Current or Admin Password*: </TD>
-    <td><input type="password" name='cur_password' value=""/></td>
+    <TD>Current Password*: </TD>
+    <td><input title="If you edit this page as normal user and want to change your own details, type your password." type="password" name='cur_password' value=""/></td>
 </TR>
 <TR>
     <TD>New Password*: </TD>
-    <td><input type="password" name='password' value=""/></td>
+    <td><input type="password" title="Type new password for the password change" name='password' value=""/></td>
 </TR>
 <TR>
     <TD title="coma separated group name">Groups list*: </TD>
@@ -102,7 +102,7 @@
 </TR>
 <TR>
     <TD>
-        <input type="submit" name="submit" value="Add/Edit User"/>
+        <input type="submit" title="Click to add user if you change the login email and you logged in as admin account. Or to update your current account details" name="submit" value="Add/Edit User"/>
         <input type="submit" name="submit" value="Generate new OTP QR image"/>
     </TD>
     <td>
