@@ -818,15 +818,13 @@ func HandleRequests() {
 	}
 
 	staticFS := http.FileServer(http.Dir("./assets"))
-	//Not sure why this line wont work but the one after that works for serving static
-	// router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
 	router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
 
 	router.HandleFunc("/login", DoLogin)
 	router.HandleFunc("/", HomePage)
 
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
-		regexp.MustCompile(`\/(view|login|kodi|assets|rand|nocsrf)`),
+		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
 	}
 
 	//All routes handlers
