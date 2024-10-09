@@ -58,9 +58,9 @@ function process_selected(o) {
 	o.selectedIndex = 0;
 }
 </script>
-<br/><br/>
+<div class="page_content">
 {{ if gt (len .notes) 0 }}
-<table cellpadding="2" cellspacing="2">
+<table cellpadding="2" cellspacing="2" style="width: 100%;">
 	<TR bgcolor="#66ff99">
 		<th>title</th>
 		<th>datelog</th>
@@ -92,10 +92,11 @@ function process_selected(o) {
 	{{ end }}
 </table>
 {{ else }}
-<hr/>
+
 No notes found
-<hr/>
+
 {{ end }}
+</div>
 {{ if .attachments }}
 	{{ template "list_note_attachment" . }}
 <!-- end if .attachments section -->

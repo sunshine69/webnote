@@ -1,7 +1,5 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
-<br/>
-<hr>
 {{ if eq .user.Email .settings.ADMIN_EMAIL }}
     <script language="javascript">
         function doSearchUser() {
@@ -41,7 +39,7 @@
             })
         }
     </script>
-    <fieldset>
+    <fieldset class="page_content">
     <legend>Search User</legend>
     <table rules="rows,cols" border="0" cellpadding="1" cellspacing="1">
         <tr>
