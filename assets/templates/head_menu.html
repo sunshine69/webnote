@@ -2,10 +2,12 @@
 <script language="javascript">
 function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </script>
+<div class="search-box">
 <form method="POST" action="{{ .settings.BASE_URL }}/search" name="search" id="search">{{ .csrfField }}
 <i>Keyword or :TAGS</i>
 <input type="text" name="keyword" value="" title="search text. Understand A & B or A & !B or A & -B; ! or - is NOT include B. Search by flags, prefix with f: or F: or FLAGS:"/>
 <input type="submit" name="search_submit" value="Search" />
+</div>
 {{ if eq .page "list_att" }}
 <input type="hidden" name="searchtype" value="attachment"/>
 {{ end }}
@@ -14,6 +16,7 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 {{ end }}
 </form><br>
 
+<div class="link-section">
 <A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
 <A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A>
 {{ if .note }}
@@ -41,8 +44,9 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
     {{ end }}
         </DIV>
 {{ end }}
+<hr>
 {{ if eq .page "list_attachement" }}
     <div title="Auto scan the uploads folder and update/add new attchments for all files within."><a href="{{ .settings.BASE_URL }}/auto_scan_attachment">Scan & Update Attachment</a></div>
 {{ end }}
-
 {{ end }}
+</div>

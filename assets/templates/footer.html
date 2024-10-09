@@ -1,5 +1,5 @@
 {{ define "footer" }}
-<br/>
+<div class="link-section">
 <A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
 <A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A>&nbsp;
 <A href="/logout">Logout</A>
@@ -7,3 +7,4 @@
 &nbsp;&nbsp;<A href="{{ .settings.BASE_URL }}/list_attachment">List files</A>
 &nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/search?keyword={{ .keyword }}">Back to search result</a>
 {{ end }}
+</div>

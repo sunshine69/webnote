@@ -1,7 +1,8 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
-<br><br>{{ .csrfField }}
-<table rules="rows,cols" align='center' border="0" cellpadding="2" cellspacing="2">
+{{ .csrfField }}
+<div class="page_content">
+<table class="note-table">
     <TR>
         <TD>&nbsp;</TD>
         <TD title="note title" contenteditable="true" colspan="2" id="title" onChange="isModified=true;"><strong>{{ .note.Title }}</strong></TD>
@@ -16,7 +17,7 @@
         {{ else }}
         <td>&nbsp;</td>
         {{ end }}
-        <td colspan="2"><div id="content" contenteditable="false">{{ if eq .note.RawEditor 0 }}{{ .note.Content | raw_html }}{{ else }}{{ .note.Content | md2html }}{{ end }}<div></td>
+        <td colspan="2"><div class="note-content-view" id="content" contenteditable="false">{{ if eq .note.RawEditor 0 }}{{ .note.Content | raw_html }}{{ else }}{{ .note.Content | md2html }}{{ end }}</div></td>
     </tr>
     <tr>
         <TD>&nbsp;</TD>
@@ -26,7 +27,7 @@
         <td>&nbsp;</td>
         <TD colspan="2">
         {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
-            <select id="ngroup" onChange="isModified=true;"  title="groups list">
+            <select id="ngroup" onChange="isModified=true;"  title="groups list" style="display: inline;">
             {{ $ngroup := "" }}
             {{ if .note.Group }}
                 {{ $ngroup = .note.Group.Name }}
@@ -44,23 +45,24 @@
         {{ end }}
         &nbsp;&nbsp;
         {{ if or (eq .note.AuthorID .user.ID) (eq .note.AuthorID 0) }}
-            <select name="permission" title="permissions list">
+            <select name="permission" title="permissions list" style="display: inline;">
             {{ $note := .note }}
             {{ range $permVal, $perm := .permission_list }}
             <option value="{{ $permVal }}" {{ if eq $permVal $note.Permission }} selected="selected" {{ end }}>{{ $perm }}</option>
             {{ end }}
             </select>
         {{ else }}
-            <input id="permission" type="hidden" name="permission" value="{{.note.Permission}}" >
+            <input id="permission" type="hidden" name="permission" value="{{.note.Permission}}">
         {{ end }}
         </td>
     </tr>
 </table>
-<br>
 <a href="{{ .settings.BASE_URL }}/?id={{ .note.ID }}">Edit</a>&nbsp;&nbsp;<a href="{{ .settings.BASE_URL }}/delete?id={{ .note.ID }}" onClick="return ask_me('delete');">Delete</a>
+</div>
+
 {{ template "footer" . }}
 <br><br>
-
+<div class="page_content">
 {{ template "list_note_attachment" . }}
 
 {{ if not (eq .user.ID 0) }}
@@ -90,6 +92,8 @@
         {{ end }}
     </table>
 {{ end }}
+</div>
+
 {{ if eq .note.RawEditor 0 }}
 <script>
 CKEDITOR.disableAutoInline = true;

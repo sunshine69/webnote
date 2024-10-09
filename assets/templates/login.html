@@ -1,5 +1,6 @@
 {{ template "header" . }}
-<h1 align = "left"> Webnote Login </h1>
+<h1> Webnote Login </h1>
+<div class="login">
 {{ .msg }}
 <form METHOD="POST" ACTION="/login">{{ .csrfField }}
     <input type="hidden" name="action" value="do_login"/>
@@ -29,5 +30,6 @@
         &nbsp;&nbsp;&nbsp;<input type="submit" name="login" value="Login"/>
     </p>
 </FORM>
+</div>
 </body>
 </html>
