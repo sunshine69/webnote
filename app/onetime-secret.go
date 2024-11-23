@@ -12,11 +12,11 @@ import (
 )
 
 func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
-	submit_type := u.GetRequestValue(r, "submit", "")
-	base_url := u.GetRequestValue(r, "base_url", "")
+	submit_type := m.GetRequestValue(r, "submit", "")
+	base_url := m.GetRequestValue(r, "base_url", "")
 	var secret string
 	if submit_type == "submit_genpass" {
-		length_str := u.GetRequestValue(r, "password_len", "12")
+		length_str := m.GetRequestValue(r, "password_len", "12")
 		password_len, err := strconv.Atoi(length_str)
 		if u.CheckErrNonFatal(err, "GenerateOnetimeSecURL") != nil {
 			fmt.Fprintf(w, "ERROR length should be a integer")
@@ -24,7 +24,7 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 		}
 		secret = u.GenRandomString(password_len)
 	} else {
-		secret = u.GetRequestValue(r, "sec_content", "")
+		secret = m.GetRequestValue(r, "sec_content", "")
 		fmt.Printf("DEBUG sec is %s\n", secret)
 	}
 	var anote *m.Note = nil

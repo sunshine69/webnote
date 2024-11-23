@@ -26,7 +26,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
 	"github.com/sunshine69/webnote-go/app"
-	"github.com/sunshine69/webnote-go/models"
+	m "github.com/sunshine69/webnote-go/models"
 )
 
 var version, ServerPort, SSLKey, SSLCert string
@@ -34,44 +34,44 @@ var EnableCompression *string
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func init() {
-	SSLKey = models.GetConfig("ssl_key", "")
-	SSLCert = models.GetConfig("ssl_cert", "")
+	SSLKey = m.GetConfig("ssl_key", "")
+	SSLCert = m.GetConfig("ssl_cert", "")
 	mlog.Start(mlog.LevelInfo, "webnote.log")
 }
 
-func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *models.User {
-	isAuth := models.GetSessionVal(r, "authenticated", nil)
+func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *m.User {
+	isAuth := m.GetSessionVal(r, "authenticated", nil)
 	if isAuth == nil || !isAuth.(bool) {
 		return nil
 	}
-	useremail := models.GetSessionVal(r, "useremail", "").(string)
+	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	if useremail == "" {
 		return nil
 	}
-	return models.GetUser(useremail)
+	return m.GetUser(useremail)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	raw_editor, _ := strconv.Atoi(u.GetRequestValue(r, "raw_editor", "1"))
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	raw_editor, _ := strconv.Atoi(m.GetRequestValue(r, "raw_editor", "1"))
 
-	var aNote *models.Note
-	u := GetCurrentUser(&w, r)
+	var aNote *m.Note
+	user := GetCurrentUser(&w, r)
 	if noteID == 0 {
-		aNote = models.NoteNew(map[string]interface{}{
+		aNote = m.NoteNew(map[string]interface{}{
 			"ID":         noteID,
-			"group_id":   u.Groups[0].ID,
+			"group_id":   user.Groups[0].ID,
 			"raw_editor": int8(raw_editor),
 		})
 	} else {
-		aNote = models.GetNoteByID(noteID)
+		aNote = m.GetNoteByID(noteID)
 	}
 	CommonRenderTemplate("frontpage.html", &w, r, &map[string]interface{}{
 		"title":            "Webnote - note " + aNote.Title,
 		"page":             "frontpage",
 		"msg":              "",
 		"note":             aNote,
-		"first_time_login": models.GetSessionVal(r, "first_time_login", "no").(string),
+		"first_time_login": m.GetSessionVal(r, "first_time_login", "no").(string),
 	})
 }
 
@@ -97,27 +97,27 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	user := GetCurrentUser(&w, r)
 
 	r.ParseForm()
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	ngroup := models.GetGroup(u.GetFormValue(r, "ngroup", "default"))
-	_permission, _ := strconv.Atoi(u.GetFormValue(r, "permission", "0"))
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	ngroup := m.GetGroup(m.GetRequestValue(r, "ngroup", "default"))
+	_permission, _ := strconv.Atoi(m.GetRequestValue(r, "permission", "0"))
 	permission := int8(_permission)
 
-	_raw_editor, _ := strconv.Atoi(u.GetFormValue(r, "raw_editor", "0"))
+	_raw_editor, _ := strconv.Atoi(m.GetRequestValue(r, "raw_editor", "0"))
 	raw_editor := int8(_raw_editor)
 
-	var aNote *models.Note
+	var aNote *m.Note
 	content := r.FormValue("content")
 	title := r.FormValue("title")
 	if title == "" {
 		title = GetFirstnChar(content, 128)
 	}
-	TimeStamp, err := strconv.ParseInt(u.GetFormValue(r, "timestamp", "0"), 10, 64)
+	TimeStamp, err := strconv.ParseInt(m.GetRequestValue(r, "timestamp", "0"), 10, 64)
 	if u.CheckErrNonFatal(err, "ParseInt") != nil || TimeStamp == 0 {
 		TimeStamp = time.Now().UnixNano()
 	}
 
 	if noteID == 0 { //New note created by current user
-		aNote = models.NoteNew(map[string]interface{}{
+		aNote = m.NoteNew(map[string]interface{}{
 			"title":      title,
 			"datelog":    r.FormValue("datelog"),
 			"flags":      r.FormValue("flags"),
@@ -132,8 +132,8 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 		)
 		aNote.Save()
 	} else { //Existing note loaded. Need to check permmission
-		aNote = models.GetNoteByID(noteID)
-		if models.CheckPerm(aNote.Object, user.ID, "w") {
+		aNote = m.GetNoteByID(noteID)
+		if m.CheckPerm(aNote.Object, user.ID, "w") {
 			aNote.Title = r.FormValue("title")
 			aNote.Flags = r.FormValue("flags")
 			aNote.Content = r.FormValue("content")
@@ -147,7 +147,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			msg = "Permission denied."
 		}
 	}
-	isAjax := u.GetRequestValue(r, "is_ajax", "0")
+	isAjax := m.GetRequestValue(r, "is_ajax", "0")
 	if isAjax == "1" {
 		fmt.Fprint(w, msg)
 	} else {
@@ -160,15 +160,15 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoSearchNote(w http.ResponseWriter, r *http.Request) {
-	keyword := u.GetRequestValue(r, "keyword", "")
+	keyword := m.GetRequestValue(r, "keyword", "")
 	user := GetCurrentUser(&w, r)
-	var attachments []*models.Attachment
+	var attachments []*m.Attachment
 	if user != nil {
-		attachments = models.SearchAttachment(keyword, user)
+		attachments = m.SearchAttachment(keyword, user)
 	} else {
-		attachments = []*models.Attachment{}
+		attachments = []*m.Attachment{}
 	}
-	notes := models.SearchNote(keyword, GetCurrentUser(&w, r))
+	notes := m.SearchNote(keyword, GetCurrentUser(&w, r))
 	CommonRenderTemplate("search_result.html", &w, r, &map[string]interface{}{
 		"title":       "Webnote - Search result",
 		"page":        "search_result",
@@ -180,22 +180,22 @@ func DoSearchNote(w http.ResponseWriter, r *http.Request) {
 
 // DoViewNote -
 func DoViewNote(w http.ResponseWriter, r *http.Request) {
-	viewType := u.GetRequestValue(r, "t", "1")
+	viewType := m.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
 
-	var aNote *models.Note
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
+	var aNote *m.Note
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
 	if noteID == 0 {
-		noteTitle := u.GetRequestValue(r, "title", "")
-		aNote = models.GetNote(noteTitle)
+		noteTitle := m.GetRequestValue(r, "title", "")
+		aNote = m.GetNote(noteTitle)
 	} else {
-		aNote = models.GetNoteByID(noteID)
+		aNote = m.GetNoteByID(noteID)
 	}
 	if aNote == nil {
 		return
 	}
 	if aNote.Permission < 5 {
-		isAuth := models.GetSessionVal(r, "authenticated", nil)
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
 			mlog.Error(fmt.Errorf("no session"))
 			from_uri := r.URL.RequestURI()
@@ -203,8 +203,8 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/login?from_uri="+from_uri, http.StatusTemporaryRedirect)
 			return
 		}
-		u := GetCurrentUser(&w, r)
-		if !models.CheckPerm(aNote.Object, u.ID, "r") {
+		user := GetCurrentUser(&w, r)
+		if !m.CheckPerm(aNote.Object, user.ID, "r") {
 			mlog.Error(fmt.Errorf("no permission"))
 			fmt.Fprintf(w, "Permission denied")
 			return
@@ -216,12 +216,12 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 		"page":      "noteview",
 		"msg":       "",
 		"note":      aNote,
-		"revisions": models.GetNoteRevisions(aNote.ID),
+		"revisions": m.GetNoteRevisions(aNote.ID),
 	}
 	if len(aNote.Attachments) > 0 {
 		data["attachments"] = aNote.Attachments
 	}
-	isAjax := u.GetRequestValue(r, "is_ajax", "0")
+	isAjax := m.GetRequestValue(r, "is_ajax", "0")
 	if isAjax == "0" {
 		CommonRenderTemplate(tName, &w, r, &data)
 	} else {
@@ -230,13 +230,13 @@ func DoViewNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
-	noteIDStr := u.GetRequestValue(r, "id", "0")
+	noteIDStr := m.GetRequestValue(r, "id", "0")
 	msg := "OK"
 	if noteIDStr != "0" {
 		user := GetCurrentUser(&w, r)
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		aNote := models.GetNoteByID(noteID)
-		if models.CheckPerm(aNote.Object, user.ID, "d") {
+		aNote := m.GetNoteByID(noteID)
+		if m.CheckPerm(aNote.Object, user.ID, "d") {
 			aNote.Delete()
 		} else {
 			msg = "Permission denied."
@@ -244,9 +244,9 @@ func DoDeleteNote(w http.ResponseWriter, r *http.Request) {
 	} else {
 		msg = "Invalid noteID"
 	}
-	isAjax := u.GetRequestValue(r, "is_ajax", "0")
-	page := u.GetRequestValue(r, "page", "0")
-	keyword := u.GetRequestValue(r, "keyword", "")
+	isAjax := m.GetRequestValue(r, "is_ajax", "0")
+	page := m.GetRequestValue(r, "page", "0")
+	keyword := m.GetRequestValue(r, "keyword", "")
 	var redirectURL string
 	switch page {
 	case "frontpage":
@@ -285,13 +285,13 @@ var CSRF_TOKEN string
 //HandleRequests -
 
 func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
-	viewType := u.GetRequestValue(r, "t", "1")
+	viewType := m.GetRequestValue(r, "t", "1")
 	tName := "noteview" + viewType + ".html"
 
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	aNote := models.GetNoteRevisionByID(noteID)
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	aNote := m.GetNoteRevisionByID(noteID)
 	user := GetCurrentUser(&w, r)
-	if !models.CheckPerm(aNote.Object, user.ID, "r") {
+	if !m.CheckPerm(aNote.Object, user.ID, "r") {
 		fmt.Fprintf(w, "ERROR Permission denied")
 		return
 	}
@@ -304,15 +304,15 @@ func DoViewRevNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoViewDiffNote(w http.ResponseWriter, r *http.Request) {
-	noteID, _ := strconv.ParseInt(u.GetRequestValue(r, "id", "0"), 10, 64)
-	revNoteID, _ := strconv.ParseInt(u.GetRequestValue(r, "rev_id", "0"), 10, 64)
-	n := models.GetNoteByID(noteID)
+	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
+	revNoteID, _ := strconv.ParseInt(m.GetRequestValue(r, "rev_id", "0"), 10, 64)
+	n := m.GetNoteByID(noteID)
 	user := GetCurrentUser(&w, r)
-	if !models.CheckPerm(n.Object, user.ID, "r") {
+	if !m.CheckPerm(n.Object, user.ID, "r") {
 		fmt.Fprintf(w, "ERROR Permission denied")
 		return
 	}
-	n1 := models.GetNoteRevisionByID(revNoteID)
+	n1 := m.GetNoteRevisionByID(revNoteID)
 	nd := n1.Diff(n)
 	t, _ := template.New("diff").Parse(`<html>
 	<body>{{ .htmlText }}</body>
@@ -339,14 +339,14 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "ERROR", http.StatusForbidden)
 			return
 		}
-		var aList []*models.Attachment
+		var aList []*m.Attachment
 
-		if err := r.ParseMultipartForm(models.MaxUploadSizeInMemory); err != nil {
+		if err := r.ParseMultipartForm(m.MaxUploadSizeInMemory); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		for count := 0; count < models.Settings.UPLOAD_ITEM_COUNT; count++ {
+		for count := 0; count < m.Settings.UPLOAD_ITEM_COUNT; count++ {
 			cStr := strconv.Itoa(count)
 			file, handler, err := r.FormFile("myFile" + cStr)
 			if u.CheckErrNonFatal(err, "Error Retrieving the File") != nil {
@@ -356,14 +356,14 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("Uploaded File: %+v\n", handler.Filename)
 			fmt.Printf("File Size: %+v\n", handler.Size)
 			fmt.Printf("MIME Header: %s\n", handler.Header["Content-Type"])
-			aName := u.GetRequestValue(r, "a"+cStr, "")
-			aDesc := u.GetRequestValue(r, "desc"+cStr, "")
+			aName := m.GetRequestValue(r, "a"+cStr, "")
+			aDesc := m.GetRequestValue(r, "desc"+cStr, "")
 			if aName == "" {
 				aName = handler.Filename
 			}
-			uploadPath := u.GetRequestValue(r, "upload_path"+cStr)
-			attachedFileDir := u.Ternary(uploadPath == "", models.UpLoadPath, filepath.Join(models.UpLoadPath, uploadPath)).(string)
-			a := models.Attachment{
+			uploadPath := m.GetRequestValue(r, "upload_path"+cStr)
+			attachedFileDir := u.Ternary(uploadPath == "", m.UpLoadPath, filepath.Join(m.UpLoadPath, uploadPath))
+			a := m.Attachment{
 				Name:         aName,
 				Description:  aDesc,
 				AttachedFile: filepath.Join(attachedFileDir, handler.Filename),
@@ -390,7 +390,7 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 			mimetype = strings.ReplaceAll(mimetype, "[", "")
 			mimetype = strings.ReplaceAll(mimetype, "]", "")
 			a.Mimetype = mimetype
-			_p, _ := strconv.Atoi(u.GetRequestValue(r, "permission", "1"))
+			_p, _ := strconv.Atoi(m.GetRequestValue(r, "permission", "1"))
 			a.Permission = int8(_p)
 			a.Save()
 			aList = append(aList, &a)
@@ -421,20 +421,20 @@ func DoUpload(w http.ResponseWriter, r *http.Request) {
 		</body></html>`
 		t := template.Must(template.New("a").Parse(tmplStr))
 		t.Execute(w, map[string]interface{}{
-			"settings":    models.Settings,
+			"settings":    m.Settings,
 			"attachments": aList,
 		})
 		return
 	}
 }
 
-func GetCurrentNote(w http.ResponseWriter, r *http.Request) *models.Note {
-	noteIDStr := u.GetRequestValue(r, "note_id", "")
+func GetCurrentNote(w http.ResponseWriter, r *http.Request) *m.Note {
+	noteIDStr := m.GetRequestValue(r, "note_id", "")
 	if noteIDStr != "" {
 		user := GetCurrentUser(&w, r)
 		noteID, _ := strconv.ParseInt(noteIDStr, 10, 64)
-		n := models.GetNoteByID(noteID)
-		if models.CheckPerm(n.Object, user.ID, "r") {
+		n := m.GetNoteByID(noteID)
+		if m.CheckPerm(n.Object, user.ID, "r") {
 			return n
 		}
 	}
@@ -442,10 +442,10 @@ func GetCurrentNote(w http.ResponseWriter, r *http.Request) *models.Note {
 }
 
 func DoListAttachment(w http.ResponseWriter, r *http.Request) {
-	kw := u.GetRequestValue(r, "keyword", "")
+	kw := m.GetRequestValue(r, "keyword", "")
 	aNote := GetCurrentNote(w, r)
 	user := GetCurrentUser(&w, r)
-	aList := models.SearchAttachment(kw, user)
+	aList := m.SearchAttachment(kw, user)
 	data := map[string]interface{}{
 		"title":       "Webnote - List attachements",
 		"page":        "list_attachement",
@@ -459,36 +459,36 @@ func DoListAttachment(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoDeleteAttachment(w http.ResponseWriter, r *http.Request) {
-	aIDStr := u.GetRequestValue(r, "id", "")
+	aIDStr := m.GetRequestValue(r, "id", "")
 	if aIDStr == "" {
 		return
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
 	user := GetCurrentUser(&w, r)
-	a := models.GetAttachementByID(aID)
+	a := m.GetAttachementByID(aID)
 	if e := a.DeleteAttachment(user); e != nil {
 		msg := fmt.Sprintf("ERROR Can not delete attachment - %v", e)
 		http.Error(w, msg, http.StatusOK)
 		return
 	}
-	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
+	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
 	if is_ajax == "1" {
 		fmt.Fprintf(w, "Deleted attachement ID %d", aID)
 	}
 }
 
 func DoStreamfile(w http.ResponseWriter, r *http.Request) {
-	aIDStr := u.GetRequestValue(r, "id", "")
+	aIDStr := m.GetRequestValue(r, "id", "")
 	if aIDStr == "" {
 		http.Error(w, "No aID provided", http.StatusBadRequest)
 		return
 	}
 	aID, _ := strconv.ParseInt(aIDStr, 10, 64)
-	a := models.GetAttachementByID(aID)
+	a := m.GetAttachementByID(aID)
 	user := GetCurrentUser(&w, r)
 
 	if a.Permission < 5 {
-		isAuth := models.GetSessionVal(r, "authenticated", nil)
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
 			mlog.Error(fmt.Errorf("no session"))
 			from_uri := r.URL.RequestURI()
@@ -496,7 +496,7 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/login?from_uri="+from_uri, http.StatusTemporaryRedirect)
 			return
 		}
-		if !models.CheckPerm(a.Object, user.ID, "r") {
+		if !m.CheckPerm(a.Object, user.ID, "r") {
 			mlog.Error(fmt.Errorf("no permission user %s - attachment name: %s", user, a.Name))
 			fmt.Fprintf(w, "Permission denied")
 			return
@@ -511,7 +511,7 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 	}
 	// stream straight to client(browser)
 	w.Header().Set("Content-type", a.Mimetype)
-	action := u.GetRequestValue(r, "action", "")
+	action := m.GetRequestValue(r, "action", "")
 
 	if action == "download" {
 		w.Header().Set("Content-Disposition", "attachment; filename="+path.Base(a.AttachedFile))
@@ -523,10 +523,10 @@ func DoStreamfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoAttachmentToNote(w http.ResponseWriter, r *http.Request) {
-	action := u.GetRequestValue(r, "action", "")
+	action := m.GetRequestValue(r, "action", "")
 	user := GetCurrentUser(&w, r)
 	n := GetCurrentNote(w, r)
-	attachmentIDStr := u.GetRequestValue(r, "attachment_id", "")
+	attachmentIDStr := m.GetRequestValue(r, "attachment_id", "")
 	if attachmentIDStr == "" {
 		return
 	}
@@ -551,7 +551,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		allGroups := []string{}
-		for _, gn := range models.GetAllGroups() {
+		for _, gn := range m.GetAllGroups() {
 			allGroups = append(allGroups, gn.Name)
 		}
 		CommonRenderTemplate("edituser.html", &w, r, &map[string]interface{}{
@@ -560,26 +560,26 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			"allgroups": strings.Join(allGroups, ","),
 		})
 	case "POST":
-		action := u.GetRequestValue(r, "submit", "")
+		action := m.GetRequestValue(r, "submit", "")
 		cUser := GetCurrentUser(&w, r)
-		userEmail := u.GetRequestValue(r, "email", "")
-		password := u.GetRequestValue(r, "cur_password")
-		newPassword := u.GetRequestValue(r, "password")
+		userEmail := m.GetRequestValue(r, "email", "")
+		password := m.GetRequestValue(r, "cur_password")
+		newPassword := m.GetRequestValue(r, "password")
 		userData := map[string]interface{}{
-			"FirstName":   u.GetRequestValue(r, "f_name", ""),
-			"LastName":    u.GetRequestValue(r, "l_name", ""),
-			"Email":       u.GetRequestValue(r, "email"),
-			"HomePhone":   u.GetRequestValue(r, "h_phone"),
-			"WorkPhone":   u.GetRequestValue(r, "w_phone"),
-			"MobilePhone": u.GetRequestValue(r, "m_phone"),
-			"ExtraInfo":   u.GetRequestValue(r, "extra_info"),
-			"Address":     u.GetRequestValue(r, "address"),
+			"FirstName":   m.GetRequestValue(r, "f_name", ""),
+			"LastName":    m.GetRequestValue(r, "l_name", ""),
+			"Email":       m.GetRequestValue(r, "email"),
+			"HomePhone":   m.GetRequestValue(r, "h_phone"),
+			"WorkPhone":   m.GetRequestValue(r, "w_phone"),
+			"MobilePhone": m.GetRequestValue(r, "m_phone"),
+			"ExtraInfo":   m.GetRequestValue(r, "extra_info"),
+			"Address":     m.GetRequestValue(r, "address"),
 			"Password":    newPassword,
-			"GroupNames":  u.GetRequestValue(r, "group_names", "default"),
+			"GroupNames":  m.GetRequestValue(r, "group_names", "default"),
 		}
 		if cUser.Email != userEmail {
 			//We are updating other user, not current user. We need to be admin to do so
-			if cUser.Email != models.Settings.ADMIN_EMAIL {
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
 				mlog.Error(fmt.Errorf("permission denied. Only admin has right to update other user"))
 				fmt.Fprintf(w, "Permission denied")
 				return
@@ -593,23 +593,23 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 		}
 		switch action {
 		case "Add/Edit User":
-			user := models.UserNew(userData)
+			user := m.UserNew(userData)
 			fmt.Fprintf(w, "OK user detail updated for %s. You need to generate TOP QR code using previous form", user.Email)
 		case "Generate new OTP QR image":
-			user := models.GetUser(userEmail)
-			pngImageBuff := models.SetUserOTP(user.Email)
+			user := m.GetUser(userEmail)
+			pngImageBuff := m.SetUserOTP(user.Email)
 			w.Write(pngImageBuff.Bytes())
 			return
 		case "Add Groups":
-			if cUser.Email != models.Settings.ADMIN_EMAIL {
+			if cUser.Email != m.Settings.ADMIN_EMAIL {
 				mlog.Error(fmt.Errorf("permission denied. Only admin has right to add more groups"))
 				fmt.Fprintf(w, "Permission denied")
 				return
 			} else {
-				groups := strings.Split(u.GetRequestValue(r, "new_group_names"), `,`)
+				groups := strings.Split(m.GetRequestValue(r, "new_group_names"), `,`)
 				for _, gn := range groups {
 					gn = strings.TrimSpace(gn)
-					newGroup := models.Group{
+					newGroup := m.Group{
 						Name: gn,
 					}
 					newGroup.Save()
@@ -618,7 +618,7 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		case "Unlock Account":
-			user := models.UserNew(userData)
+			user := m.UserNew(userData)
 			user.AttemptCount = 1
 			user.Save()
 			fmt.Fprintf(w, "Account %s is unlocked", user.Email)
@@ -629,12 +629,12 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 
 func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 	user := GetCurrentUser(&w, r)
-	if user.Email != models.Settings.ADMIN_EMAIL {
+	if user.Email != m.Settings.ADMIN_EMAIL {
 		fmt.Fprint(w, "Permission denied")
 		return
 	}
-	kw := u.GetRequestValue(r, "kw", "")
-	foundUsers := models.SearchUser(kw)
+	kw := m.GetRequestValue(r, "kw", "")
+	foundUsers := m.SearchUser(kw)
 	if len(foundUsers) == 0 {
 		fmt.Fprint(w, "No user found")
 		return
@@ -649,9 +649,9 @@ func DoSearchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
-	_aID := u.GetRequestValue(r, "id")
+	_aID := m.GetRequestValue(r, "id")
 	aID, _ := strconv.ParseInt(_aID, 10, 64)
-	a := models.GetAttachementByID(aID)
+	a := m.GetAttachementByID(aID)
 	switch r.Method {
 	case "GET":
 		CommonRenderTemplate("editattachment.html", &w, r, &map[string]interface{}{
@@ -661,13 +661,13 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 		})
 	case "POST":
 		user := GetCurrentUser(&w, r)
-		if models.CheckPerm(a.Object, user.ID, "w") {
-			action := u.GetRequestValue(r, "submit")
-			a.Name = u.GetRequestValue(r, "a_name")
-			a.Description = u.GetRequestValue(r, "a_desc")
-			_perm, _ := strconv.Atoi(u.GetRequestValue(r, "permission"))
+		if m.CheckPerm(a.Object, user.ID, "w") {
+			action := m.GetRequestValue(r, "submit")
+			a.Name = m.GetRequestValue(r, "a_name")
+			a.Description = m.GetRequestValue(r, "a_desc")
+			_perm, _ := strconv.Atoi(m.GetRequestValue(r, "permission"))
 			a.Permission = int8(_perm)
-			g := models.GetGroup(u.GetRequestValue(r, "ngroup"))
+			g := m.GetGroup(m.GetRequestValue(r, "ngroup"))
 			a.GroupID = g.ID
 
 			switch action {
@@ -683,7 +683,7 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "OK Attachment encrypted with key: '%s'", key)
 				return
 			case "Decrypt with zip":
-				key := u.GetRequestValue(r, "zipkey", "")
+				key := m.GetRequestValue(r, "zipkey", "")
 				if e := u.ZipDecrypt(a.AttachedFile, key); e == nil {
 					os.Remove(a.AttachedFile)
 					a.AttachedFile = strings.TrimSuffix(a.AttachedFile, ".zip")
@@ -703,16 +703,16 @@ func DoEditAttachment(w http.ResponseWriter, r *http.Request) {
 
 func DoAutoScanAttachment(w http.ResponseWriter, r *http.Request) {
 	u := GetCurrentUser(&w, r)
-	if u.Email != models.Settings.ADMIN_EMAIL {
+	if u.Email != m.Settings.ADMIN_EMAIL {
 		http.Error(w, "Permission denied", http.StatusForbidden)
 		return
 	}
-	o := models.ScanAttachment("uploads/", u)
+	o := m.ScanAttachment("uploads/", u)
 	fmt.Fprintf(w, "Add / Update list: %v", o)
 }
 
 func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
-	sql := u.GetRequestValue(r, "sql")
+	sql := m.GetRequestValue(r, "sql")
 	ptn := regexp.MustCompile(`^[\s]*(UPDATE|update|DELETE|delete) `)
 	if !ptn.MatchString(sql) {
 		fmt.Fprintf(w, "Invalid sql provided")
@@ -727,7 +727,7 @@ func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
 	user := GetCurrentUser(&w, r)
 	sql = fmt.Sprintf("%s AND author_id = %d", sql, user.ID)
 	mlog.Info("going to run sql: %s\n", sql)
-	DB := models.GetDB("")
+	DB := m.GetDB("")
 	defer DB.Close()
 	tx, err := DB.Begin()
 	if err != nil {
@@ -753,26 +753,26 @@ func OnSelectedRunSql(w http.ResponseWriter, r *http.Request) {
 // and then make a decision to pull or not. Then it will send to get full notes by ids
 // Search notes but only return a list of note titles and ids. Search based on time range, and/or some other condition
 func DoGetNoteTitles(w http.ResponseWriter, r *http.Request) {
-	duration := u.GetRequestValue(r, "duration", "")
-	tzString := u.GetRequestValue(r, "tz", "Australia/Brisbane")
+	duration := m.GetRequestValue(r, "duration", "")
+	tzString := m.GetRequestValue(r, "tz", "Australia/Brisbane")
 	starttime, endtime := u.ParseTimeRange(duration, tzString)
 	sqlwhere := fmt.Sprintf("datelog >= %d AND datelog <= %d", starttime.UnixNano(), endtime.UnixNano())
 	user := GetCurrentUser(&w, r)
-	notes := models.Query(sqlwhere, user, true)
+	notes := m.Query(sqlwhere, user, true)
 	fmt.Fprint(w, u.JsonDump(notes, ""))
 }
 
 func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
-	listIdStr := u.GetRequestValue(r, "ids", "") // should get example (1,4,5,6)
+	listIdStr := m.GetRequestValue(r, "ids", "") // should get example (1,4,5,6)
 	sqlwhere := "id in " + listIdStr
 	user := GetCurrentUser(&w, r)
-	notes := models.Query(sqlwhere, user, false)
+	notes := m.Query(sqlwhere, user, false)
 	fmt.Fprint(w, u.JsonDump(notes, ""))
 }
 
 func HandleRequests() {
 	router := http.NewServeMux()
-	base_url := models.GetConfig("base_url", "")
+	base_url := m.GetConfig("base_url", "")
 	_u, _e := url.Parse(base_url)
 	if _e != nil {
 		panic(_e)
@@ -951,7 +951,7 @@ func main() {
 	}
 
 	flag.Parse()
-	models.UpLoadPath = *rootUploadDir
+	m.UpLoadPath = *rootUploadDir
 
 	if *getVersion {
 		fmt.Println(version)
@@ -978,10 +978,10 @@ func main() {
 	}
 	if *setup {
 		mlog.Info("SETUP is called and started\n")
-		models.SetupAppDatabase()
-		models.SetupDefaultConfig()
-		models.CreateAdminUser()
-		models.CreatePublicReadUser()
+		m.SetupAppDatabase()
+		m.SetupDefaultConfig()
+		m.CreateAdminUser()
+		m.CreatePublicReadUser()
 		if _, err := os.Stat(*sslKey); os.IsNotExist(err) {
 			keyFileName := u.FileNameWithoutExtension(*sslKey)
 			u.GenSelfSignedKey(keyFileName)
@@ -989,11 +989,11 @@ func main() {
 		}
 	}
 
-	SSLKey = models.GetConfigSave("ssl_key", *sslKey)
-	SSLCert = models.GetConfigSave("ssl_cert", *sslCert)
-	models.GetConfigSave("base_url", *base_url)
+	SSLKey = m.GetConfigSave("ssl_key", *sslKey)
+	SSLCert = m.GetConfigSave("ssl_cert", *sslCert)
+	m.GetConfigSave("base_url", *base_url)
 
-	models.InitConfig()
+	m.InitConfig()
 
 	if *cmd != "" {
 		//Run command utils
@@ -1006,57 +1006,57 @@ func main() {
 			add_user - take more opt username, password, group
 			scan_attachment - take option attachmentdir or leave it empty to use the default 'uploads' folder`)
 		case "set_admin_password":
-			models.SetAdminPassword()
+			m.SetAdminPassword()
 		case "set_admin_otp":
-			models.SetAdminOTP()
+			m.SetAdminOTP()
 		case "set_admin_email":
-			models.SetAdminEmail("")
+			m.SetAdminEmail("")
 		case "add_user":
-			models.AddUser(map[string]interface{}{
+			m.AddUser(map[string]interface{}{
 				"username": *useremail,
 				"password": *userpassword,
 				"group":    *usergroup,
 			})
 		case "scan_attachment":
-			aDir := u.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir).(string)
-			u := models.GetUser(models.Settings.ADMIN_EMAIL)
-			models.ScanAttachment(aDir, u)
+			aDir := u.Ternary(AttachmentDir == nil, "uploads", *AttachmentDir)
+			u := m.GetUser(m.Settings.ADMIN_EMAIL)
+			m.ScanAttachment(aDir, u)
 		}
 	} else { //Server mode
 		if *sessionKey == "" {
-			*sessionKey = models.GetConfig("session-key", "")
+			*sessionKey = m.GetConfig("session-key", "")
 			if *sessionKey == "" {
 				*sessionKey = u.MakePassword(64)
-				models.SetConfig("session-key", *sessionKey)
+				m.SetConfig("session-key", *sessionKey)
 			}
 		}
-		models.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
-		sessionMaxAgeStr := models.GetConfigSave("session_max_age_hour", "8")
+		m.SessionStore = sessions.NewCookieStore([]byte(*sessionKey))
+		sessionMaxAgeStr := m.GetConfigSave("session_max_age_hour", "8")
 		sessionMaxAge, err := strconv.Atoi(sessionMaxAgeStr)
 		u.CheckErr(err, "Can not parse session_max_age_hour")
-		models.SessionStore.Options = &sessions.Options{
+		m.SessionStore.Options = &sessions.Options{
 			Path:     "/",
 			MaxAge:   3600 * sessionMaxAge,
 			HttpOnly: true,
 		}
 		// log.Println(*sessionKey)
-		models.LoadAllTemplates()
+		m.LoadAllTemplates()
 		HandleRequests()
 	}
 }
 
 func DoLogin(w http.ResponseWriter, r *http.Request) {
-	trycount := models.GetSessionVal(r, "trycount", 0).(int)
-	_userIP := models.ReadUserIP(r)
+	trycount := m.GetSessionVal(r, "trycount", 0).(int)
+	_userIP := m.ReadUserIP(r)
 	portPtn := regexp.MustCompile(`\:[\d]+$`)
 	userIP := portPtn.ReplaceAllString(_userIP, "")
-	ses, _ := models.SessionStore.Get(r, "auth-session")
+	ses, _ := m.SessionStore.Get(r, "auth-session")
 
-	currentBlackList := models.GetConfig("blacklist_ips", "")
+	currentBlackList := m.GetConfig("blacklist_ips", "")
 
 	if trycount >= 30 {
 		currentBlackList = currentBlackList + "," + userIP
-		models.SetConfig("blacklist_ips", currentBlackList)
+		m.SetConfig("blacklist_ips", currentBlackList)
 	}
 	if strings.Contains(currentBlackList, userIP) {
 		ses.Values = make(map[interface{}]interface{}, 1) //Empty session values
@@ -1068,9 +1068,9 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	trycount = trycount + 1
-	models.SaveSessionVal(r, &w, "trycount", trycount)
+	m.SaveSessionVal(r, &w, "trycount", trycount)
 
-	isAuthenticated := models.GetSessionVal(r, "authenticated", nil)
+	isAuthenticated := m.GetSessionVal(r, "authenticated", nil)
 
 	switch r.Method {
 	case "GET":
@@ -1085,11 +1085,11 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 				"client_ip":      userIP,
 				"from_uri":       from_uri,
 			}
-			if err := models.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
+			if err := m.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
-			from_uri := u.GetRequestValue(r, "from_uri", "")
+			from_uri := m.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 		}
@@ -1098,12 +1098,12 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		useremail := r.FormValue("username")
 		password := r.FormValue("password")
 
-		var user *models.User
+		var user *m.User
 
 		totop := r.FormValue("totp_number")
 		mlog.Info("user input totp %s\n", totop)
-		user, err := models.VerifyLogin(useremail, password, totop, userIP)
-		ses, _ := models.SessionStore.Get(r, "auth-session")
+		user, err := m.VerifyLogin(useremail, password, totop, userIP)
+		ses, _ := m.SessionStore.Get(r, "auth-session")
 		if user != nil {
 			if strings.Contains(user.ExtraInfo, " First Time Login ") {
 				ses.Values["first_time_login"] = "yes"
@@ -1117,7 +1117,7 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			ses.Values["trycount"] = 0
 			ses.Values["useremail"] = useremail
 			ses.Save(r, w)
-			from_uri := u.GetRequestValue(r, "from_uri", "")
+			from_uri := m.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 			return
@@ -1142,7 +1142,7 @@ func isAuthorized(next http.Handler) http.Handler {
 				return
 			}
 		}
-		isAuth := models.GetSessionVal(r, "authenticated", nil)
+		isAuth := m.GetSessionVal(r, "authenticated", nil)
 		if isAuth == nil || !isAuth.(bool) {
 			mlog.Error(fmt.Errorf("no session"))
 			uri := r.RequestURI
@@ -1158,9 +1158,9 @@ func isAuthorized(next http.Handler) http.Handler {
 
 func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Request, mapData *map[string]interface{}) {
 	user := GetCurrentUser(w, r)
-	keyword := u.GetRequestValue(r, "keyword", "")
+	keyword := m.GetRequestValue(r, "keyword", "")
 
-	var uGroups []*models.Group
+	var uGroups []*m.Group
 	var commonMapData map[string]interface{}
 
 	if user != nil {
@@ -1168,25 +1168,25 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 		commonMapData = map[string]interface{}{
 			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
-			"settings":        models.Settings,
+			"settings":        m.Settings,
 			"user":            user,
 			"groups":          uGroups,
-			"permission_list": models.PermissionList,
-			"date_layout":     models.DateLayout,
+			"permission_list": m.PermissionList,
+			"date_layout":     m.DateLayout,
 		}
 	} else {
 		commonMapData = map[string]interface{}{
 			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
-			"settings":        models.Settings,
-			"permission_list": models.PermissionList,
-			"date_layout":     models.DateLayout,
+			"settings":        m.Settings,
+			"permission_list": m.PermissionList,
+			"date_layout":     m.DateLayout,
 		}
 	}
 	for _k, _v := range *mapData {
 		commonMapData[_k] = _v
 	}
-	if err := models.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
+	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}
 }

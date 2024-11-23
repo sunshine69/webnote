@@ -236,7 +236,7 @@ func (a *Attachment) DeleteAttachment(u *User) error {
 
 // ScanAttachment - Scan files in the uploads folder or some locations and create the attachment object if not yet existed.
 func ScanAttachment(dir string, user *User) []*Attachment {
-	dir = u.Ternary(dir == "", "uploads", dir).(string)
+	dir = u.Ternary(dir == "", "uploads", dir)
 	o := []*Attachment{}
 
 	err := filepath.Walk(dir,

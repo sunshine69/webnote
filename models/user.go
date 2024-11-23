@@ -173,18 +173,18 @@ func (n *User) Save() {
 			salt_length = $12
 			WHERE email = $13`
 		_, e := tx.Exec(sql,
-			u.Ternary(n.FirstName != currentUser.FirstName, n.FirstName, currentUser.FirstName).(string),
-			u.Ternary(n.LastName != currentUser.LastName, n.LastName, currentUser.LastName).(string),
-			u.Ternary(n.Address != currentUser.Address, n.Address, currentUser.Address).(string),
-			u.Ternary(n.HomePhone != currentUser.HomePhone, n.HomePhone, currentUser.HomePhone).(string),
-			u.Ternary(n.WorkPhone != currentUser.WorkPhone, n.WorkPhone, currentUser.WorkPhone).(string),
-			u.Ternary(n.MobilePhone != currentUser.MobilePhone, n.MobilePhone, currentUser.MobilePhone).(string),
-			u.Ternary(n.ExtraInfo != currentUser.ExtraInfo, n.ExtraInfo, currentUser.ExtraInfo).(string),
-			u.Ternary(n.LastAttempt != currentUser.LastAttempt, n.LastAttempt, currentUser.LastAttempt).(int64),
-			u.Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount).(int8),
-			u.Ternary(n.LastLogin != currentUser.LastLogin, n.LastLogin, currentUser.LastLogin).(int64),
-			u.Ternary(n.PrefID != currentUser.PrefID, n.PrefID, currentUser.PrefID).(int8),
-			u.Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength).(int8),
+			u.Ternary(n.FirstName != currentUser.FirstName, n.FirstName, currentUser.FirstName),
+			u.Ternary(n.LastName != currentUser.LastName, n.LastName, currentUser.LastName),
+			u.Ternary(n.Address != currentUser.Address, n.Address, currentUser.Address),
+			u.Ternary(n.HomePhone != currentUser.HomePhone, n.HomePhone, currentUser.HomePhone),
+			u.Ternary(n.WorkPhone != currentUser.WorkPhone, n.WorkPhone, currentUser.WorkPhone),
+			u.Ternary(n.MobilePhone != currentUser.MobilePhone, n.MobilePhone, currentUser.MobilePhone),
+			u.Ternary(n.ExtraInfo != currentUser.ExtraInfo, n.ExtraInfo, currentUser.ExtraInfo),
+			u.Ternary(n.LastAttempt != currentUser.LastAttempt, n.LastAttempt, currentUser.LastAttempt),
+			u.Ternary(n.AttemptCount == 1, n.AttemptCount, currentUser.AttemptCount),
+			u.Ternary(n.LastLogin != currentUser.LastLogin, n.LastLogin, currentUser.LastLogin),
+			u.Ternary(n.PrefID != currentUser.PrefID, n.PrefID, currentUser.PrefID),
+			u.Ternary(n.SaltLength != 0, n.SaltLength, currentUser.SaltLength),
 			n.Email)
 		if e != nil {
 			tx.Rollback()

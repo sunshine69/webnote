@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/gorilla/sessions"
 	"github.com/jbrodriguez/mlog"
@@ -16,9 +15,9 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	u "github.com/sunshine69/golang-tools/utils"
 	"github.com/yuin/goldmark"
-    "github.com/yuin/goldmark/extension"
-    "github.com/yuin/goldmark/parser"
-    "github.com/yuin/goldmark/renderer/html"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 var markdown goldmark.Markdown
@@ -476,61 +475,16 @@ var AllTemplates *template.Template
 
 func LoadAllTemplates() {
 	//Template custom functions
-	_TemplateFuncMap := template.FuncMap{
-		// The name "inc" is what the function will be called in the template text.
-		"inc": func(i int) int {
-			return i + 1
-		},
-		"add": func(x, y int) int {
-			return x + y
-		},
-		"time_fmt": func(timelayout string, timeticks int64) string {
-			return u.NsToTime(timeticks).Format(timelayout)
-		},
-		"raw_html": func(html string) template.HTML {
-			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes([]byte(html))
-			return template.HTML(cleanupBytes)
-		},
-		"unsafe_raw_html": func(html string) template.HTML {
-			return template.HTML(html)
-		},
-		"if_ie": func() template.HTML {
-			return template.HTML("<!--[if IE]>")
-		},
-		"end_if_ie": func() template.HTML {
-			return template.HTML("<![endif]-->")
-		},
-		"truncatechars": func(length int, in string) template.HTML {
-			return template.HTML(u.ChunkString(in, length)[0])
-		},
-		"cycle": func(idx int, vals ...string) template.HTML {
-			_idx := idx % len(vals)
-			return template.HTML(vals[_idx])
-		},
-		"md2html": func(md string) template.HTML {
-			var buf bytes.Buffer
-			if err := markdown.Convert([]byte(md), &buf); err != nil {
-				panic(err)
-			}
-			cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
-			return template.HTML(cleanupBytes)
-		},
-		"replace": func(old, new, data string) template.HTML {
-			o := strings.ReplaceAll(data, old, new)
-			return template.HTML(o)
-		},
-		"contains": func(subStr, data string) bool {
-			return strings.Contains(data, subStr)
-		},
-		"int_range": func(start, end int) []int {
-			n := end - start
-			result := make([]int, n)
-			for i := 0; i < n; i++ {
-				result[i] = start + i
-			}
-			return result
-		},
+	_TemplateFuncMap := u.GoTemplateFuncMap
+	_TemplateFuncMap["md2html"] = func(md string) template.HTML {
+		var buf bytes.Buffer
+		if err := markdown.Convert([]byte(md), &buf); err != nil {
+			panic(err)
+		}
+		cleanupBytes := bluemonday.UGCPolicy().SanitizeBytes(buf.Bytes())
+		return template.HTML(cleanupBytes)
 	}
+
 	TemplateFuncMap = &_TemplateFuncMap
 	t, err := template.New("templ").Funcs(*TemplateFuncMap).ParseGlob("assets/templates/*.html")
 	if err != nil {

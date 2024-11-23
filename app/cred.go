@@ -21,7 +21,7 @@ func init() {
 // This is a simple onepage app to store/search credentials (password management)
 // This is per webnote user and each user has no view of other user credential
 func DoCredApp(w http.ResponseWriter, r *http.Request) {
-	action := u.GetRequestValue(r, "action", "")
+	action := m.GetRequestValue(r, "action", "")
 	switch action {
 	case "cred_add":
 		DoCredAdd(&w, r)
@@ -47,11 +47,11 @@ func DoCredUpdateQrlink(w *http.ResponseWriter, r *http.Request) {
 }
 
 func DoCredAdd(w *http.ResponseWriter, r *http.Request) {
-	cred_url := u.GetRequestValue(r, "cred_url", "")
-	cred_username := u.GetRequestValue(r, "cred_username", "")
-	cred_password := u.GetRequestValue(r, "cred_password", "")
-	cred_note := u.GetRequestValue(r, "cred_note", "")
-	qrlink := u.GetRequestValue(r, "qrlink", "")
+	cred_url := m.GetRequestValue(r, "cred_url", "")
+	cred_username := m.GetRequestValue(r, "cred_username", "")
+	cred_password := m.GetRequestValue(r, "cred_password", "")
+	cred_note := m.GetRequestValue(r, "cred_note", "")
+	qrlink := m.GetRequestValue(r, "qrlink", "")
 
 	u := UrlNew(cred_url)
 
@@ -75,7 +75,7 @@ func DoCredDelete(w *http.ResponseWriter, r *http.Request) {
 	msg := "OK deleted"
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	user := m.GetUser(useremail)
-	idStr := u.GetRequestValue(r, "id", "-1")
+	idStr := m.GetRequestValue(r, "id", "-1")
 	id, _ := strconv.ParseInt(idStr, 10, 64)
 	if id != -1 {
 		if uc := GetUrlCredByID(id); uc != nil {
@@ -95,7 +95,7 @@ func DoCredDelete(w *http.ResponseWriter, r *http.Request) {
 func DoCredSearch(w *http.ResponseWriter, r *http.Request) {
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	user := m.GetUser(useremail)
-	kw := u.GetRequestValue(r, "kw", "")
+	kw := m.GetRequestValue(r, "kw", "")
 	ucs := SearchCredentials(kw, user.ID)
 	commonMapData := map[string]interface{}{
 		"user":                user,

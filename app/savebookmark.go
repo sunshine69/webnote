@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/jbrodriguez/mlog"
-	u "github.com/sunshine69/golang-tools/utils"
 	m "github.com/sunshine69/webnote-go/models"
 )
 
@@ -16,9 +15,9 @@ import (
 
 func SaveBookMark(w http.ResponseWriter, r *http.Request) {
 	bmarkdNote := m.GetNote("Bookmarks")
-	myurl := u.GetRequestValue(r, "url", "")
-	mytitle := u.GetRequestValue(r, "title", "")
-	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
+	myurl := m.GetRequestValue(r, "url", "")
+	mytitle := m.GetRequestValue(r, "title", "")
+	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
 	mlog.Info("[DEBUG] myurl: '%s'\n", myurl)
 	if myurl != "" {
 		//The marker text is the pattern
@@ -40,9 +39,9 @@ func SaveBookMark(w http.ResponseWriter, r *http.Request) {
 
 func DeleteBookMark(w http.ResponseWriter, r *http.Request) {
 	bmarkdNote := m.GetNote("Bookmarks")
-	myurl := u.GetRequestValue(r, "url", "")
+	myurl := m.GetRequestValue(r, "url", "")
 	fmt.Println(myurl)
-	is_ajax := u.GetRequestValue(r, "is_ajax", "0")
+	is_ajax := m.GetRequestValue(r, "is_ajax", "0")
 	if myurl != "" {
 		lineToRemovePtn := regexp.MustCompile(fmt.Sprintf(`\<li\>.*%s.*remove\<\/a\>`, regexp.QuoteMeta(myurl)))
 		newText := lineToRemovePtn.ReplaceAllString(bmarkdNote.Content, "")

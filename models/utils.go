@@ -131,3 +131,14 @@ func ReadUserIP(r *http.Request) string {
 	}
 	return IPAddress
 }
+
+func GetRequestValue(r *http.Request, key ...string) (value string) {
+	value = r.FormValue(key[0])
+	if value == "" {
+		value = r.PathValue(key[0])
+	}
+	if value == "" && len(key) > 1 {
+		value = key[1]
+	}
+	return
+}
