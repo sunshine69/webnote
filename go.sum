@@ -66,6 +66,8 @@ github.com/sunshine69/golang-tools/utils v0.0.0-20241123123008-ff646de24fe7 h1:F
 github.com/sunshine69/golang-tools/utils v0.0.0-20241123123008-ff646de24fe7/go.mod h1:YzjwsPyXeFPUq22EkTjAE8DokVlwMoL009ZoGhk4TRU=
 github.com/sunshine69/golang-tools/utils v0.0.0-20241124050611-f66077d11941 h1:L5qymjb7eHtUt7aSU1sMjc3St2zctxqtw98dAneaFKo=
 github.com/sunshine69/golang-tools/utils v0.0.0-20241124050611-f66077d11941/go.mod h1:YzjwsPyXeFPUq22EkTjAE8DokVlwMoL009ZoGhk4TRU=
+github.com/sunshine69/golang-tools/utils v0.0.0-20241203123109-854f255f2cd8 h1:xgn5FsNrKGPrau/7cOHDzkIURn3aNDsih3hiA1k98EQ=
+github.com/sunshine69/golang-tools/utils v0.0.0-20241203123109-854f255f2cd8/go.mod h1:YzjwsPyXeFPUq22EkTjAE8DokVlwMoL009ZoGhk4TRU=
 github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQitcs=
 github.com/sunshine69/kodirpc v0.0.2/go.mod h1:uqh8S9JHoYzbLfqTQ6pIaGSq+Xyt8u926Tu5L3W9uZs=
 github.com/yuin/goldmark v1.7.4 h1:BDXOHExt+A7gwPCJgPIIq7ENvceR7we7rOS9TNoLZeg=

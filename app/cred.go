@@ -267,13 +267,13 @@ func GetUrlCred(cred_id, url_id int64) *UrlCred {
 }
 
 func UrlCredNew(in map[string]interface{}) *UrlCred {
-	Cred_id := u.GetMapByKey(in, "cred_id", int64(-1)).(int64)
-	Url_id := u.GetMapByKey(in, "url_id", int64(-1)).(int64)
+	Cred_id := u.MapLookup(in, "cred_id", -1).(int64)
+	Url_id := u.MapLookup(in, "url_id", -1).(int64)
 
 	uc := GetUrlCred(Cred_id, Url_id)
-	uc.Note = u.GetMapByKey(in, "cred_note", "").(string)
+	uc.Note = u.MapLookup(in, "cred_note", "").(string)
 	uc.Datelog = time.Now().UnixNano()
-	uc.Qrlink = u.GetMapByKey(in, "qrlink", "").(string)
+	uc.Qrlink = u.MapLookup(in, "qrlink", "").(string)
 	uc.Save()
 	uc.Update()
 	return uc
@@ -443,9 +443,9 @@ func GetCredentialByID(id int64) *Credential {
 }
 
 func CredentialNew(in map[string]interface{}) *Credential {
-	userID := u.GetMapByKey(in, "user_id", int64(0)).(int64)
-	username := u.GetMapByKey(in, "cred_username", "").(string)
-	password := u.GetMapByKey(in, "cred_password", "").(string)
+	userID := u.MapLookup(in, "user_id", 0).(int64)
+	username := u.MapLookup(in, "cred_username", "").(string)
+	password := u.MapLookup(in, "cred_password", "").(string)
 	c := GetCredential(userID, username, password)
 	c.Save()
 	return c

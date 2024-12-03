@@ -37,9 +37,9 @@ func CheckUserIPInWhiteList(ip, whitelist string) bool {
 
 func AddUser(in map[string]interface{}) {
 	reader := bufio.NewReader(os.Stdin)
-	useremail := u.GetMapByKey(in, "Email", "").(string)
-	password := u.GetMapByKey(in, "Password", "").(string)
-	groupStr := u.GetMapByKey(in, "Group", "").(string)
+	useremail := u.MapLookup(in, "Email", "").(string)
+	password := u.MapLookup(in, "Password", "").(string)
+	groupStr := u.MapLookup(in, "Group", "").(string)
 
 	if useremail == "" {
 		fmt.Printf("\nEnter user email: ")

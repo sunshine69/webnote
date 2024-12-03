@@ -142,8 +142,8 @@ func (n *Note) GetNoteAttachments() {
 func NoteNew(in map[string]interface{}) *Note {
 	n := Note{}
 
-	ct := u.GetMapByKey(in, "content", "").(string)
-	titleText := u.GetMapByKey(in, "title", "").(string)
+	ct := u.MapLookup(in, "content", "").(string)
+	titleText := u.MapLookup(in, "title", "").(string)
 
 	if titleText == "" {
 		if ct != "" {
@@ -178,15 +178,15 @@ func NoteNew(in map[string]interface{}) *Note {
 	} else {
 		n.Timestamp = time.Now().UnixNano()
 	}
-	n.Flags = u.GetMapByKey(in, "flags", "").(string)
-	n.URL = u.GetMapByKey(in, "url", "").(string)
+	n.Flags = u.MapLookup(in, "flags", "").(string)
+	n.URL = u.MapLookup(in, "url", "").(string)
 
-	n.AuthorID = u.GetMapByKey(in, "author_id", int64(0)).(int64)
+	n.AuthorID = u.MapLookup(in, "author_id", 0).(int64)
 
-	n.GroupID = u.GetMapByKey(in, "group_id", int64(1)).(int64)
+	n.GroupID = u.MapLookup(in, "group_id", 1).(int64)
 
-	n.Permission = u.GetMapByKey(in, "permission", int8(1)).(int8)
-	n.RawEditor = u.GetMapByKey(in, "raw_editor", int8(0)).(int8)
+	n.Permission = u.MapLookup(in, "permission", 1).(int8)
+	n.RawEditor = u.MapLookup(in, "raw_editor", 0).(int8)
 
 	n.Update()
 	return &n
