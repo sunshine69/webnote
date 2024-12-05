@@ -14,10 +14,10 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.4.0
 	github.com/sergi/go-diff v1.3.1
-	github.com/sunshine69/golang-tools/utils v0.0.0-20241203123109-854f255f2cd8
+	github.com/sunshine69/golang-tools/utils v0.0.0-20241205062935-d2f35795c1b5
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/yuin/goldmark v1.7.4
-	golang.org/x/term v0.26.0
+	golang.org/x/term v0.27.0
 )
 
 require (
@@ -31,9 +31,9 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
-	golang.org/x/net v0.31.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/crypto v0.30.0 // indirect
+	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

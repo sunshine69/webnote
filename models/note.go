@@ -181,12 +181,12 @@ func NoteNew(in map[string]interface{}) *Note {
 	n.Flags = u.MapLookup(in, "flags", "").(string)
 	n.URL = u.MapLookup(in, "url", "").(string)
 
-	n.AuthorID = u.MapLookup(in, "author_id", 0).(int64)
+	n.AuthorID = u.MapLookup(in, "author_id", int64(0)).(int64)
 
-	n.GroupID = u.MapLookup(in, "group_id", 1).(int64)
+	n.GroupID = u.MapLookup(in, "group_id", int64(1)).(int64)
 
-	n.Permission = u.MapLookup(in, "permission", 1).(int8)
-	n.RawEditor = u.MapLookup(in, "raw_editor", 0).(int8)
+	n.Permission = u.MapLookup(in, "permission", int8(1)).(int8)
+	n.RawEditor = u.MapLookup(in, "raw_editor", int8(0)).(int8)
 
 	n.Update()
 	return &n
