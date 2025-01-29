@@ -817,20 +817,25 @@ func HandleRequests() {
 		})
 	}
 
-	staticFS := http.FileServer(http.Dir("./assets"))
-	router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
-
-	router.HandleFunc("/login", DoLogin)
-	router.HandleFunc("/", HomePage)
-
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
 		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
 	}
 
+	staticFS := http.FileServer(http.Dir("./assets"))
+	router.Handle("/assets/", http.StripPrefix("/assets/", staticFS))
+	// Handle static /Private. Two choices, we can use jwt or just use the same auth method.
+
+	privateRoutePath := "/Private/"
+	webRoot := "./Private"
+	router.Handle(privateRoutePath, http.StripPrefix(privateRoutePath, http.FileServer(http.Dir(webRoot))))
+
+	router.HandleFunc("/login", DoLogin)
+	router.HandleFunc("/", HomePage)
+
 	//All routes handlers
 	router.HandleFunc("/savenote", DoSaveNote)
 	router.HandleFunc("/search", DoSearchNote)
-	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func
+	//some note is universal viewable thus we dont put isAuthorized here but check perms at the handler func. Check the value of bypass_authorized_paths_pattern above
 	router.HandleFunc("/view", DoViewNote)
 	router.HandleFunc("/view_rev", DoViewRevNote)
 	router.HandleFunc("/view_diff", DoViewDiffNote)
