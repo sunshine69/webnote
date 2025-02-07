@@ -809,7 +809,7 @@ func HandleRequests() {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Use some kind of condition here to see if the router should use
 			// the CSRF protection. we'll check the path prefix.
-			if !strings.HasPrefix(r.URL.Path, "/nocsrf") {
+			if !strings.HasPrefix(r.URL.Path, "/nocsrf") && !strings.HasPrefix(r.URL.Path, "/ollama/") {
 				protectionFn(handler).ServeHTTP(w, r)
 				return
 			}
@@ -818,7 +818,7 @@ func HandleRequests() {
 	}
 
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
-		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
+		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf|ollama)`),
 	}
 
 	staticFS := http.FileServer(http.Dir("./assets"))
@@ -830,8 +830,8 @@ func HandleRequests() {
 	router.Handle(privateRoutePath, http.StripPrefix(privateRoutePath, http.FileServer(http.Dir(webRoot))))
 
 	router.HandleFunc("/login", DoLogin)
-	router.HandleFunc("/", HomePage)
 
+	router.HandleFunc("/", HomePage)
 	//All routes handlers
 	router.HandleFunc("/savenote", DoSaveNote)
 	router.HandleFunc("/search", DoSearchNote)
@@ -872,6 +872,9 @@ func HandleRequests() {
 	router.HandleFunc("/delbookmark", app.DeleteBookMark)
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber)
+	// ollama simple proxying
+	router.HandleFunc("/ollama/models", app.OllamaGetTags)
+	router.HandleFunc("/ollama/ask", app.OllamaAsk)
 	// Onetime secret share
 	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL)
 	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret)
