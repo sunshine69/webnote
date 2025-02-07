@@ -818,7 +818,7 @@ func HandleRequests() {
 	}
 
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
-		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf|ollama)`),
+		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
 	}
 
 	staticFS := http.FileServer(http.Dir("./assets"))
