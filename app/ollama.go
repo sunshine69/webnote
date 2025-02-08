@@ -50,3 +50,14 @@ func OllamaAsk(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("[DEBUG] Error writing response: " + err.Error())
 	}
 }
+
+func OllamaGetModel(w http.ResponseWriter, r *http.Request) {
+	modelName := r.PathValue("model_name")
+	model, err := lib.GetOllamaModel(modelName)
+	if err != nil {
+		http.Error(w, "Failed to call Ollama API", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(model)
+}

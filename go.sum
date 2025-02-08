@@ -64,6 +64,8 @@ github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQi
 github.com/sunshine69/kodirpc v0.0.2/go.mod h1:uqh8S9JHoYzbLfqTQ6pIaGSq+Xyt8u926Tu5L3W9uZs=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250207220953-310127932ccd h1:n265h4M9mAse6VY5UTTIQO2BBojaVfbZkUuWUVC2VKo=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250207220953-310127932ccd/go.mod h1:QKYpc0mz1KD76mYEd34bdrC6BCD2FmgY/xMZGMHA3HM=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704 h1:U78pifA6BESRTrU23dvgmKW4SPW+izl3C/ZStDE0xjs=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704/go.mod h1:QKYpc0mz1KD76mYEd34bdrC6BCD2FmgY/xMZGMHA3HM=
 github.com/yuin/goldmark v1.7.8 h1:iERMLn0/QJeHFhxSt3p6PeN9mGnvIKSpG9YYorDMnic=
 github.com/yuin/goldmark v1.7.8/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 golang.org/x/crypto v0.32.0 h1:euUpcYgM8WcP71gNpTqQCn6rC2t6ULUPiOzfWaXVVfc=
