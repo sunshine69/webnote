@@ -882,9 +882,9 @@ func HandleRequests() {
 	srv := &http.Server{
 		Addr: ":" + ServerPort,
 		// Good practice to set timeouts to avoid Slowloris attacks.
-		WriteTimeout: time.Second * 15000,
-		ReadTimeout:  time.Second * 15000,
-		IdleTimeout:  time.Second * 60,
+		// WriteTimeout: time.Second * 15000,
+		// ReadTimeout:  time.Second * 15000,
+		// IdleTimeout:  time.Second * 60,
 		//Handler: handlers.CompressHandler(router), // Pass our instance of gorilla/mux in.
 	}
 	if (*EnableCompression == "") && (os.Getenv("HTTP_ENABLE_COMPRESSION") == "true") {
