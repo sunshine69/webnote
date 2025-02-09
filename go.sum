@@ -9,6 +9,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
+github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=
+github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/gofuzz v1.2.0 h1:xRy4A+RhZaiKjJ1bPfwQ8sedCA+YS2YcCHW6ec7JMi0=
 github.com/google/gofuzz v1.2.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
@@ -66,6 +68,8 @@ github.com/sunshine69/ollama-ui-go v0.0.0-20250207220953-310127932ccd h1:n265h4M
 github.com/sunshine69/ollama-ui-go v0.0.0-20250207220953-310127932ccd/go.mod h1:QKYpc0mz1KD76mYEd34bdrC6BCD2FmgY/xMZGMHA3HM=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704 h1:U78pifA6BESRTrU23dvgmKW4SPW+izl3C/ZStDE0xjs=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704/go.mod h1:QKYpc0mz1KD76mYEd34bdrC6BCD2FmgY/xMZGMHA3HM=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a h1:t3kyH5JANlOuu4SpwcPaNFxHuMGkP1zWvb6FL1OnxPM=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a/go.mod h1:EAfrcCHkP6EDFLfS+/spydKS/IntP1niHEFEky6Zigs=
 github.com/yuin/goldmark v1.7.8 h1:iERMLn0/QJeHFhxSt3p6PeN9mGnvIKSpG9YYorDMnic=
 github.com/yuin/goldmark v1.7.8/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 golang.org/x/crypto v0.32.0 h1:euUpcYgM8WcP71gNpTqQCn6rC2t6ULUPiOzfWaXVVfc=

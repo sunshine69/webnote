@@ -14,7 +14,7 @@ require (
 	github.com/sergi/go-diff v1.3.1
 	github.com/sunshine69/golang-tools/utils v0.0.0-20250120051846-e562b3baaa05
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704
+	github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a
 	github.com/yuin/goldmark v1.7.8
 	golang.org/x/term v0.29.0
 )
@@ -23,6 +23,7 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/boombuler/barcode v1.0.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/kr/text v0.2.0 // indirect

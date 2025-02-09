@@ -875,7 +875,7 @@ func HandleRequests() {
 	// ollama simple proxying
 	router.HandleFunc("/ollama/models", app.OllamaGetTags)
 	router.HandleFunc("/ollama/ask", app.OllamaAsk)
-	router.HandleFunc("ollama/model/{model_name}", app.OllamaGetModel)
+	router.HandleFunc("/ollama/model/{model_name}", app.OllamaGetModel)
 	// Onetime secret share
 	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL)
 	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret)
