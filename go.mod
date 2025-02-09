@@ -14,7 +14,7 @@ require (
 	github.com/sergi/go-diff v1.3.1
 	github.com/sunshine69/golang-tools/utils v0.0.0-20250120051846-e562b3baaa05
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a
+	github.com/sunshine69/ollama-ui-go v0.0.0-20250209122215-e4fa715f8469
 	github.com/yuin/goldmark v1.7.8
 	golang.org/x/term v0.29.0
 )

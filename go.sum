@@ -70,6 +70,8 @@ github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704 h1:U78pifA
 github.com/sunshine69/ollama-ui-go v0.0.0-20250208125048-38b622110704/go.mod h1:QKYpc0mz1KD76mYEd34bdrC6BCD2FmgY/xMZGMHA3HM=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a h1:t3kyH5JANlOuu4SpwcPaNFxHuMGkP1zWvb6FL1OnxPM=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250209023224-6c31662a924a/go.mod h1:EAfrcCHkP6EDFLfS+/spydKS/IntP1niHEFEky6Zigs=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250209122215-e4fa715f8469 h1:Oc64jKvdUFnBVbnX8Z+fzgCfo6FJiLyrWFh+ShdP6Eo=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250209122215-e4fa715f8469/go.mod h1:EAfrcCHkP6EDFLfS+/spydKS/IntP1niHEFEky6Zigs=
 github.com/yuin/goldmark v1.7.8 h1:iERMLn0/QJeHFhxSt3p6PeN9mGnvIKSpG9YYorDMnic=
 github.com/yuin/goldmark v1.7.8/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 golang.org/x/crypto v0.32.0 h1:euUpcYgM8WcP71gNpTqQCn6rC2t6ULUPiOzfWaXVVfc=
