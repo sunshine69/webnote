@@ -1,10 +1,13 @@
 package app
 
 import (
+	"context"
+	jsonstd "encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 
+	"github.com/ollama/ollama/api"
 	"github.com/sunshine69/ollama-ui-go/lib"
 )
 
@@ -23,31 +26,50 @@ func OllamaAsk(w http.ResponseWriter, r *http.Request) {
 	var ollamaRequest lib.OllamaRequest
 	jsonData, err := io.ReadAll(r.Body)
 	if err != nil {
-		// Handle error
+		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+		return
 	}
 	fmt.Println(string(jsonData))
 	if err := json.Unmarshal(jsonData, &ollamaRequest); err != nil {
-		fmt.Printf("[DEBUG] Error: %s\n", err.Error())
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	requestString, err := json.Marshal(ollamaRequest)
+	client, err := api.ClientFromEnvironment()
 	if err != nil {
-		http.Error(w, "Failed to marshal request", http.StatusInternalServerError)
+		panic(err)
+	}
+
+	ctx := context.Background()
+	req := &api.ChatRequest{
+		Model:    ollamaRequest.Model,
+		Messages: ollamaRequest.Messages,
+		Stream:   &ollamaRequest.Stream,
+		Options:  ollamaRequest.Options,
+		Format:   jsonstd.RawMessage(ollamaRequest.Format),
+	}
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Streaming unsupported", http.StatusInternalServerError)
 		return
 	}
-	response, err := lib.AskOllamaAPI(string(requestString))
-	if err != nil {
-		http.Error(w, "Failed to call Ollama API", http.StatusInternalServerError)
-		return
+
+	respFunc := func(resp api.ChatResponse) error {
+		// fmt.Print(resp.Message.Content)
+		fmt.Fprint(w, resp.Message.Content)
+		flusher.Flush()
+		return nil
 	}
-	fmt.Println("[DEBUG] AI response " + string(response))
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(response)
+
+	err = client.Chat(ctx, req, respFunc)
 	if err != nil {
-		fmt.Println("[DEBUG] Error writing response: " + err.Error())
+		http.Error(w, "Failed to process chat request", http.StatusInternalServerError)
+		return
 	}
 }
 
