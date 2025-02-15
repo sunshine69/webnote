@@ -40,7 +40,6 @@ func OllamaAsk(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	ctx := context.Background()
 	req := &api.ChatRequest{
 		Model:    ollamaRequest.Model,
 		Messages: ollamaRequest.Messages,
@@ -58,15 +57,20 @@ func OllamaAsk(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Streaming unsupported", http.StatusInternalServerError)
 		return
 	}
-
+	ctx := context.Background()
+	ctx1, cancel := context.WithCancel(ctx)
+	defer cancel()
 	respFunc := func(resp api.ChatResponse) error {
-		// fmt.Print(resp.Message.Content)
-		fmt.Fprint(w, resp.Message.Content)
+		//fmt.Print(resp.Message.Content)
+		if _, err := fmt.Fprint(w, resp.Message.Content); err != nil {
+			cancel()
+			return err
+		}
 		flusher.Flush()
 		return nil
 	}
 
-	err = client.Chat(ctx, req, respFunc)
+	err = client.Chat(ctx1, req, respFunc)
 	if err != nil {
 		http.Error(w, "Failed to process chat request", http.StatusInternalServerError)
 		return
