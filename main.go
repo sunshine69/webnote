@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -19,7 +17,6 @@ import (
 
 	_ "time/tzdata"
 
-	"github.com/gorilla/csrf"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 	"github.com/jbrodriguez/mlog"
@@ -96,7 +93,10 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	msg := "OK note saved"
 	user := GetCurrentUser(&w, r)
 
-	r.ParseForm()
+	if err := r.ParseForm(); err != nil {
+		fmt.Println("ParseForm err: %s", err.Error())
+		return
+	}
 	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
 	ngroup := m.GetGroup(m.GetRequestValue(r, "ngroup", "default"))
 	_permission, _ := strconv.Atoi(m.GetRequestValue(r, "permission", "0"))
@@ -108,6 +108,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	var aNote *m.Note
 	content := r.FormValue("content")
 	title := r.FormValue("title")
+	fmt.Println("[DEBUG] content ", content, " title ", title)
 	if title == "" {
 		title = GetFirstnChar(content, 128)
 	}
@@ -130,6 +131,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			"timestamp":  TimeStamp,
 		},
 		)
+		fmt.Println("[DEBUG] note ", u.JsonDump(aNote, "  "))
 		aNote.Save()
 	} else { //Existing note loaded. Need to check permmission
 		aNote = m.GetNoteByID(noteID)
@@ -279,8 +281,6 @@ func DoLogout(w http.ResponseWriter, r *http.Request) {
 	ClearSession(&w)
 	http.Redirect(w, r, "/", http.StatusFound)
 }
-
-var CSRF_TOKEN string
 
 //HandleRequests -
 
@@ -623,6 +623,9 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 			user.Save()
 			fmt.Fprintf(w, "Account %s is unlocked", user.Email)
 			return
+		case "delete":
+			fmt.Fprintf(w, "TODO contact admin to delete")
+			return
 		}
 	}
 }
@@ -772,50 +775,6 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 
 func HandleRequests() {
 	router := http.NewServeMux()
-	base_url := m.GetConfig("base_url", "")
-	_u, _e := url.Parse(base_url)
-	if _e != nil {
-		panic(_e)
-	}
-	app_domain, _, _ := net.SplitHostPort(_u.Host)
-	// router := StaticRouter()
-	CSRF_TOKEN := u.MakePassword(32)
-	csrf.MaxAge(4 * 3600)
-
-	// CSRF := csrf.Protect(
-	// 	[]byte(CSRF_TOKEN),
-	// 	// instruct the browser to never send cookies during cross site requests
-	// 	csrf.SameSite(csrf.SameSiteStrictMode),
-	// 	csrf.TrustedOrigins([]string{"note.inxuanthuy.com", "note.xvt.technology"}),
-	// 	// csrf.RequestHeader("X-CSRF-Token"),
-	// 	// csrf.FieldName("authenticity_token"),
-	// 	// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
-	// )
-	// csrf.Secure(true)
-	// router.Use(CSRF)
-	//By pass csrf for /view See https://stackoverflow.com/questions/53271241/disable-csrf-on-json-api-calls
-	protectionMiddleware := func(handler http.Handler) http.Handler {
-		protectionFn := csrf.Protect(
-			[]byte(CSRF_TOKEN),
-			// instruct the browser to never send cookies during cross site requests
-			csrf.SameSite(csrf.SameSiteStrictMode),
-			csrf.TrustedOrigins([]string{app_domain}),
-			// csrf.RequestHeader("X-CSRF-Token"),
-			// csrf.FieldName("authenticity_token"),
-			// csrf.ErrorHandler(http.HandlerFunc(serverError(403))),
-			csrf.Secure(false),
-		)
-
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Use some kind of condition here to see if the router should use
-			// the CSRF protection. we'll check the path prefix.
-			if !strings.HasPrefix(r.URL.Path, "/nocsrf") && !strings.HasPrefix(r.URL.Path, "/ollama/") {
-				protectionFn(handler).ServeHTTP(w, r)
-				return
-			}
-			handler.ServeHTTP(w, r)
-		})
-	}
 
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
 		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
@@ -858,7 +817,7 @@ func HandleRequests() {
 	// With selected - handle bulk ops from the search result
 	router.HandleFunc("/on_selected_run_sql", OnSelectedRunSql)
 
-	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request. Eg. var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
+	//SinglePage (as note content) handler. Per app the controller file is in app-controllers folder. The javascript app needs to get the token and send it with its post request.
 	router.HandleFunc("/cred", app.DoCredApp)
 
 	//kodi send. Dont need to authenticate via note app but its own (via IP)
@@ -892,9 +851,9 @@ func HandleRequests() {
 		*EnableCompression = "yes"
 	}
 	if *EnableCompression == "yes" {
-		srv.Handler = handlers.CompressHandler(protectionMiddleware(isAuthorized(router)))
+		srv.Handler = handlers.CompressHandler(isAuthorized(router))
 	} else {
-		srv.Handler = protectionMiddleware(isAuthorized(router))
+		srv.Handler = isAuthorized(router)
 	}
 
 	if SSLKey != "" {
@@ -1086,12 +1045,11 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			from_uri := r.URL.RequestURI()
 			from_uri = strings.TrimPrefix(from_uri, "/login?from_uri=")
 			data := map[string]interface{}{
-				csrf.TemplateTag: csrf.TemplateField(r),
-				"title":          "Webnote",
-				"page":           "login",
-				"msg":            "",
-				"client_ip":      userIP,
-				"from_uri":       from_uri,
+				"title":     "Webnote",
+				"page":      "login",
+				"msg":       "",
+				"client_ip": userIP,
+				"from_uri":  from_uri,
 			}
 			if err := m.AllTemplates.ExecuteTemplate(w, "login.html", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1105,13 +1063,25 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		useremail := r.FormValue("username")
 		password := r.FormValue("password")
+		dev_id := GetDeviceUUID(r)
+		remember_me := r.FormValue("remember_me")
+		userIP := m.ReadUserIP(r)
 
-		var user *m.User
+		var user *m.User = nil
 
 		totop := r.FormValue("totp_number")
 		mlog.Info("user input totp %s\n", totop)
-		user, err := m.VerifyLogin(useremail, password, totop, userIP)
+		// Get the previous cookies and bypass VerifyLogin if remember me
 		ses, _ := m.SessionStore.Get(r, "auth-session")
+		if m.GetConfig(useremail+"|"+dev_id, "0") != "0" {
+			user = m.GetUser(useremail)
+			remember_me_exp := m.GetConfigSave("remember_me_exp", "8760") // one year
+			_maxage, _ := strconv.Atoi(remember_me_exp)
+			ses.Options.MaxAge = _maxage * 3600
+		} else {
+			user, _ = m.VerifyLogin(useremail, password, totop, userIP)
+		}
+
 		if user != nil {
 			if strings.Contains(user.ExtraInfo, " First Time Login ") {
 				ses.Values["first_time_login"] = "yes"
@@ -1125,14 +1095,22 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			ses.Values["trycount"] = 0
 			ses.Values["useremail"] = useremail
 			ses.Values["userIP"] = userIP
-			ses.Values["device_id"] = GetDeviceUUID(r)
+			ses.Values["device_id"] = dev_id
+			ses.Values["remember_me"] = remember_me
+
+			if remember_me == "on" {
+				m.GetConfigSave(useremail+"|"+dev_id, time.Now().Format(u.AUTimeLayout))
+				remember_me_exp := m.GetConfigSave("remember_me_exp", "8760") // one year
+				_maxage, _ := strconv.Atoi(remember_me_exp)
+				ses.Options.MaxAge = _maxage * 3600
+			}
 			ses.Save(r, w)
 			from_uri := m.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
 			http.Redirect(w, r, "/"+from_uri, http.StatusFound)
 			return
 		} else {
-			mlog.Info("Failed To Verify user %s - %s\n", useremail, err.Error())
+			mlog.Info("Failed To Verify user %s\n", useremail)
 			ses.Values["authenticated"] = false
 			ses.Values["useremail"] = ""
 			ses.Save(r, w)
@@ -1153,7 +1131,21 @@ func isAuthorized(next http.Handler) http.Handler {
 			}
 		}
 		isAuth := m.GetSessionVal(r, "authenticated", nil)
-		if isAuth == nil || !isAuth.(bool) {
+		if isAuth != nil && isAuth.(bool) {
+			ses, _ := m.SessionStore.Get(r, "auth-session")
+			remember_me := ses.Values["remember_me"]
+			if remember_me == "on" {
+				useremail := ses.Values["useremail"].(string)
+				dev_id := ses.Values["device_id"].(string)
+				remember_me_data := m.GetConfig(useremail+"|"+dev_id, "")
+				if remember_me_data == "" { //Authenticated but the appconfig is empty, User session has been manualy removed on the server. Clean session now and unthorized users
+					DoLogout(w, r)
+					return
+				}
+			} else {
+				fmt.Println("Remember me is off")
+			}
+		} else {
 			mlog.Error(fmt.Errorf("no session"))
 			uri := r.RequestURI
 			// uri = url.PathEscape(uri)
@@ -1161,7 +1153,6 @@ func isAuthorized(next http.Handler) http.Handler {
 			http.Redirect(w, r, "/login?from_uri="+uri, http.StatusTemporaryRedirect)
 			return
 		}
-		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		next.ServeHTTP(w, r)
 	})
 }
@@ -1176,7 +1167,6 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	if user != nil {
 		uGroups = user.Groups
 		commonMapData = map[string]interface{}{
-			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
 			"settings":        m.Settings,
 			"user":            user,
@@ -1186,7 +1176,6 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 		}
 	} else {
 		commonMapData = map[string]interface{}{
-			csrf.TemplateTag:  csrf.TemplateField(r),
 			"keyword":         keyword,
 			"settings":        m.Settings,
 			"permission_list": m.PermissionList,
@@ -1211,8 +1200,6 @@ func GetDeviceUUID(r *http.Request) string {
 	// If the cookie doesn't exist, generate a new UUID
 	userAgent := r.UserAgent()
 	userIP := m.ReadUserIP(r)
-	timestamp := time.Now().String()
-
 	// Create a unique string based on available info. Could be more, e.g screen resolution, etc
-	return fmt.Sprintf("%s|%s|%s", userAgent, userIP, timestamp)
+	return fmt.Sprintf("%s|%s", userAgent, userIP)
 }

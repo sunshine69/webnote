@@ -26,8 +26,7 @@ function mycopyTextToClipboard(text_to_copy, row_id, cred_id = -1, qrlink = "") 
 
 function cred_search() {
     var kw = document.getElementById("cred_url_keyword").value;
-    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=cred_search&kw=" + kw, function (r) {
+    AJAX.postText("/cred", "&action=cred_search&kw=" + kw, function (r) {
 		var display_msg = document.getElementById("display_msg");
            	display_msg.innerHTML = '&nbsp;';
 		var display_results = document.getElementById("display_results");
@@ -44,8 +43,8 @@ function cred_add() {
     var qrlink = document.getElementById("qr_password").value;
     var data = "&action=cred_add&cred_url=" + encodeURI(cred_url) + "&cred_username=" + cred_username + "&cred_password=" + encodeURIComponent(cred_password) + "&cred_note=" + escape(cred_note) + "&qrlink=" + encodeURI(qrlink);
 
-    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + data, function (r) {
+
+    AJAX.postText("/cred", data, function (r) {
         var display_msg = document.getElementById("display_msg");
         display_msg.innerHTML = r;
 		var display_results = document.getElementById("display_results");
@@ -67,8 +66,8 @@ function deleteRow(rowid)
 
 function cred_delete(cred_id, row_id) {
     if (! confirm("Are you sure to delete?")) return;
-    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-    AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=cred_delete&id=" + cred_id, function (r) {
+
+    AJAX.postText("/cred", "&action=cred_delete&id=" + cred_id, function (r) {
         deleteRow(row_id);
 		var display_msg = document.getElementById("display_msg");
         display_msg.innerHTML = r;
@@ -97,8 +96,8 @@ function mark_row_clicked(row_id, pass) {
 
 function note_search() {
   var keyword = document.getElementById("cred_url_keyword");
-    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-  AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=search&keyword=" + keyword , function (r) {
+
+  AJAX.postText("/cred", "&action=search&keyword=" + keyword , function (r) {
         var display_msg = document.getElementById("display_msg");
         display_msg.innerHTML = r;
         });
@@ -108,8 +107,8 @@ function update_qr_link() {
   var cred_id = document.getElementById("current_cred_id").value;
   var qrlink = document.getElementById("current_qrlink").value;
   // alert("cred_id " + cred_id + "\nqrlink " + qrlink);
-      var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-  AJAX.postText("/cred", "gorilla.csrf.Token=" + csrfToken + "&action=update_qrlink&id=" + cred_id + "&qrlink=" + myEncode(qrlink), function (r) {
+
+  AJAX.postText("/cred", "&action=update_qrlink&id=" + cred_id + "&qrlink=" + myEncode(qrlink), function (r) {
     var display_msg = document.getElementById("display_msg");
     display_msg.innerHTML = r;
     document.getElementById("current_qrlink").href = qrlink;
@@ -118,13 +117,9 @@ function update_qr_link() {
 }
 
 function beforeSubmit(form_id) {
-    var csrfToken = document.getElementsByName("gorilla.csrf.Token")[0].value
 
     var myin = document.createElement("input");
     myin.type='hidden';
-    myin.name='gorilla.csrf.Token';
-    myin.value=csrfToken;
-    document.getElementById(form_id).appendChild(myin);
     document.getElementById(form_id).submit();
     return false;
 }

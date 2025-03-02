@@ -273,7 +273,6 @@ func KodiIsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Ha
 			fmt.Fprintf(w, "ERROR NOT ALLOWED NETWORK")
 			return
 		}
-		// w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		endpoint(w, r)
 	})
 }

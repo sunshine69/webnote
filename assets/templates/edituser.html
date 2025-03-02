@@ -50,7 +50,7 @@
     </fieldset>
 {{ end }}
 
-<form id="edituser" action="{{ .settings.BASE_URL }}/edituser" method="POST">{{ .csrfField }}
+<form id="edituser" action="{{ .settings.BASE_URL }}/edituser" method="POST">
 <br/>
 <hr>
 <fieldset>
@@ -68,7 +68,7 @@
 </TR>
 <TR>
     <TD>Current Password*: </TD>
-    <td><input title="If you edit this page as normal user and want to change your own details, type your password." type="password" name='cur_password' value=""/></td>
+    <td><input title="If you edit this page as normal user and want to change your own details, type your password. If are admin and adding new user, ype your admin password, and then new user password below" type="password" name='cur_password' value=""/></td>
 </TR>
 <TR>
     <TD>New Password*: </TD>

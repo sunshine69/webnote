@@ -15,8 +15,6 @@ github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeN
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/gofuzz v1.2.0 h1:xRy4A+RhZaiKjJ1bPfwQ8sedCA+YS2YcCHW6ec7JMi0=
 github.com/google/gofuzz v1.2.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
-github.com/gorilla/csrf v1.7.2 h1:oTUjx0vyf2T+wkrx09Trsev1TE+/EbDAeHtSTbtC2eI=
-github.com/gorilla/csrf v1.7.2/go.mod h1:F1Fj3KG23WYHE6gozCmBAezKookxbIvUJT+121wTuLk=
 github.com/gorilla/css v1.0.1 h1:ntNaBIghp6JmvWnxbZKANoLyuXTPZ4cAMlo6RyhlbO8=
 github.com/gorilla/css v1.0.1/go.mod h1:BvnYkspnSzMmwRK+b8/xgNPLiIuNZr6vbZBTPQ2A3b0=
 github.com/gorilla/handlers v1.5.2 h1:cLTUSsNkgcwhgRqvCNmdbRWG0A3N4F+M2nWKdScwyEE=
@@ -67,12 +65,6 @@ github.com/sunshine69/golang-tools/utils v0.0.0-20250120051846-e562b3baaa05 h1:E
 github.com/sunshine69/golang-tools/utils v0.0.0-20250120051846-e562b3baaa05/go.mod h1:hqi514S2+Ts1LV09hftQmBHvQCtvsZxosiWj8S4t3qk=
 github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQitcs=
 github.com/sunshine69/kodirpc v0.0.2/go.mod h1:uqh8S9JHoYzbLfqTQ6pIaGSq+Xyt8u926Tu5L3W9uZs=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250210021858-6d6833e57ada h1:VYpDfTZci9aYl8ubFrDZE9+8rK7bynKcHmNg8oRzDfk=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250210021858-6d6833e57ada/go.mod h1:5ire2suyYiPqaUQHwwYvqmLZgaX6ZrXLTLL1QO8Kje4=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250213112516-21721e33ea8d h1:vuOdtnU5/zf3yz7/v32NXrG7rgLAmTK4ogllpdpW3qA=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250213112516-21721e33ea8d/go.mod h1:5ire2suyYiPqaUQHwwYvqmLZgaX6ZrXLTLL1QO8Kje4=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250215000706-c43495af1dd6 h1:MATaqWn1nA0Ym6Aa/3qfQV/DY6gDPo7enm3jzLdUGfE=
-github.com/sunshine69/ollama-ui-go v0.0.0-20250215000706-c43495af1dd6/go.mod h1:ROpvwATqkfHayWMeyvMAP73qIP4QtmLKHQchRG2eZ/I=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250215004527-94cb7f837480 h1:Pkb4xVL7jJFkOyOQiXubfy9aPcD7kD966jNan1rYmEs=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250215004527-94cb7f837480/go.mod h1:ROpvwATqkfHayWMeyvMAP73qIP4QtmLKHQchRG2eZ/I=
 github.com/yuin/goldmark v1.7.8 h1:iERMLn0/QJeHFhxSt3p6PeN9mGnvIKSpG9YYorDMnic=

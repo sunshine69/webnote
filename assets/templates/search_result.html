@@ -28,8 +28,8 @@ function on_selected_run_sql(sql='') {
 	}
 	where_str += ' (' + values.join(',') + ')'
 	sql += where_str
-	var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-	AJAX.postText("{{ .settings.BASE_URL }}/on_selected_run_sql", "gorilla.csrf.Token=" + csrfToken + "&sql=" + sql, function (r) { alert(r);} )
+
+	AJAX.postText("{{ .settings.BASE_URL }}/on_selected_run_sql", "&sql=" + sql, function (r) { alert(r);} )
 }
 
 function on_selected_set_permisions() {

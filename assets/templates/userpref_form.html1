@@ -3,7 +3,7 @@
 {{ template "head_menu" }}
 <br><br>
 {{ .msg }} <br><br>
-<form action="/?action=edit_userpref" method="POST">{{ .csrfField }}
+<form action="/?action=edit_userpref" method="POST">
 <input type="hidden" name="id" value="{{ .pref.id }}"/>
 <table border="1">
     <TR>

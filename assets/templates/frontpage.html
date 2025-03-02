@@ -9,20 +9,20 @@
 
 <p>You need to install an OTP application on your phone. For android/iphone search for Google Authenticator</p>
 
-<p>After installing click this <a target="_blank" href="/edituser">link</a> to enter the account management page. From there, type current password in 
-   `Current or Admin Password`, Type new password in `New Password`. Note that you can not change the email admin@admin.com. If you want your custom email, 
+<p>After installing click this <a target="_blank" href="/edituser">link</a> to enter the account management page. From there, type current password in
+   `Current or Admin Password`, Type new password in `New Password`. Note that you can not change the email admin@admin.com. If you want your custom email,
    use the functionality to add a new user rather.
 
    Then click button `Add/Edit User` to edit current user.
 
-   Now logout and re-login using the changed password. 
+   Now logout and re-login using the changed password.
 
-   Once logged in go back to user management link, type your admin password and click the button `Generate new OTP QR image`. Then use the authenticator 
-   app to scan and add it in</p>  
+   Once logged in go back to user management link, type your admin password and click the button `Generate new OTP QR image`. Then use the authenticator
+   app to scan and add it in</p>
 
-   Your HAVE to enable OTP after the second login otherwise your admin account will be locked. You need to run the cli to handle these cases. Run the cli with 
+   Your HAVE to enable OTP after the second login otherwise your admin account will be locked. You need to run the cli to handle these cases. Run the cli with
    option -h to print out the capabilities.
-   
+
    For normal usage better to create non admin account.
 
   You can add more users using the same user management page.
@@ -31,7 +31,7 @@
 
 {{ end }}
 </div>
-<form method="POST" action="{{ .settings.BASE_URL }}/savenote" name="note" class="page_content" id="note">{{ .csrfField }}
+<form method="POST" action="{{ .settings.BASE_URL }}/savenote" name="note" class="page_content" id="note">
 <input type="hidden" name="id" value="{{ .note.ID }}"/>
 <table class="note-table">
     <tr>
