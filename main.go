@@ -1124,6 +1124,8 @@ func DoLogin(w http.ResponseWriter, r *http.Request) {
 			ses.Values["authenticated"] = true
 			ses.Values["trycount"] = 0
 			ses.Values["useremail"] = useremail
+			ses.Values["userIP"] = userIP
+			ses.Values["device_id"] = GetDeviceUUID(r)
 			ses.Save(r, w)
 			from_uri := m.GetRequestValue(r, "from_uri", "")
 			from_uri = strings.TrimPrefix(from_uri, "/")
@@ -1197,4 +1199,20 @@ func CommonRenderTemplate(tmplName string, w *http.ResponseWriter, r *http.Reque
 	if err := m.AllTemplates.ExecuteTemplate(*w, tmplName, commonMapData); err != nil {
 		http.Error(*w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func GetDeviceUUID(r *http.Request) string {
+	// Attempt to retrieve the device UUID from a cookie
+	cookie, err := r.Cookie("device_uuid")
+	if err == nil {
+		return cookie.Value
+	}
+
+	// If the cookie doesn't exist, generate a new UUID
+	userAgent := r.UserAgent()
+	userIP := m.ReadUserIP(r)
+	timestamp := time.Now().String()
+
+	// Create a unique string based on available info. Could be more, e.g screen resolution, etc
+	return fmt.Sprintf("%s|%s|%s", userAgent, userIP, timestamp)
 }
