@@ -29,7 +29,7 @@ func OllamaAsk(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to read request body", http.StatusBadRequest)
 		return
 	}
-	fmt.Println(string(jsonData))
+	// fmt.Println(string(jsonData))
 	if err := json.Unmarshal(jsonData, &ollamaRequest); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
