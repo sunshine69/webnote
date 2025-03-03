@@ -157,7 +157,7 @@
 
         function showModelInfo() {
             const model = document.getElementById('model_name').value;
-            fetch('{{.path_base}}/ollama/model/' + encodeURIComponent(model))
+            fetch('/ollama/model/' + encodeURIComponent(model))
                 .then(response => response.json())
                 .then(data => {
                     alert(JSON.stringify(data.model_info, null, 2) + '\n\nDetails: ' + JSON.stringify(data.details, null, 2) + '\n\nParameters: ' + JSON.stringify(data.parameters, null, 2));
@@ -191,7 +191,7 @@
 
             }
             }
-            fetch('{{.path_base}}/ollama/models')
+            fetch('/ollama/models')
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById('model_name');
@@ -239,7 +239,7 @@
             if (optionsField.length > 0) {
                 bodyPayload['options'] = JSON.parse(optionsField);
             }
-            fetch('{{.path_base}}/ollama/ask', {
+            fetch('/ollama/ask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -258,7 +258,7 @@
                             clearInterval(loadingInterval);
                             document.getElementById('loading').style.display = 'none';
                             submitButton.textContent = 'Submit'
-                            resultDiv.innerHTML += "\nTook "+elapsedSeconds+"to answer\n=========================================\n";
+                            resultDiv.innerHTML += "\n\nTook "+elapsedSeconds+" to answer\n=========================================\n";
                             return;
                         }
                         const text = decoder.decode(value, { stream: true });
