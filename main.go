@@ -90,13 +90,32 @@ func GetFirstnChar(text string, n int) (o string) {
 	return o
 }
 func DoSaveNote(w http.ResponseWriter, r *http.Request) {
+	// body, _ := io.ReadAll(r.Body)
+	// fmt.Println("[DEBUG] Headers:", r.Header)
+	// fmt.Println("[DEBUG] Body:", string(body))
+	// r.Body = io.NopCloser(bytes.NewBuffer(body))
+
 	msg := "OK note saved"
 	user := GetCurrentUser(&w, r)
 
-	if err := r.ParseForm(); err != nil {
-		fmt.Println("ParseForm err: %s", err.Error())
-		return
+	// Detect multipart form and parse correctly
+	if strings.Contains(r.Header.Get("Content-Type"), "multipart/form-data") {
+		err := r.ParseMultipartForm(10 << 20) // 10MB max memory before temp files
+		if err != nil {
+			fmt.Printf("ParseMultipartForm error: %s\n", err)
+			return
+		}
+	} else {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Printf("ParseForm error: %s\n", err)
+			return
+		}
 	}
+
+	content := r.FormValue("content")
+	title := r.FormValue("title")
+
 	noteID, _ := strconv.ParseInt(m.GetRequestValue(r, "id", "0"), 10, 64)
 	ngroup := m.GetGroup(m.GetRequestValue(r, "ngroup", "default"))
 	_permission, _ := strconv.Atoi(m.GetRequestValue(r, "permission", "0"))
@@ -106,9 +125,7 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	raw_editor := int8(_raw_editor)
 
 	var aNote *m.Note
-	content := r.FormValue("content")
-	title := r.FormValue("title")
-	fmt.Println("[DEBUG] content ", content, " title ", title)
+
 	if title == "" {
 		title = GetFirstnChar(content, 128)
 	}
@@ -131,7 +148,6 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 			"timestamp":  TimeStamp,
 		},
 		)
-		fmt.Println("[DEBUG] note ", u.JsonDump(aNote, "  "))
 		aNote.Save()
 	} else { //Existing note loaded. Need to check permmission
 		aNote = m.GetNoteByID(noteID)
