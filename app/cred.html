@@ -1,5 +1,5 @@
 <hr />
-<script type="text/javascript" src='/assets/media/js/ajax.js'></script><script language="javascript">
+  <script type="text/javascript" src='/assets/media/js/ajax.js'></script><script language="javascript">
 
 function mycopyTextToClipboard(text_to_copy, row_id, cred_id = -1, qrlink = "") {
 
@@ -23,7 +23,6 @@ function mycopyTextToClipboard(text_to_copy, row_id, cred_id = -1, qrlink = "") 
   }
 
 }
-
 function cred_search() {
     var kw = document.getElementById("cred_url_keyword").value;
     AJAX.postText("/cred", "&action=cred_search&kw=" + kw, function (r) {
@@ -42,7 +41,6 @@ function cred_add() {
     var cred_note = document.getElementById("cred_note").value;
     var qrlink = document.getElementById("qr_password").value;
     var data = "&action=cred_add&cred_url=" + encodeURI(cred_url) + "&cred_username=" + cred_username + "&cred_password=" + encodeURIComponent(cred_password) + "&cred_note=" + escape(cred_note) + "&qrlink=" + encodeURI(qrlink);
-
 
     AJAX.postText("/cred", data, function (r) {
         var display_msg = document.getElementById("display_msg");
@@ -117,9 +115,8 @@ function update_qr_link() {
 }
 
 function beforeSubmit(form_id) {
-
     var myin = document.createElement("input");
-    myin.type='hidden';
+    document.getElementById(form_id).appendChild(myin);
     document.getElementById(form_id).submit();
     return false;
 }
