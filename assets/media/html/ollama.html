@@ -84,6 +84,44 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
     <script>
+        var encoder = new TextEncoder("ascii");
+        var decoder = new TextDecoder("ascii");
+        var base64Table = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=');
+        function toBase64(dataArr){
+            var padding = dataArr.byteLength % 3;
+            var len = dataArr.byteLength - padding;
+            padding = padding > 0 ? (3 - padding) : 0;
+            var outputLen = ((len/3) * 4) + (padding > 0 ? 4 : 0);
+            var output = new Uint8Array(outputLen);
+            var outputCtr = 0;
+            for(var i=0; i<len; i+=3){
+                var buffer = ((dataArr[i] & 0xFF) << 16) | ((dataArr[i+1] & 0xFF) << 8) | (dataArr[i+2] & 0xFF);
+                output[outputCtr++] = base64Table[buffer >> 18];
+                output[outputCtr++] = base64Table[(buffer >> 12) & 0x3F];
+                output[outputCtr++] = base64Table[(buffer >> 6) & 0x3F];
+                output[outputCtr++] = base64Table[buffer & 0x3F];
+            }
+            if (padding == 1) {
+                var buffer = ((dataArr[len] & 0xFF) << 8) | (dataArr[len+1] & 0xFF);
+                output[outputCtr++] = base64Table[buffer >> 10];
+                output[outputCtr++] = base64Table[(buffer >> 4) & 0x3F];
+                output[outputCtr++] = base64Table[(buffer << 2) & 0x3F];
+                output[outputCtr++] = base64Table[64];
+            } else if (padding == 2) {
+                var buffer = dataArr[len] & 0xFF;
+                output[outputCtr++] = base64Table[buffer >> 2];
+                output[outputCtr++] = base64Table[(buffer << 4) & 0x3F];
+                output[outputCtr++] = base64Table[64];
+                output[outputCtr++] = base64Table[64];
+            }
+
+            var ret = decoder.decode(output);
+            output = null;
+            dataArr = null;
+            return ret;
+        }
+    </script>
+    <script>
         var messages = [];
         var imageFileContent = [];
         var formatField = "";
@@ -137,7 +175,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const content = e.target.result;
-                document.getElementById('question').value = content;
+                document.getElementById('question').value = "Context: \n" +  content + "\nQuestion: ";
             };
             reader.readAsText(file);
         }
@@ -149,7 +187,8 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const content = e.target.result;
-                    const base64Content = btoa(String.fromCharCode(...new Uint8Array(content)));
+                    const base64Content = toBase64(new Uint8Array(content));
+                    // const base64Content = btoa(String.fromCharCode(...new Uint8Array(content)));
                     imageFileContent.push(base64Content);
                 };
                 reader.readAsArrayBuffer(file);
@@ -171,6 +210,7 @@
 
         function newChat() {
             messages = [];
+            imageFileContent = [];
             document.getElementById('result').innerHTML = '';
         }
 
@@ -245,6 +285,9 @@
                 if (allOptions.hasOwnProperty('stream')) {
                     stream = allOptions.stream;
                 }
+                if (allOptions.hasOwnProperty('tools')) {
+                    bodyPayload['tools'] = allOptions.tools;
+                }
             }
             bodyPayload['stream'] = stream;
 
@@ -267,7 +310,7 @@
                             clearInterval(loadingInterval);
                             document.getElementById('loading').style.display = 'none';
                             submitButton.textContent = 'Submit'
-                            resultDiv.innerHTML += "\n\nTook "+elapsedSeconds+" to answer\n=========================================\n";
+                            resultDiv.innerHTML += "\n\nTook "+elapsedSeconds+" secs to answer\n=========================================\n";
                             return;
                         }
                         const text = decoder.decode(value, { stream: true });
