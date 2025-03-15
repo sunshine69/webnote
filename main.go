@@ -22,6 +22,7 @@ import (
 	"github.com/jbrodriguez/mlog"
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
+	uilib "github.com/sunshine69/ollama-ui-go/lib"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -848,9 +849,9 @@ func HandleRequests() {
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber)
 	// ollama simple proxying
-	router.HandleFunc("/ollama/models", app.OllamaGetTags)
-	router.HandleFunc("/ollama/ask", app.OllamaAsk)
-	router.HandleFunc("/ollama/model/{model_name}", app.OllamaGetModel)
+	router.HandleFunc("/ollama/models", uilib.HandleOllamaGetModels)
+	router.HandleFunc("/ollama/ask", uilib.HandleOllamaChat)
+	router.HandleFunc("/ollama/model/{model_name}", uilib.HandleOllamaGetModel)
 	// Onetime secret share
 	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL)
 	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret)

@@ -45,6 +45,8 @@ github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9G
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/ollama/ollama v0.5.11 h1:TU4m0dr0j5DfSRT2KlK0vVGEStLYvmKTjC/8ByhKhhU=
 github.com/ollama/ollama v0.5.11/go.mod h1:ibdmDvb/TjKY1OArBWIazL3pd1DHTk8eG2MMjEkWhiI=
+github.com/ollama/ollama v0.6.1 h1:M+wxOCuC1hKhHd6a8zNuJl6jYiRPsi/JFd4QoU0P5BQ=
+github.com/ollama/ollama v0.6.1/go.mod h1:pGgtoNyc9DdM6oZI6yMfI6jTk2Eh4c36c2GpfQCH7PY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pquerna/otp v1.4.0 h1:wZvl1TIVxKRThZIBiwOOHOGP/1+nZyWBil9Y2XNEDzg=
@@ -67,6 +69,12 @@ github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQi
 github.com/sunshine69/kodirpc v0.0.2/go.mod h1:uqh8S9JHoYzbLfqTQ6pIaGSq+Xyt8u926Tu5L3W9uZs=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250215004527-94cb7f837480 h1:Pkb4xVL7jJFkOyOQiXubfy9aPcD7kD966jNan1rYmEs=
 github.com/sunshine69/ollama-ui-go v0.0.0-20250215004527-94cb7f837480/go.mod h1:ROpvwATqkfHayWMeyvMAP73qIP4QtmLKHQchRG2eZ/I=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315112923-0660aa2fe5e0 h1:QCMyrdeIGn6Os3DQky2rAHVpi0c7fe4IW3bqFyKqkQY=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315112923-0660aa2fe5e0/go.mod h1:ROpvwATqkfHayWMeyvMAP73qIP4QtmLKHQchRG2eZ/I=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315122239-9bc4da94fd97 h1:pCnHVzx7RiA3L1ZG53KQ/F025PuluLYl6tte+lxcAEo=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315122239-9bc4da94fd97/go.mod h1:/gIvZzzm8qRpEGW87nsSGAcMnoC94NfBtNpU7tyU7Ps=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315124615-0af96049285c h1:e/VPb3NxmiRw0sR1rNe8iE8j56Cm+pz7UgqT+IF3GoE=
+github.com/sunshine69/ollama-ui-go v0.0.0-20250315124615-0af96049285c/go.mod h1:/gIvZzzm8qRpEGW87nsSGAcMnoC94NfBtNpU7tyU7Ps=
 github.com/yuin/goldmark v1.7.8 h1:iERMLn0/QJeHFhxSt3p6PeN9mGnvIKSpG9YYorDMnic=
 github.com/yuin/goldmark v1.7.8/go.mod h1:uzxRWxtg69N339t3louHJ7+O03ezfj6PlliRlaOzY1E=
 golang.org/x/crypto v0.35.0 h1:b15kiHdrGCHrP6LvwaQ3c03kgNhhiMgvlhxHQhmg2Xs=

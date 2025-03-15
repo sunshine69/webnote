@@ -1,6 +1,8 @@
 module github.com/sunshine69/webnote-go
 
-go 1.23.5
+go 1.24.0
+
+toolchain go1.24.1
 
 require (
 	github.com/gorilla/handlers v1.5.2
@@ -9,12 +11,12 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/microcosm-cc/bluemonday v1.0.27
-	github.com/ollama/ollama v0.5.11
+	github.com/ollama/ollama v0.6.1
 	github.com/pquerna/otp v1.4.0
 	github.com/sergi/go-diff v1.3.1
 	github.com/sunshine69/golang-tools/utils v0.0.0-20250120051846-e562b3baaa05
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/sunshine69/ollama-ui-go v0.0.0-20250215004527-94cb7f837480
+	github.com/sunshine69/ollama-ui-go v0.0.0-20250315124615-0af96049285c
 	github.com/yuin/goldmark v1.7.8
 	golang.org/x/term v0.29.0
 )
