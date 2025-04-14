@@ -3,7 +3,7 @@ module github.com/sunshine69/webnote-go
 go 1.23.5
 
 require (
-	github.com/gorilla/csrf v1.7.2
+	github.com/gorilla/csrf v1.7.3
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/jbrodriguez/mlog v0.0.0-20180805173533-cbd5ae8e9c53
