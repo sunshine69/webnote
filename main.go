@@ -794,7 +794,7 @@ func HandleRequests() {
 	router := http.NewServeMux()
 
 	bypass_authorized_paths_pattern = []*regexp.Regexp{
-		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf)`),
+		regexp.MustCompile(`\/(view|login|kodi|assets\/|rand|nocsrf|castoneline)`),
 	}
 
 	staticFS := http.FileServer(http.Dir("./assets"))
@@ -848,6 +848,7 @@ func HandleRequests() {
 	router.HandleFunc("/delbookmark", app.DeleteBookMark)
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber)
+	router.HandleFunc("/castoneline", app.CastOneline)
 	// ollama simple proxying
 	router.HandleFunc("/ollama/models", uilib.HandleOllamaGetModels)
 	router.HandleFunc("/ollama/ask", uilib.HandleOllamaChat)

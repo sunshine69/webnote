@@ -1,12 +1,10 @@
 <html>
-
 <head>
   <title></title>
   <style>
     /*
  * Form fixes
  */
-
     /* Only one input per row */
     select,
     input,
@@ -16,7 +14,6 @@
       max-width: 80%;
       font-size: 120%;
     }
-
     /* Follow the size of input elements */
     label {
       font-size: 120%;
@@ -168,21 +165,22 @@ Casted on ${date_casted} <br/>
     function cast_line() {
 
       // return 0 or 1 randomly - the number of the face down coin
-
+      /*
       var _temp = [cast_one_coin_externalV2(), cast_one_coin_externalV2(), cast_one_coin_externalV2()];
       var out = 0;
       for (var i = 0; i < _temp.length; i++) out += _temp[i];
       return out;
       //return _temp. reduce((a,b) => a + b, 0);
-
-    }
-
-    function getRandomInt(min, max) {
-      return "Not use it";
-      /*  min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
       */
+      var request = new XMLHttpRequest();
+      request.open('GET', '/castoneline', false);  // `false` makes the request synchronous
+      request.send(null);
+      if (request.status === 200) {
+        console.log(request.responseText);
+        return parseInt(request.responseText)
+      } else {
+        alert("cast_one_coin_external return error")
+      }
     }
 
   </script>
