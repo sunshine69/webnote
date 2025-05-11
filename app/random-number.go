@@ -2,27 +2,79 @@ package app
 
 import (
 	"crypto/rand"
+	"encoding/binary"
 	"fmt"
-	"math/big"
+	"io"
 	"net/http"
+	"os"
 	"sync"
 )
 
+func GenerateRandom(max uint64) uint64 {
+	f, err := os.Open("/dev/random")
+	if err != nil {
+		return 0
+	}
+	defer f.Close()
+
+	var b [8]byte
+	if _, err := io.ReadFull(f, b[:]); err != nil {
+		return 0
+	}
+
+	num := binary.BigEndian.Uint64(b[:])
+
+	if max == 0 {
+		return num
+	}
+	if num <= max {
+		return num
+	} else {
+		return num % (max + 1)
+	}
+}
+
 func GenRandNumber(w http.ResponseWriter, r *http.Request) {
-	// Generate a random integer
-	// var randomInt uint64
-	// err := binary.Read(rand.Reader, binary.BigEndian, &randomInt)
-	// if err != nil {
-	// 	fmt.Fprintf(w, "Error generating random integer: %s\n", err.Error())
-	// 	return
-	// }
-	gen_number, _ := rand.Int(rand.Reader, big.NewInt(999999999999))
+	gen_number := GenerateRandom(999999999999)
 	fmt.Fprintf(w, "%d", gen_number)
 }
 
-// These a re new way to sue golang for that cast however it seems not to be effective (test using weather forcasts)
+// These a re new way to use golang for that cast however it seems not to be effective (test using weather forcasts)
 // In theory it should be the most close simulation of the real casting coins but not sure why?
-func CastOneline(w http.ResponseWriter, r *http.Request) {
+// This is simpler compare with solution given by Claude.ai
+// It seems the universe is nothing 'concurrent' as the random gen device can only truly randome per each request anyway confirmed by ai
+func CastOneLine(w http.ResponseWriter, r *http.Request) {
+	startCh := make(chan struct{}) // Unbuffered channel for synchronization
+	results := make([]chan int, 3)
+
+	// Launch three goroutines that wait on startCh
+	for i := range results {
+		results[i] = make(chan int)
+		go func(ch chan int) {
+			<-startCh // Block until the channel is closed
+			// Generate a random bit (0 or 1)
+			b := make([]byte, 1)
+			if _, err := rand.Read(b); err != nil {
+				fmt.Fprintf(w, "Error: %v\n", err)
+				return
+			}
+			ch <- int(b[0] & 1) // 0 for no letter, 1 for letter
+		}(results[i])
+	}
+
+	// Close the channel to unblock all goroutines at once
+	close(startCh)
+
+	// Collect results and sum them up (0-3)
+	sum := 0
+	for _, ch := range results {
+		sum += <-ch
+	}
+
+	fmt.Fprintf(w, "%d", sum)
+}
+
+func CastOneLineClaude(w http.ResponseWriter, r *http.Request) {
 	gen_number, err := CastTrigram()
 	if err != nil {
 		fmt.Fprintf(w, "Error generating random number: %s\n", err.Error())

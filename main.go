@@ -848,7 +848,7 @@ func HandleRequests() {
 	router.HandleFunc("/delbookmark", app.DeleteBookMark)
 	//A random generator
 	router.HandleFunc("/rand", app.GenRandNumber)
-	router.HandleFunc("/castoneline", app.CastOneline)
+	router.HandleFunc("/castoneline", app.CastOneLine)
 	// ollama simple proxying
 	router.HandleFunc("/ollama/models", uilib.HandleOllamaGetModels)
 	router.HandleFunc("/ollama/ask", uilib.HandleOllamaChat)
