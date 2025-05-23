@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"net/http"
 	"strconv"
+	"strings"
 
 	u "github.com/sunshine69/golang-tools/utils"
 	m "github.com/sunshine69/webnote-go/models"
@@ -45,7 +46,7 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	})
 	secnote.Save()
 
-	secURL := fmt.Sprintf("%s/nocsrf/onetimesec/%s", base_url, note_title)
+	secURL := fmt.Sprintf("%s/nocsrf/onetimesec/display-%s", base_url, note_title)
 	fmt.Fprintf(w, "<html><body><b>Secret link: </b><a href=\"%s\">%s</a><br/>Secret Value: <i>%s</i><br/><b>Create new one: <a href=%s/assets/media/html/onetime-secret.html>new link</a></body></html>", secURL, secURL, secret, base_url)
 }
 
@@ -56,6 +57,15 @@ func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ERROR got -1 in id")
 		return
 	}
+
+	if strings.HasPrefix(note_id_str, "display-") {
+		note_id_str = strings.TrimPrefix(note_id_str, "display-")
+		base_url := m.GetConfig("base_url", "")
+		html := fmt.Sprintf(`<html><body><a href="%s/nocsrf/onetimesec/%s">Click to get the secret:</a> </body></html>`, base_url, note_id_str)
+		w.Write([]byte(html))
+		return
+	}
+
 	note_sec := m.GetNote(note_id_str)
 	if note_sec == nil {
 		fmt.Fprintf(w, "ERROR")
