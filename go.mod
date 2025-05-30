@@ -11,12 +11,12 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/microcosm-cc/bluemonday v1.0.27
-	github.com/pquerna/otp v1.4.0
+	github.com/pquerna/otp v1.5.0
 	github.com/sergi/go-diff v1.3.1
 	github.com/sunshine69/golang-tools/utils v0.0.0-20250403053745-d3b152352203
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/sunshine69/ollama-ui-go v0.0.0-20250318115821-56c30ea750ec
-	github.com/yuin/goldmark v1.7.11
+	github.com/yuin/goldmark v1.7.12
 	golang.org/x/term v0.32.0
 )
 
@@ -31,7 +31,7 @@ require (
 	github.com/kohkimakimoto/gluayaml v0.0.0-20160815032708-6fe413d49d73 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/ollama/ollama v0.6.8 // indirect
+	github.com/ollama/ollama v0.9.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sunshine69/gluare v0.0.0-20170607022532-d7c94f1a80ed // indirect
