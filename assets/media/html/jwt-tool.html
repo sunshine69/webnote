@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Debugger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    header {
+      background-color: #2c3e50;
+      color: white;
+      width: 100%;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      align-items: stretch;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px 0;
+    }
+    .column {
+      flex: 1;
+      margin: 0 10px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    textarea, select, input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    /* Allow the JWT textarea to expand to fill its column */
+    #encodedJWT {
+      flex: 1;
+    }
+    pre {
+      background-color: #ecf0f1;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      text-align: center;
+      color: white;
+    }
+    .valid {
+      background-color: #27ae60;
+    }
+    .invalid {
+      background-color: #c0392b;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>JWT Debugger</h1>
+  </header>
+  <div class="container">
+    <!-- JWT Token and Validation Status Column -->
+    <div class="column">
+      <h2>Encoded JWT</h2>
+      <textarea id="encodedJWT" placeholder="Paste or generate your JWT here"></textarea>
+      <div class="btn-group">
+        <button onclick="generateJWT()">Generate JWT</button>
+        <button onclick="validateJWT()">Validate JWT</button>
+      </div>
+      <div id="validationStatus" class="status"></div>
+    </div>
+    <!-- JWT Components Column -->
+    <div class="column">
+      <h2>JWT Components</h2>
+      <label for="algorithm">Select Algorithm:</label>
+      <select id="algorithm">
+        <option value="HS256">HS256</option>
+        <option value="RS256">RS256</option>
+      </select>
+      <label for="header">Header (JSON):</label>
+      <textarea id="header">{"alg": "HS256", "typ": "JWT"}</textarea>
+      <label for="payload">Payload (JSON):</label>
+      <textarea id="payload">{"sub": "your-sub", "name": "John Doe", "iat": 1516239022}</textarea>
+      <div id="hs256Inputs">
+        <label for="secret">Secret:</label>
+        <input type="text" id="secret" value="your-256-bit-secret">
+      </div>
+      <div id="rs256Inputs" style="display: none;">
+        <label for="privateKey">Private Key:</label>
+        <textarea id="privateKey" placeholder="Enter your private key">-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASC...
+-----END PRIVATE KEY-----</textarea>
+        <label for="publicKey">Public Key:</label>
+        <textarea id="publicKey" placeholder="Enter your public key">-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...
+-----END PUBLIC KEY-----</textarea>
+      </div>
+    </div>
+  </div>
+  <!-- Include jsrsasign library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.23/jsrsasign-all-min.js"></script>
+  <script>
+    // Toggle input fields based on selected algorithm
+    document.getElementById('algorithm').addEventListener('change', function() {
+      const algo = this.value;
+      document.getElementById('hs256Inputs').style.display = algo === 'HS256' ? 'block' : 'none';
+      document.getElementById('rs256Inputs').style.display = algo === 'RS256' ? 'block' : 'none';
+      generateJWT();
+    });
+
+    // Function to generate a JWT based on the provided header, payload, and key/secret
+    function generateJWT() {
+      const algorithm = document.getElementById('algorithm').value;
+      const headerText = document.getElementById('header').value;
+      const payloadText = document.getElementById('payload').value;
+      let jwt = '';
+      let isValid = false;
+      try {
+        const sHeader = JSON.stringify(JSON.parse(headerText));
+        const sPayload = JSON.stringify(JSON.parse(payloadText));
+
+        if (algorithm === 'HS256') {
+          const secret = document.getElementById('secret').value;
+          jwt = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, { utf8: secret });
+          isValid = KJUR.jws.JWS.verify(jwt, { utf8: secret }, ['HS256']);
+        } else if (algorithm === 'RS256') {
+          const privateKey = document.getElementById('privateKey').value;
+          const publicKey = document.getElementById('publicKey').value;
+          jwt = KJUR.jws.JWS.sign(null, sHeader, sPayload, privateKey);
+          isValid = KJUR.jws.JWS.verify(jwt, publicKey, ['RS256']);
+        }
+        document.getElementById('encodedJWT').value = jwt;
+        updateValidationStatus(isValid);
+      } catch (e) {
+        console.error('Error generating JWT:', e);
+        updateValidationStatus(false);
+      }
+    }
+
+    // Function to validate a given JWT from the encodedJWT textarea
+    function validateJWT() {
+      const algorithm = document.getElementById('algorithm').value;
+      const jwt = document.getElementById('encodedJWT').value.trim();
+      let isValid = false;
+      try {
+        if (algorithm === 'HS256') {
+          const secret = document.getElementById('secret').value;
+          isValid = KJUR.jws.JWS.verify(jwt, { utf8: secret }, ['HS256']);
+        } else if (algorithm === 'RS256') {
+          const publicKey = document.getElementById('publicKey').value;
+          isValid = KJUR.jws.JWS.verify(jwt, publicKey, ['RS256']);
+        }
+      } catch (e) {
+        console.error('Error validating JWT:', e);
+        isValid = false;
+      }
+      updateValidationStatus(isValid);
+    }
+
+    // Function to update the validation status display
+    function updateValidationStatus(isValid) {
+      const statusDiv = document.getElementById('validationStatus');
+      if (isValid) {
+        statusDiv.textContent = 'Signature Verified';
+        statusDiv.className = 'status valid';
+      } else {
+        statusDiv.textContent = 'Invalid Signature';
+        statusDiv.className = 'status invalid';
+      }
+    }
+
+    // Generate a default JWT on page load
+    window.onload = function() {
+      const now = Math.floor(Date.now() / 1000);
+      document.getElementById("payload").value = `{"sub": "your-name", "name": "John Doe", "iat": ${now}}`;
+      generateJWT();
+    };
+
+  </script>
+</body>
+</html>
+
