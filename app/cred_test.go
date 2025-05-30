@@ -12,7 +12,6 @@ import (
 
 func TestSetupCredSchema(t *testing.T) {
 	os.Setenv("DBPATH", "/home/stevek/tmp/test.db")
-	SetupSchema()
 }
 
 func TestCredModel(t *testing.T) {

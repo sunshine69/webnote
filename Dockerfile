@@ -21,4 +21,3 @@ COPY --from=BUILD_BASE /app/assets /assets
 ENV TZ=Australia/Brisbane
 EXPOSE 80
 ENTRYPOINT [ "/webnote-go" ]
-

@@ -1,6 +1,6 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}<br><br>
-<form class="page_content" action="{{ .settings.BASE_URL }}/upload" method="POST" enctype="multipart/form-data">{{ .csrfField }}
+<form class="page_content" action="{{ .settings.BASE_URL }}/upload" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="action" value="show_uploadform"/>
 You are: {{ .user }} <br/>
 Select file to upload - type name and decription then click Submit<br/><br><input type="submit" value="Submit" />

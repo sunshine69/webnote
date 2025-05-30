@@ -14,7 +14,7 @@
         <td>&nbsp;</td>
     </TR>
 {{ range $idx, $userpref := .userpref_list }}
-<form action="" method="POST">{{ .csrfField }}
+<form action="" method="POST">
 <input type="hidden" name="action" value="edit_userpref_list" />
 <input type="hidden" name="userpref_id" value="{{ .userpref.id }}" />
     <tr>

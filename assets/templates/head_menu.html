@@ -3,7 +3,7 @@
 function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </script>
 <div class="search-box">
-<form method="POST" action="{{ .settings.BASE_URL }}/search" name="search" id="search">{{ .csrfField }}
+<form method="POST" action="{{ .settings.BASE_URL }}/search" name="search" id="search">
 <i>Keyword or :TAGS</i>
 <input type="text" name="keyword" value="" title="search text. Understand A & B or A & !B or A & -B; ! or - is NOT include B. Search by flags, prefix with f: or F: or FLAGS:"/>
 <input type="submit" name="search_submit" value="Search" />
@@ -17,6 +17,7 @@ function ask_me(msg) {return confirm("Are you sure to " + msg + " ?")  }
 </form><br>
 
 <div class="link-section">
+<A href="{{ .settings.BASE_URL }}/assets/media/html/ollama.html">Ask AI</A>&nbsp;
 <A href="{{ .settings.BASE_URL }}/">New</A>&nbsp;
 <A href="{{ .settings.BASE_URL }}/?raw_editor=0">New HTML</A>
 {{ if .note }}

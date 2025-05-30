@@ -1,6 +1,6 @@
 {{ template "header" . }}
 {{ template "head_menu" . }}
-{{ .csrfField }}
+
 <div class="page_content">
 <table class="note-table">
     <TR>
@@ -141,8 +141,7 @@ function do_save(o) {
     var title = _title.innerHTML;
     var _url = document.getElementById("url");
     var url = _url.innerHTML;// the replace below to trip tag <br> at the end
-    var csrfToken = encodeURIComponent(document.getElementsByName("gorilla.csrf.Token")[0].value)
-    params = "gorilla.csrf.Token=" + csrfToken + "&is_ajax=1&id={{ .note.ID }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
+    params = "&is_ajax=1&id={{ .note.ID }}&flags=" + flags.replace(/<(?:.|\n)*?>/gm, '') + "&title=" + title.replace(/<(?:.|\n)*?>/gm, '') + "&url=" + url.replace(/<(?:.|\n)*?>/gm, '') + "&content=" + myEncode(data);
     var _ngroup = document.getElementById("ngroup");
     if (_ngroup) params += "&ngroup=" + _ngroup.value;
     var _perm = document.getElementById("permission");
