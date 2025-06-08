@@ -2,40 +2,14 @@ package app
 
 import (
 	"crypto/rand"
-	"encoding/binary"
 	"fmt"
-	"io"
+	u "github.com/sunshine69/golang-tools/utils"
 	"net/http"
-	"os"
 	"sync"
 )
 
-func GenerateRandom(max uint64) uint64 {
-	f, err := os.Open("/dev/random")
-	if err != nil {
-		return 0
-	}
-	defer f.Close()
-
-	var b [8]byte
-	if _, err := io.ReadFull(f, b[:]); err != nil {
-		return 0
-	}
-
-	num := binary.BigEndian.Uint64(b[:])
-
-	if max == 0 {
-		return num
-	}
-	if num <= max {
-		return num
-	} else {
-		return num % (max + 1)
-	}
-}
-
 func GenRandNumber(w http.ResponseWriter, r *http.Request) {
-	gen_number := GenerateRandom(999999999999)
+	gen_number := u.GenerateRandom(999999999999)
 	fmt.Fprintf(w, "%d", gen_number)
 }
 
