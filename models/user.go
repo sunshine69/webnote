@@ -97,7 +97,7 @@ func (u *User) SetGroup(gnames ...string) {
 
 // UserNew - It will Call Save
 func UserNew(in map[string]interface{}) *User {
-	n := User{}
+	n := &User{}
 	n.GroupNames = u.MapLookup(in, "GroupNames", "default").(string)
 	n.FirstName = u.MapLookup(in, "FirstName", "").(string)
 	n.LastName = u.MapLookup(in, "LastName", "").(string)
@@ -119,7 +119,7 @@ func UserNew(in map[string]interface{}) *User {
 	if Password != "" {
 		n.SetUserPassword(Password)
 	}
-	return &n
+	return n
 }
 
 // Save a User. If new User then create on. If existing User then update.
@@ -201,7 +201,7 @@ func (n *User) Save() {
 func GetUserByID(id int64) *User {
 	DB := GetDB("")
 	defer DB.Close()
-	u := User{ID: id}
+	u := &User{ID: id}
 	if e := DB.QueryRow(`SELECT
 		id,
 		f_name,
@@ -224,14 +224,14 @@ func GetUserByID(id int64) *User {
 		return nil
 	}
 	u.update()
-	return &u
+	return u
 }
 
 // GetUser - by email always return an up-to-date user object in full, it will call .update() to update data not directly from database
 func GetUser(email string) *User {
 	DB := GetDB("")
 	defer DB.Close()
-	u := User{Email: email}
+	u := &User{Email: email}
 	if e := DB.QueryRow(`SELECT
 		id,
 		f_name,
@@ -254,7 +254,7 @@ func GetUser(email string) *User {
 		return nil
 	}
 	u.update()
-	return &u
+	return u
 }
 
 func (n *User) String() string {
@@ -372,11 +372,11 @@ func SearchUser(kw string) []*User {
 	}
 	o := []*User{}
 	for res.Next() {
-		n := User{}
+		n := &User{}
 		res.Scan(&n.ID, &n.FirstName, &n.LastName, &n.Email, &n.Address, &n.PasswordHash, &n.SaltLength, &n.TotpPassword, &n.HomePhone, &n.WorkPhone, &n.MobilePhone, &n.ExtraInfo, &n.LastAttempt, &n.AttemptCount, &n.LastLogin, &n.PrefID)
 
 		n.update()
-		o = append(o, &n)
+		o = append(o, n)
 
 	}
 	return o

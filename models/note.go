@@ -140,7 +140,7 @@ func (n *Note) GetNoteAttachments() {
 
 // NoteNew
 func NoteNew(in map[string]interface{}) *Note {
-	n := Note{}
+	n := new(Note)
 
 	ct := u.MapLookup(in, "content", "").(string)
 	titleText := u.MapLookup(in, "title", "").(string)
@@ -189,7 +189,7 @@ func NoteNew(in map[string]interface{}) *Note {
 	n.RawEditor = u.MapLookup(in, "raw_editor", int8(0)).(int8)
 
 	n.Update()
-	return &n
+	return n
 }
 
 type NoteDiff struct {
@@ -205,7 +205,7 @@ func (nd *NoteDiff) String() string {
 // Diff - Compare two same title notes and find out the diff. If they are the same then return nil
 // Only compare Flags, Content and URL
 func (n *Note) Diff(n1 *Note) *NoteDiff {
-	nd := NoteDiff{}
+	nd := new(NoteDiff)
 	if n.Flags == n1.Flags && n.Content == n1.Content && n.URL == n1.URL {
 		return nil
 	}
@@ -223,7 +223,7 @@ func (n *Note) Diff(n1 *Note) *NoteDiff {
 		diffs := dmp.DiffMain(n.URL, n1.URL, false)
 		nd.URL = dmp.DiffPrettyHtml(diffs)
 	}
-	return &nd
+	return nd
 }
 
 // Save a note. If new note then create one. If existing note then create a revisions before update.
@@ -331,7 +331,7 @@ func (n *Note) Save() {
 func GetNoteByID(id int64) *Note {
 	DB := GetDB("")
 	defer DB.Close()
-	n := Note{ID: id}
+	n := &Note{ID: id}
 	if e := DB.QueryRow(`SELECT
 		title,
 		flags,
@@ -350,13 +350,13 @@ func GetNoteByID(id int64) *Note {
 		return nil
 	}
 	n.Update()
-	return &n
+	return n
 }
 
 func GetNote(title string) *Note {
 	DB := GetDB("")
 	defer DB.Close()
-	n := Note{Title: title}
+	n := &Note{Title: title}
 	if e := DB.QueryRow(`SELECT
 		id,
 		flags,
@@ -375,11 +375,11 @@ func GetNote(title string) *Note {
 		return nil
 	}
 	n.Update()
-	return &n
+	return n
 }
 
 func GetNoteRevisionByID(id int64) *Note {
-	n := Note{
+	n := &Note{
 		ID: id,
 	}
 	DB := GetDB("")
@@ -390,7 +390,7 @@ func GetNoteRevisionByID(id int64) *Note {
 	} else {
 		n.Update()
 	}
-	return &n
+	return n
 }
 
 // GetNoteRevision - Get all revision of a note. Pass in identity which can be note_id (int64) or title (string). The first result in the slice is the current version of the note. Next is all revision order by timestamp
