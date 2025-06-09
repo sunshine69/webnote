@@ -87,6 +87,8 @@ github.com/sunshine69/golang-tools/utils v0.0.0-20250608000003-399493798550 h1:V
 github.com/sunshine69/golang-tools/utils v0.0.0-20250608000003-399493798550/go.mod h1:vqCvBRKek0wPW1e8uOElToZKNyNGu99/PBqnhO8ZMIY=
 github.com/sunshine69/golang-tools/utils v0.0.0-20250609001514-82e322ed70f0 h1:u3t6v10hLBz9vlcIpWeKN/RJ7Z81aWNMKFdOoNQUVIc=
 github.com/sunshine69/golang-tools/utils v0.0.0-20250609001514-82e322ed70f0/go.mod h1:vqCvBRKek0wPW1e8uOElToZKNyNGu99/PBqnhO8ZMIY=
+github.com/sunshine69/golang-tools/utils v0.0.0-20250609015147-ad8fc3d2a154 h1:kt669Ehpp+4DFlJAb7paUzwyXUaMhKN535lVKjjeaSg=
+github.com/sunshine69/golang-tools/utils v0.0.0-20250609015147-ad8fc3d2a154/go.mod h1:vqCvBRKek0wPW1e8uOElToZKNyNGu99/PBqnhO8ZMIY=
 github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf h1:e1phanUticq+3keFY8OKxVXveSYv16U+TwhdUHhjrVg=
 github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf/go.mod h1:rweV4C9gVvUW7am+kkqw415ZQm1i5a/uQBskFKDHMiA=
 github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQitcs=
