@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -18,9 +19,10 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	var secret string
 	if submit_type == "submit_genpass" {
 		length_str := m.GetRequestValue(r, "password_len", "12")
+		length_str = strings.TrimSpace(length_str)
 		password_len, err := strconv.Atoi(length_str)
 		if u.CheckErrNonFatal(err, "GenerateOnetimeSecURL") != nil {
-			fmt.Fprintf(w, "ERROR length should be a integer")
+			fmt.Fprintf(w, `{"error": "ERROR length should be a integer"`)
 			return
 		}
 		secret = u.GenRandomString(password_len)
@@ -47,7 +49,18 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	secnote.Save()
 
 	secURL := fmt.Sprintf("%s/nocsrf/onetimesec/display-%s", base_url, note_title)
-	fmt.Fprintf(w, `{"link": "%s", "password": "%s"}`, secURL, secret)
+	resp := struct {
+		Link   string `json:"link"`
+		Secret string `json:"password"`
+	}{
+		Link:   secURL,
+		Secret: secret,
+	}
+
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		fmt.Fprintf(os.Stderr, "[ERROR] GenerateOnetimeSecURL NewEncoder %s\n", err.Error())
+		fmt.Fprintf(w, `{"error": "See server log"}`)
+	}
 }
 
 func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +81,7 @@ func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
 
 	note_sec := m.GetNote(note_id_str)
 	if note_sec == nil {
-		fmt.Fprintf(w, "ERROR")
+		fmt.Fprintf(w, `"error": "ERROR"`)
 		return
 	}
 	sec := note_sec.Content
