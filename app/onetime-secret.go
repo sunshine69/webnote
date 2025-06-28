@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -18,9 +19,10 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	var secret string
 	if submit_type == "submit_genpass" {
 		length_str := m.GetRequestValue(r, "password_len", "12")
+		length_str = strings.TrimSpace(length_str)
 		password_len, err := strconv.Atoi(length_str)
 		if u.CheckErrNonFatal(err, "GenerateOnetimeSecURL") != nil {
-			fmt.Fprintf(w, "ERROR length should be a integer")
+			fmt.Fprintf(w, `{"error": "ERROR length should be a integer"`)
 			return
 		}
 		secret = u.GenRandomString(password_len)
@@ -47,7 +49,18 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 	secnote.Save()
 
 	secURL := fmt.Sprintf("%s/nocsrf/onetimesec/display-%s", base_url, note_title)
-	fmt.Fprintf(w, "<html><body><b>Secret link: </b><a href=\"%s\">%s</a><br/>Secret Value: <i>%s</i><br/><b>Create new one: <a href=%s/assets/media/html/onetime-secret.html>new link</a></body></html>", secURL, secURL, secret, base_url)
+	resp := struct {
+		Link   string `json:"link"`
+		Secret string `json:"password"`
+	}{
+		Link:   secURL,
+		Secret: secret,
+	}
+
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		fmt.Fprintf(os.Stderr, "[ERROR] GenerateOnetimeSecURL NewEncoder %s\n", err.Error())
+		fmt.Fprintf(w, `{"error": "See server log"}`)
+	}
 }
 
 func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
@@ -61,17 +74,135 @@ func GetOnetimeSecret(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(note_id_str, "display-") {
 		note_id_str = strings.TrimPrefix(note_id_str, "display-")
 		base_url := m.GetConfig("base_url", "")
-		html := fmt.Sprintf(`<html><body><a href="%s/nocsrf/onetimesec/%s">Click to get the secret:</a> </body></html>`, base_url, note_id_str)
+		html := fmt.Sprintf(`<html><body align="center"><h2><a href="%s/nocsrf/onetimesec/%s">Click to get the secret:</a></h2></body></html>`, base_url, note_id_str)
 		w.Write([]byte(html))
 		return
 	}
 
 	note_sec := m.GetNote(note_id_str)
 	if note_sec == nil {
-		fmt.Fprintf(w, "ERROR")
+		fmt.Fprintf(w, `"error": "ERROR"`)
 		return
 	}
 	sec := note_sec.Content
 	note_sec.Delete()
-	fmt.Fprint(w, sec)
+	html := u.GoTemplateString(`
+	<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 40px;
+        }
+
+        #secretDisplay {
+            width: 80%;
+            max-width: 600px;
+            min-height: 100px;
+            font-size: 16px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            box-sizing: border-box;
+            line-height: 1.4;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .copy-message {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="secretDisplay">{{ .secret }}</div>
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const text = document.getElementById("secretDisplay").textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Remove any existing message
+                const existingMessage = document.querySelector('.copy-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = 'Content copied to clipboard!';
+                messageDiv.className = 'copy-message';
+                document.querySelector('.container').appendChild(messageDiv);
+
+                // Remove message after 3 seconds
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.textContent = 'Failed to copy to clipboard';
+                errorDiv.style.marginTop = '10px';
+                errorDiv.style.color = '#dc3545';
+                document.querySelector('.container').appendChild(errorDiv);
+
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
+	`, map[string]any{"secret": sec})
+	fmt.Fprint(w, html)
 }

@@ -37,7 +37,7 @@ func (g *Group) Save() {
 func GetGroup(name string) *Group {
 	DB := GetDB("")
 	defer DB.Close()
-	g := Group{}
+	g := &Group{}
 	if e := DB.QueryRow(`SELECT
 	id,
 	name,
@@ -46,13 +46,13 @@ func GetGroup(name string) *Group {
 		mlog.Warning("group '%s' not found - %v\n", name, e)
 		return nil
 	}
-	return &g
+	return g
 }
 
 func GetGroupByID(id int64) *Group {
 	DB := GetDB("")
 	defer DB.Close()
-	g := Group{}
+	g := &Group{}
 	if e := DB.QueryRow(`SELECT
 	id,
 	name,
@@ -61,7 +61,7 @@ func GetGroupByID(id int64) *Group {
 		mlog.Warning("group id %d not found - %v\n", id, e)
 		return nil
 	}
-	return &g
+	return g
 }
 
 func GetAllGroups() []*Group {
@@ -76,9 +76,9 @@ func GetAllGroups() []*Group {
 	var o []*Group
 
 	for rows.Next() {
-		gr := Group{}
+		gr := &Group{}
 		rows.Scan(&gr.ID, &gr.Name, &gr.Description)
-		o = append(o, &gr)
+		o = append(o, gr)
 	}
 	return o
 }

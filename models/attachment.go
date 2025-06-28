@@ -59,14 +59,14 @@ func SearchAttachment(kw string, u *User) []*Attachment {
 	defer rows.Close()
 
 	for rows.Next() {
-		a := Attachment{}
+		a := &Attachment{}
 		if e := rows.Scan(&a.ID, &a.Name, &a.Description, &a.AuthorID, &a.GroupID, &a.Permission, &a.AttachedFile, &a.FileSize, &a.Mimetype, &a.Created, &a.Updated); e != nil {
 			mlog.Error(fmt.Errorf("search attachement, scanning %s", e.Error()))
 			continue
 		}
 		if pok := CheckPerm(a.Object, u.ID, "r"); pok {
 			a.Update()
-			o = append(o, &a)
+			o = append(o, a)
 		}
 	}
 	return o
@@ -136,7 +136,7 @@ func (a *Attachment) Save() {
 func GetAttachement(aName string) *Attachment {
 	DB := GetDB("")
 	defer DB.Close()
-	a := Attachment{}
+	a := &Attachment{}
 	if e := DB.QueryRow(`SELECT
 		id,
 		name ,
@@ -155,13 +155,13 @@ func GetAttachement(aName string) *Attachment {
 		return nil
 	}
 	a.Update()
-	return &a
+	return a
 }
 
 func GetAttachementByID(id int64) *Attachment {
 	DB := GetDB("")
 	defer DB.Close()
-	a := Attachment{}
+	a := &Attachment{}
 	if e := DB.QueryRow(`SELECT
 		id,
 		name,
@@ -180,7 +180,7 @@ func GetAttachementByID(id int64) *Attachment {
 		return nil
 	}
 	a.Update()
-	return &a
+	return a
 }
 
 func (a *Attachment) DeleteAttachment(u *User) error {

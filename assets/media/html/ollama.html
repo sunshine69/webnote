@@ -130,7 +130,7 @@
         var stream = true;
         var controller = new AbortController();
         var keep_alive = "5m";
-        var preferredModelsStr = '["qwq:32b-q4_K_M", "gemma3-12b:custom", "qwen2.5-coder:32b","huihui_ai/qwen2.5-coder-abliterate:14b-instruct-q4_K_M", "huihui_ai/phi4-abliterated:latest"]';
+        var preferredModelsStr = '["qwen3-30b-a3b:custom", "gemma3:4b", "gemma3-12b:custom", "qwen2.5vl:7b", "qwen3-32b:custom"]';
         var preferredModels = JSON.parse(preferredModelsStr);
         var allOptions = {};
 
@@ -333,7 +333,7 @@
                 }
             }
             bodyPayload['stream'] = stream;
-
+            var modelResponse = "";
             fetch('/ollama/ask', {
                 method: 'POST',
                 headers: {
@@ -354,6 +354,7 @@
                             document.getElementById('loading').style.display = 'none';
                             submitButton.textContent = 'Submit'
                             resultDiv.innerHTML += "\n\nTook "+elapsedSeconds+" secs to answer\n=========================================\n";
+                            messages.push({role: "assistant", content: modelResponse});
                             return;
                         }
                         const text = decoder.decode(value, { stream: true });
