@@ -17,7 +17,7 @@ require (
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf
 	github.com/yuin/goldmark v1.7.13
-	golang.org/x/term v0.34.0
+	golang.org/x/term v0.37.0
 )
 
 require (
@@ -38,10 +38,10 @@ require (
 	github.com/sunshine69/gluare v0.0.0-20170607022532-d7c94f1a80ed // indirect
 	github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf // indirect
 	github.com/yuin/gopher-lua v1.1.1 // indirect
-	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/net v0.43.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
