@@ -41,10 +41,10 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	secnote := m.NoteNew(map[string]interface{}{
-		"content":    secret,
-		"title":      note_title,
-		"permission": int8(0),
+	secnote := m.NoteNew(m.Note{
+		Content: secret,
+		Title:   note_title,
+		Object:  m.Object{Permission: 0},
 	})
 	secnote.Save()
 

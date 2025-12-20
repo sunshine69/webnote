@@ -138,27 +138,27 @@ func InitConfig() {
 
 // CreateAdminUser -
 func CreateAdminUser() {
-	u := UserNew(map[string]interface{}{
-		"FirstName":  "Admin",
-		"LastName":   "Admin",
-		"Email":      GetConfig("admin_email"),
-		"Password":   "1qa2ws",
-		"SaltLength": int8(16),
-		"GroupNames": "default,family,friend",
-	})
+	u := User{
+		FirstName:  "Admin",
+		LastName:   "Admin",
+		Email:      GetConfig("admin_email"),
+		SaltLength: int8(16),
+		GroupNames: "default,family,friend",
+	}
+	u.SetUserPassword("1qa2ws")
 	mlog.Info("Create new user %v - id %d\n", u, u.ID)
 }
 
 // CreatePublicReadUser - Used when u need an user obejct and the object have the public read access
 func CreatePublicReadUser() {
-	u := UserNew(map[string]interface{}{
-		"FirstName":  "Reader",
-		"LastName":   "Public",
-		"Email":      "public_read_user@gonote.com",
-		"Password":   "1qa2ws",
-		"SaltLength": int8(16),
-		"GroupNames": "default",
-	})
+	u := User{
+		FirstName:  "Reader",
+		LastName:   "Public",
+		Email:      "public_read_user@gonote.com",
+		SaltLength: int8(16),
+		GroupNames: "default",
+	}
+	u.SetUserPassword("1qa2ws")
 	mlog.Info("Create new user %v - id %d\n", u, u.ID)
 }
 

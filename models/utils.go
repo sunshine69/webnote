@@ -58,12 +58,11 @@ func AddUser(in map[string]interface{}) {
 	}
 	groups := strings.Split(groupStr, ",")
 
-	user := UserNew(map[string]interface{}{
-		"Email": useremail,
-	})
-	user.Save()
-	user.SetGroup(groups...)
+	user := User{
+		Email: useremail,
+	}
 	user.SetUserPassword(password)
+	user.SetGroup(groups...)
 	SetUserOTP(useremail)
 }
 

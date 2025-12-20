@@ -11,12 +11,13 @@ func TestNote(t *testing.T) {
 	os.Setenv("DBPATH", "testwebnote.db")
 	// SetupDefaultConfig()
 	// SetupAppDatabase()
-	aNote := NoteNew(map[string]interface{} {
-		"title": "New note 1",
-		"flags": ":TODO",
-		"content": "Content note 1",
-		"group_id": int8(3),
-		"author_id": int64(1),
+	aNote := NoteNew(Note{
+		Title:   "New note 1",
+		Flags:   "TODO",
+		Content: "Content note 1",
+		Object:  Object{GroupID: 3, AuthorID: 1},
+		// "group_id: int8(3),
+		// "author_id: int64(1),
 	})
 	log.Printf("Note: %v\n", aNote)
 	aNote.Save()
@@ -29,8 +30,8 @@ func TestNote(t *testing.T) {
 	ov := GetNoteRevisions(mySavedNote.ID)
 	fmt.Println(ov)
 	nbyID := GetNoteByID(mySavedNote.ID)
-	fmt.Printf("Note Author: %v\n", nbyID.Author )
-	fmt.Printf("Note Group: %v\n", nbyID.Group )
+	fmt.Printf("Note Author: %v\n", nbyID.Author)
+	fmt.Printf("Note Group: %v\n", nbyID.Group)
 }
 
 func TestSearchNote(t *testing.T) {

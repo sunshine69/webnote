@@ -96,30 +96,9 @@ func (u *User) SetGroup(gnames ...string) {
 }
 
 // UserNew - It will Call Save
-func UserNew(in map[string]interface{}) *User {
-	n := &User{}
-	n.GroupNames = u.MapLookup(in, "GroupNames", "default").(string)
-	n.FirstName = u.MapLookup(in, "FirstName", "").(string)
-	n.LastName = u.MapLookup(in, "LastName", "").(string)
-	n.Email = u.MapLookup(in, "Email", "").(string)
-	n.Address = u.MapLookup(in, "Address", "").(string)
-	// n.PasswordHash = u.MapLookup(in, "PasswordHash", "").(string)
-	n.SaltLength = u.MapLookup(in, "SaltLength", int8(12)).(int8)
-	n.HomePhone = u.MapLookup(in, "HomePhone", "").(string)
-	n.WorkPhone = u.MapLookup(in, "WorkPhone", "").(string)
-	n.MobilePhone = u.MapLookup(in, "MobilePhone", "").(string)
-	n.ExtraInfo = u.MapLookup(in, "ExtraInfo", "").(string)
-	n.LastAttempt = u.MapLookup(in, "LastAttempt", int64(0)).(int64)
-	n.AttemptCount = u.MapLookup(in, "AttemptCount", int8(0)).(int8)
-	n.LastLogin = u.MapLookup(in, "LastLogin", int64(0)).(int64)
-	n.PrefID = u.MapLookup(in, "PrefID", int8(0)).(int8)
-	// n.TotpPassword = u.MapLookup(in, "TotpPassword", "").(string)
-	n.Save()
-	Password := u.MapLookup(in, "Password", "").(string)
-	if Password != "" {
-		n.SetUserPassword(Password)
-	}
-	return n
+func UserNew(u User) *User {
+	u.Save()
+	return &u
 }
 
 // Save a User. If new User then create on. If existing User then update.
@@ -312,6 +291,7 @@ func VerifyLogin(username, password, otp, userIP string) (*User, error) {
 }
 
 func (user *User) SetUserPassword(p string) {
+	user.Save()
 	salt := u.MakeSalt(user.SaltLength)
 	PasswordHash := u.ComputeHash(p, *salt)
 	DB := GetDB("")

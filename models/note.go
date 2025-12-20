@@ -137,59 +137,41 @@ func (n *Note) GetNoteAttachments() {
 	}
 	n.Attachments = o
 }
+func ParseDatelog[T string | int64](n *Note, dateData T) *Note {
+	switch v := any(dateData).(type) {
+	case string:
+		dateLog, e := time.Parse(DateLayout, v)
+		if e != nil {
+			mlog.Error(fmt.Errorf("can not parse date"))
+			n.Datelog = time.Now().UnixNano()
+		} else {
+			n.Datelog = dateLog.UnixNano()
+		}
+	case int64:
+		if v == 0 {
+			n.Datelog = time.Now().UnixNano()
+		} else {
+			n.Datelog = v
+		}
+	}
+	return n
+}
 
 // NoteNew
-func NoteNew(in map[string]interface{}) *Note {
-	n := new(Note)
-
-	ct := u.MapLookup(in, "content", "").(string)
-	titleText := u.MapLookup(in, "title", "").(string)
-
-	if titleText == "" {
-		if ct != "" {
-			_l := len(ct)
+func NoteNew(n Note) *Note {
+	if n.Title == "" {
+		if n.Content != "" {
+			_l := len(n.Content)
 			if _l >= 64 {
 				_l = 64
 			}
-			titleText = strings.ReplaceAll(ct[0:_l], "\n", " ")
+			n.Title = strings.ReplaceAll(n.Content[0:_l], "\n", " ")
 		}
 	}
-	n.Content = ct
-	n.Title = titleText
-
-	if dateData, ok := in["datelog"]; ok {
-		switch v := dateData.(type) {
-		case string:
-			dateLog, e := time.Parse(DateLayout, v)
-			if e != nil {
-				mlog.Error(fmt.Errorf("can not parse date"))
-				n.Datelog = time.Now().UnixNano()
-			} else {
-				n.Datelog = dateLog.UnixNano()
-			}
-		case int64:
-			n.Datelog = v
-		}
-	} else {
-		n.Datelog = time.Now().UnixNano()
-	}
-	if TimeStamp, ok := in["timestamp"]; ok {
-		n.Timestamp = TimeStamp.(int64)
-	} else {
-		n.Timestamp = time.Now().UnixNano()
-	}
-	n.Flags = u.MapLookup(in, "flags", "").(string)
-	n.URL = u.MapLookup(in, "url", "").(string)
-
-	n.AuthorID = u.MapLookup(in, "author_id", int64(0)).(int64)
-
-	n.GroupID = u.MapLookup(in, "group_id", int64(1)).(int64)
-
-	n.Permission = u.MapLookup(in, "permission", int8(1)).(int8)
-	n.RawEditor = u.MapLookup(in, "raw_editor", int8(0)).(int8)
-
+	ParseDatelog(&n, n.Datelog)
+	n.Timestamp = time.Now().UnixNano()
 	n.Update()
-	return n
+	return &n
 }
 
 type NoteDiff struct {

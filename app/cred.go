@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/jbrodriguez/mlog"
-	u "github.com/sunshine69/golang-tools/utils"
 	m "github.com/sunshine69/webnote-go/models"
 )
 
@@ -57,16 +56,16 @@ func DoCredAdd(w *http.ResponseWriter, r *http.Request) {
 
 	useremail := m.GetSessionVal(r, "useremail", "").(string)
 	user := m.GetUser(useremail)
-	c := CredentialNew(map[string]interface{}{
-		"user_id":       user.ID,
-		"cred_username": cred_username,
-		"cred_password": cred_password,
+	c := CredentialNew(&Credential{
+		User_id:       user.ID,
+		Cred_username: cred_username,
+		Cred_password: cred_password,
 	})
-	uc := UrlCredNew(map[string]interface{}{
-		"cred_id":   c.Id,
-		"url_id":    u.Id,
-		"cred_note": cred_note,
-		"qrlink":    qrlink,
+	uc := UrlCredNew(&UrlCred{
+		Cred_id: c.Id,
+		Url_id:  u.Id,
+		Note:    cred_note,
+		Qrlink:  qrlink,
 	})
 	fmt.Fprintf(*w, "OK Cred URL added ID %d", uc.Id)
 }
@@ -266,17 +265,14 @@ func GetUrlCred(cred_id, url_id int64) *UrlCred {
 	return &uc
 }
 
-func UrlCredNew(in map[string]interface{}) *UrlCred {
-	Cred_id := u.MapLookup(in, "cred_id", int64(-1)).(int64)
-	Url_id := u.MapLookup(in, "url_id", int64(-1)).(int64)
-
-	uc := GetUrlCred(Cred_id, Url_id)
-	uc.Note = u.MapLookup(in, "cred_note", "").(string)
-	uc.Datelog = time.Now().UnixNano()
-	uc.Qrlink = u.MapLookup(in, "qrlink", "").(string)
-	uc.Save()
-	uc.Update()
-	return uc
+func UrlCredNew(uc *UrlCred) *UrlCred {
+	newUc := GetUrlCred(uc.Cred_id, uc.Url_id)
+	newUc.Note = uc.Note
+	newUc.Datelog = time.Now().UnixNano()
+	newUc.Qrlink = uc.Qrlink
+	newUc.Save()
+	newUc.Update()
+	return newUc
 }
 
 func (uc *UrlCred) Update() {
@@ -442,14 +438,21 @@ func GetCredentialByID(id int64) *Credential {
 	return &cred
 }
 
-func CredentialNew(in map[string]interface{}) *Credential {
-	userID := u.MapLookup(in, "user_id", int64(0)).(int64)
-	username := u.MapLookup(in, "cred_username", "").(string)
-	password := u.MapLookup(in, "cred_password", "").(string)
-	c := GetCredential(userID, username, password)
-	c.Save()
-	return c
+func CredentialNew(c *Credential) *Credential {
+	newC := GetCredential(c.User_id, c.Cred_username, c.Cred_password)
+
+	newC.Save()
+	return newC
 }
+
+// func CredentialNew1(in map[string]interface{}) *Credential {
+// 	userID := u.MapLookup(in, "user_id", int64(0)).(int64)
+// 	username := u.MapLookup(in, "cred_username", "").(string)
+// 	password := u.MapLookup(in, "cred_password", "").(string)
+// 	c := GetCredential(userID, username, password)
+// 	c.Save()
+// 	return c
+// }
 
 // Save -
 // Always add new row or dont do anything. We need some sql to remove dangling cred later on

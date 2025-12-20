@@ -56,11 +56,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	var aNote *m.Note
 	user := GetCurrentUser(&w, r)
 	if noteID == 0 {
-		aNote = m.NoteNew(map[string]interface{}{
-			"ID":         noteID,
-			"group_id":   user.Groups[0].ID,
-			"raw_editor": int8(raw_editor),
-		})
+		aNote = &m.Note{ // TODO
+			ID: noteID,
+			Group: &m.Group{
+				ID: user.Groups[0].ID,
+			},
+			RawEditor: int8(raw_editor),
+		}
 	} else {
 		aNote = m.GetNoteByID(noteID)
 	}
@@ -136,19 +138,24 @@ func DoSaveNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if noteID == 0 { //New note created by current user
-		aNote = m.NoteNew(map[string]interface{}{
-			"title":      title,
-			"datelog":    r.FormValue("datelog"),
-			"flags":      r.FormValue("flags"),
-			"content":    content,
-			"url":        r.FormValue("url"),
-			"raw_editor": raw_editor, //If checked return string 1, otherwise empty string
-			"permission": permission,
-			"author_id":  user.ID,
-			"group_id":   ngroup.ID,
-			"timestamp":  TimeStamp,
+		aNote = m.NoteNew(m.Note{
+			Title: title,
+
+			Flags:     r.FormValue("flags"),
+			Content:   content,
+			URL:       r.FormValue("url"),
+			RawEditor: raw_editor, //If checked return string 1, otherwise empty string
+
+			Object: m.Object{
+				Permission: permission,
+				AuthorID:   user.ID,
+				GroupID:    ngroup.ID,
+			},
+
+			Timestamp: TimeStamp,
 		},
 		)
+		m.ParseDatelog(aNote, r.FormValue("datelog"))
 		aNote.Save()
 	} else { //Existing note loaded. Need to check permmission
 		aNote = m.GetNoteByID(noteID)
@@ -582,18 +589,18 @@ func DoEditUser(w http.ResponseWriter, r *http.Request) {
 		userEmail := m.GetRequestValue(r, "email", "")
 		password := m.GetRequestValue(r, "cur_password")
 		newPassword := m.GetRequestValue(r, "password")
-		userData := map[string]interface{}{
-			"FirstName":   m.GetRequestValue(r, "f_name", ""),
-			"LastName":    m.GetRequestValue(r, "l_name", ""),
-			"Email":       m.GetRequestValue(r, "email"),
-			"HomePhone":   m.GetRequestValue(r, "h_phone"),
-			"WorkPhone":   m.GetRequestValue(r, "w_phone"),
-			"MobilePhone": m.GetRequestValue(r, "m_phone"),
-			"ExtraInfo":   m.GetRequestValue(r, "extra_info"),
-			"Address":     m.GetRequestValue(r, "address"),
-			"Password":    newPassword,
-			"GroupNames":  m.GetRequestValue(r, "group_names", "default"),
+		userData := m.User{
+			FirstName:   m.GetRequestValue(r, "f_name", ""),
+			LastName:    m.GetRequestValue(r, "l_name", ""),
+			Email:       m.GetRequestValue(r, "email"),
+			HomePhone:   m.GetRequestValue(r, "h_phone"),
+			WorkPhone:   m.GetRequestValue(r, "w_phone"),
+			MobilePhone: m.GetRequestValue(r, "m_phone"),
+			ExtraInfo:   m.GetRequestValue(r, "extra_info"),
+			Address:     m.GetRequestValue(r, "address"),
+			GroupNames:  m.GetRequestValue(r, "group_names", "default"),
 		}
+		userData.SetUserPassword(newPassword)
 		if cUser.Email != userEmail {
 			//We are updating other user, not current user. We need to be admin to do so
 			if cUser.Email != m.Settings.ADMIN_EMAIL {
