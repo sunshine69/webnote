@@ -11,7 +11,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.5.0
 	github.com/sergi/go-diff v1.4.0
-	github.com/sunshine69/golang-tools/utils v0.0.0-20251219044123-4d1a665e9b3b
+	github.com/sunshine69/golang-tools/utils v0.0.0-20251222013635-c9e092d226d4
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf
 	github.com/yuin/goldmark v1.7.13
