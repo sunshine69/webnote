@@ -44,6 +44,8 @@ github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/mattn/go-sqlite3 v1.14.32 h1:JD12Ag3oLy1zQA+BNn74xRgaBbdhbNIDYvQUEuuErjs=
 github.com/mattn/go-sqlite3 v1.14.32/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
+github.com/mattn/go-sqlite3 v1.14.33 h1:A5blZ5ulQo2AtayQ9/limgHEkFreKj1Dv226a1K73s0=
+github.com/mattn/go-sqlite3 v1.14.33/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
 github.com/microcosm-cc/bluemonday v1.0.27 h1:MpEUotklkwCSLeH+Qdx1VJgNqLlpY2KXwXFM08ygZfk=
 github.com/microcosm-cc/bluemonday v1.0.27/go.mod h1:jFi9vgW+H7c3V0lb6nR74Ib/DIB5OBs92Dimizgw2cA=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
@@ -73,6 +75,8 @@ github.com/sunshine69/gluare v0.0.0-20170607022532-d7c94f1a80ed h1:lHdjcXg0AjHM9
 github.com/sunshine69/gluare v0.0.0-20170607022532-d7c94f1a80ed/go.mod h1:E2tYRrAsfvQolvtxNbS5uA5lGAe2Y9lHQf8P6XNa8lY=
 github.com/sunshine69/golang-tools/utils v0.0.0-20251222013635-c9e092d226d4 h1:zzay/mL8mKztfXFzUnWjNuVBjj/b4pbKWK1FBrI3gWE=
 github.com/sunshine69/golang-tools/utils v0.0.0-20251222013635-c9e092d226d4/go.mod h1:l3DlNI2sPKVqEM8BY03gtQuKvF77a1X6x+zIKD2OMCU=
+github.com/sunshine69/golang-tools/utils v0.0.0-20260104223252-f90739a03755 h1:YE0rcRBTDGOwDKdcY3BBO8H8TNvvC2atHR1Yn/xTz8Y=
+github.com/sunshine69/golang-tools/utils v0.0.0-20260104223252-f90739a03755/go.mod h1:duFf0fAvN25xq6eClt+FUN3bPdz49ZVddFP0MYwsY7I=
 github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf h1:e1phanUticq+3keFY8OKxVXveSYv16U+TwhdUHhjrVg=
 github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf/go.mod h1:rweV4C9gVvUW7am+kkqw415ZQm1i5a/uQBskFKDHMiA=
 github.com/sunshine69/kodirpc v0.0.2 h1:gRobKK2rqVfkAo94lNRNBWdOHAhHhgqpIS2/cxQitcs=
@@ -81,6 +85,8 @@ github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf h1:zr5kuX3
 github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf/go.mod h1:rTd4ASmrPv/8epKLQQAMdlAIdcxTCPRN7x3r0BB2cRg=
 github.com/yuin/goldmark v1.7.13 h1:GPddIs617DnBLFFVJFgpo1aBfe/4xcvMc3SB5t/D0pA=
 github.com/yuin/goldmark v1.7.13/go.mod h1:ip/1k0VRfGynBgxOz0yCqHrbZXhcjxyuS66Brc7iBKg=
+github.com/yuin/goldmark v1.7.14 h1:9F3UqVQdZ5GG5y6TU0l1TbbDhZmqfevaOcinQt88Qi8=
+github.com/yuin/goldmark v1.7.14/go.mod h1:ip/1k0VRfGynBgxOz0yCqHrbZXhcjxyuS66Brc7iBKg=
 github.com/yuin/gopher-lua v1.1.1 h1:kYKnWBjvbNP4XLT3+bPEwAXJx262OhaHDWDVOPjL46M=
 github.com/yuin/gopher-lua v1.1.1/go.mod h1:GBR0iDaNXjAgGg9zfCvksxSRnQx76gclCIb7kdAd1Pw=
 golang.org/x/crypto v0.46.0 h1:cKRW/pmt1pKAfetfu+RCEvjvZkA9RimPbh7bhFjGVBU=
