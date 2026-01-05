@@ -7,14 +7,14 @@ require (
 	github.com/gorilla/sessions v1.4.0
 	github.com/jbrodriguez/mlog v0.0.0-20180805173533-cbd5ae8e9c53
 	github.com/json-iterator/go v1.1.12
-	github.com/mattn/go-sqlite3 v1.14.32
+	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.5.0
 	github.com/sergi/go-diff v1.4.0
-	github.com/sunshine69/golang-tools/utils v0.0.0-20251219044123-4d1a665e9b3b
+	github.com/sunshine69/golang-tools/utils v0.0.0-20260104223252-f90739a03755
 	github.com/sunshine69/kodirpc v0.0.2
 	github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf
-	github.com/yuin/goldmark v1.7.13
+	github.com/yuin/goldmark v1.7.14
 	golang.org/x/term v0.38.0
 )
 
