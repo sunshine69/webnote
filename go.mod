@@ -11,17 +11,19 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.5.0
 	github.com/sergi/go-diff v1.4.0
-	github.com/sunshine69/golang-tools/utils v0.0.0-20260104223252-f90739a03755
+	github.com/sunshine69/golang-tools/utils v0.0.0-20260106061219-130f05b7c2ab
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/sunshine69/ollama-ui-go v0.0.0-20250624033555-5bd6891c42bf
-	github.com/yuin/goldmark v1.7.14
+	github.com/sunshine69/ollama-ui-go v0.0.0-20260106104817-e973dc80cee9
+	github.com/yuin/goldmark v1.7.16
 	golang.org/x/term v0.38.0
 )
 
 require (
+	github.com/GeertJohan/go.rice v1.0.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
 	github.com/cjoudrey/gluahttp v0.0.0-20201111170219-25003d9adfa9 // indirect
+	github.com/daaku/go.zipexe v1.0.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
