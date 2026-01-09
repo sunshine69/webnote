@@ -42,10 +42,13 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	secnote := m.NoteNew(m.Note{
-		Content: secret,
 		Title:   note_title,
-		Object:  m.Object{Permission: 0},
-	})
+		Content: secret,
+		Object: m.Object{
+			Permission: 0,
+			AuthorID:   1,
+			GroupID:    1,
+		}})
 	secnote.Save()
 
 	secURL := fmt.Sprintf("%s/nocsrf/onetimesec/display-%s", base_url, note_title)
