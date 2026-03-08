@@ -88,6 +88,7 @@
       <div class="btn-group">
         <button onclick="generateJWT()">Generate JWT</button>
         <button onclick="validateJWT()">Validate JWT</button>
+	<button onclick="refreshTimestamps()">Refresh Timestamps</button>
       </div>
       <div id="validationStatus" class="status"></div>
     </div>
@@ -102,7 +103,7 @@
       <label for="header">Header (JSON):</label>
       <textarea id="header">{"alg": "HS256", "typ": "JWT"}</textarea>
       <label for="payload">Payload (JSON):</label>
-      <textarea id="payload">{"sub": "your-sub", "name": "John Doe", "iat": 1516239022}</textarea>
+      <textarea id="payload" rows="15">{"sub": "your-sub", "name": "John Doe", "iat": 1516239022}</textarea>
       <div id="hs256Inputs">
         <label for="secret">Secret:</label>
         <input type="text" id="secret" value="your-256-bit-secret">
@@ -191,11 +192,28 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...
       }
     }
 
+// Function to update iat and exp in the payload field
+function refreshTimestamps() {
+    try {
+        const payloadObj = JSON.parse(document.getElementById("payload").value);
+        const now = Math.floor(Date.now() / 1000);
+        
+        payloadObj.iat = now;
+        payloadObj.exp = now + (4 * 3600); // 4 hours later
+        
+        // Update the textarea with formatted JSON
+        document.getElementById("payload").value = JSON.stringify(payloadObj, null, 2);
+        
+        // Re-generate the token automatically
+        generateJWT();
+    } catch (e) {
+        alert("Payload must be valid JSON to refresh timestamps.");
+    }
+}
+
     // Generate a default JWT on page load
     window.onload = function() {
-      const now = Math.floor(Date.now() / 1000);
-      document.getElementById("payload").value = `{"sub": "your-name", "name": "John Doe", "iat": ${now}}`;
-      generateJWT();
+      refreshTimestamps();
     };
 
   </script>
