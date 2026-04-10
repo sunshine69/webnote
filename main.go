@@ -7,6 +7,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -22,7 +24,8 @@ import (
 	"github.com/jbrodriguez/mlog"
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
-	uilib "github.com/sunshine69/ollama-ui-go/lib"
+
+	// uilib "github.com/sunshine69/ollama-ui-go/lib"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -797,6 +800,39 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, u.JsonDump(notes, ""))
 }
 
+func DoProxyLlama(w http.ResponseWriter, r *http.Request) {
+	target, err := url.Parse("http://localhost:11434")
+	if err != nil {
+		mlog.Error(fmt.Errorf("failed to parse proxy target: %s", err.Error()))
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	proxy := &httputil.ReverseProxy{
+		Director: nil, // Explicitly ensure Director is nil
+		Rewrite: func(pr *httputil.ProxyRequest) {
+			// Set destination
+			pr.Out.URL.Scheme = target.Scheme
+			pr.Out.URL.Host = target.Host
+			pr.Out.Host = target.Host
+
+			// Rewrite path: remove /proxy/llama
+			prefix := "/proxy/llama"
+			if strings.HasPrefix(pr.In.URL.Path, prefix) {
+				newPath := strings.TrimPrefix(pr.In.URL.Path, prefix)
+				if newPath == "" {
+					newPath = "/"
+				}
+				pr.Out.URL.Path = newPath
+			} else {
+				pr.Out.URL.Path = pr.In.URL.Path
+			}
+		},
+	}
+
+	proxy.ServeHTTP(w, r)
+}
+
 func HandleRequests() {
 	router := http.NewServeMux()
 
@@ -834,6 +870,7 @@ func HandleRequests() {
 	router.HandleFunc("/delete_note_attachment", DoAttachmentToNote)
 	router.HandleFunc("/get_notes_titles", DoGetNoteTitles)
 	router.HandleFunc("/get_notes_by_id", DoGetNotesByIds)
+	router.HandleFunc("/proxy/llama/", DoProxyLlama) // Using trailing slash for prefix matching if needed, or just exact
 
 	//User management
 	router.HandleFunc("/edituser", DoEditUser)
@@ -857,9 +894,9 @@ func HandleRequests() {
 	router.HandleFunc("/rand", app.GenRandNumber)
 	router.HandleFunc("/castoneline", app.CastOneLine)
 	// ollama simple proxying
-	router.HandleFunc("/ollama/models", uilib.HandleOllamaGetModels)
-	router.HandleFunc("/ollama/ask", uilib.HandleOllamaChat)
-	router.HandleFunc("/ollama/model/{model_name}", uilib.HandleOllamaGetModel)
+	// router.HandleFunc("/ollama/models", uilib.HandleOllamaGetModels)
+	// router.HandleFunc("/ollama/ask", uilib.HandleOllamaChat)
+	// router.HandleFunc("/ollama/model/{model_name}", uilib.HandleOllamaGetModel)
 	// Onetime secret share
 	router.HandleFunc("/nocsrf/onetimesec/generate", app.GenerateOnetimeSecURL)
 	router.HandleFunc("/nocsrf/onetimesec/{secret_id}", app.GetOnetimeSecret)

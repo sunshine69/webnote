@@ -39,3 +39,4 @@ uploads/*
 models/.*
 *.list
 
+.aider*
