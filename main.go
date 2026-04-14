@@ -25,7 +25,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
 
-	// uilib "github.com/sunshine69/ollama-ui-go/lib"
+	uilib "github.com/sunshine69/ollama-ui-go/lib"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -801,32 +801,37 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoProxyLlama(w http.ResponseWriter, r *http.Request) {
-	target, err := url.Parse("http://localhost:11434")
+	upstreamURL := u.Getenv("OPENAI_BASE_URL", "http://localhost:11434")
+	targetURL, err := url.Parse(upstreamURL)
 	if err != nil {
 		mlog.Error(fmt.Errorf("failed to parse proxy target: %s", err.Error()))
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
+	pathBase := "/proxy/llama"
 	proxy := &httputil.ReverseProxy{
-		Director: nil, // Explicitly ensure Director is nil
-		Rewrite: func(pr *httputil.ProxyRequest) {
-			// Set destination
-			pr.Out.URL.Scheme = target.Scheme
-			pr.Out.URL.Host = target.Host
-			pr.Out.Host = target.Host
-
-			// Rewrite path: remove /proxy/llama
-			prefix := "/proxy/llama"
-			if strings.HasPrefix(pr.In.URL.Path, prefix) {
-				newPath := strings.TrimPrefix(pr.In.URL.Path, prefix)
-				if newPath == "" {
-					newPath = "/"
-				}
-				pr.Out.URL.Path = newPath
-			} else {
-				pr.Out.URL.Path = pr.In.URL.Path
+		FlushInterval: -1,
+		Rewrite: func(preq *httputil.ProxyRequest) {
+			stripped := strings.TrimPrefix(preq.Out.URL.Path, pathBase)
+			if stripped == "" {
+				stripped = "/"
 			}
+			preq.Out.URL.Path = stripped
+			if preq.Out.URL.RawPath != "" {
+				raw := strings.TrimPrefix(preq.Out.URL.RawPath, pathBase)
+				if raw == "" {
+					raw = "/"
+				}
+				preq.Out.URL.RawPath = raw
+			}
+
+			// Set the target URL
+			preq.SetURL(targetURL)
+			preq.Out.Host = targetURL.Host
+
+			// Set forwarding headers
+			preq.SetXForwarded()
+			preq.Out.Header.Set("X-Forwarded-Host", preq.In.Host)
 		},
 	}
 
