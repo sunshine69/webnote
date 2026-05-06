@@ -19,13 +19,11 @@ require (
 )
 
 require (
-	github.com/GeertJohan/go.rice v1.0.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
-	github.com/buger/jsonparser v1.1.1 // indirect
+	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/cjoudrey/gluahttp v0.0.0-20201111170219-25003d9adfa9 // indirect
-	github.com/daaku/go.zipexe v1.0.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
