@@ -25,7 +25,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
 
-	uilib "github.com/sunshine69/ollama-ui-go/lib"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
