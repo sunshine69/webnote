@@ -13,43 +13,28 @@ require (
 	github.com/sergi/go-diff v1.4.0
 	github.com/sunshine69/golang-tools/utils v0.0.0-20260429045940-def3c5171e04
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/sunshine69/ollama-ui-go v0.0.0-20260106104817-e973dc80cee9
 	github.com/yuin/goldmark v1.8.2
 	golang.org/x/term v0.43.0
 )
 
 require (
-	github.com/GeertJohan/go.rice v1.0.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
-	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/boombuler/barcode v1.1.0 // indirect
-	github.com/buger/jsonparser v1.1.2 // indirect
-	github.com/cjoudrey/gluahttp v0.0.0-20201111170219-25003d9adfa9 // indirect
-	github.com/daaku/go.zipexe v1.0.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
-	github.com/kohkimakimoto/gluayaml v0.0.0-20160815032708-6fe413d49d73 // indirect
 	github.com/kr/fs v0.1.0 // indirect
-	github.com/mailru/easyjson v0.9.2 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/ollama/ollama v0.20.7 // indirect
 	github.com/pkg/sftp v1.13.10 // indirect
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/sunshine69/gluare v0.0.0-20170607022532-d7c94f1a80ed // indirect
-	github.com/sunshine69/gopher-json v0.0.0-20221024001855-6c6de212e5bf // indirect
 	github.com/ulikunitz/xz v0.5.15 // indirect
-	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
-	github.com/yuin/gopher-lua v1.1.2 // indirect
 	golang.org/x/crypto v0.51.0 // indirect
-	golang.org/x/net v0.54.0 // indirect
-	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
