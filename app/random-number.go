@@ -34,6 +34,7 @@ func CastOneLine(w http.ResponseWriter, r *http.Request) {
 			// }
 			// ch <- int(b[0] & 1) // 0 for no letter, 1 for letter
 			// Use this to get true random device - maybe it is better than old way. Need TEST
+			// Did one using AI weather tmr, that match with what TV forcast! (1 time)
 			gen_number := u.GenerateRandom(999999999999)
 			ch <- (gen_number % 2)
 		}(results[i])
