@@ -19,20 +19,23 @@ func GenRandNumber(w http.ResponseWriter, r *http.Request) {
 // It seems the universe is nothing 'concurrent' as the random gen device can only truly randome per each request anyway confirmed by ai
 func CastOneLine(w http.ResponseWriter, r *http.Request) {
 	startCh := make(chan struct{}) // Unbuffered channel for synchronization
-	results := make([]chan int, 3)
+	results := make([]chan uint64, 3)
 
 	// Launch three goroutines that wait on startCh
 	for i := range results {
-		results[i] = make(chan int)
-		go func(ch chan int) {
+		results[i] = make(chan uint64)
+		go func(ch chan uint64) {
 			<-startCh // Block until the channel is closed
 			// Generate a random bit (0 or 1)
-			b := make([]byte, 1)
-			if _, err := rand.Read(b); err != nil {
-				fmt.Fprintf(w, "Error: %v\n", err)
-				return
-			}
-			ch <- int(b[0] & 1) // 0 for no letter, 1 for letter
+			// b := make([]byte, 1)
+			// if _, err := rand.Read(b); err != nil {
+			// 	fmt.Fprintf(w, "Error: %v\n", err)
+			// 	return
+			// }
+			// ch <- int(b[0] & 1) // 0 for no letter, 1 for letter
+			// Use this to get true random device - maybe it is better than old way. Need TEST
+			gen_number := u.GenerateRandom(999999999999)
+			ch <- (gen_number % 2)
 		}(results[i])
 	}
 
@@ -40,7 +43,7 @@ func CastOneLine(w http.ResponseWriter, r *http.Request) {
 	close(startCh)
 
 	// Collect results and sum them up (0-3)
-	sum := 0
+	var sum uint64 = 0
 	for _, ch := range results {
 		sum += <-ch
 	}

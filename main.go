@@ -63,6 +63,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 			Group: &m.Group{
 				ID: user.Groups[0].ID,
 			},
+			Datelog:   time.Now().UnixNano(),
 			RawEditor: int8(raw_editor),
 		}
 	} else {
