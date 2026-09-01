@@ -25,6 +25,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	u "github.com/sunshine69/golang-tools/utils"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/sunshine69/webnote-go/app"
 	m "github.com/sunshine69/webnote-go/models"
 )
@@ -32,11 +33,14 @@ import (
 var version, ServerPort, SSLKey, SSLCert string
 var EnableCompression *string
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
+var JWTKey = ""
 
 func init() {
 	SSLKey = m.GetConfig("ssl_key", "")
 	SSLCert = m.GetConfig("ssl_cert", "")
 	mlog.Start(mlog.LevelInfo, "webnote.log")
+	JWTKey = u.Getenv("API_KEY", u.GenRandomString(34))
+	mlog.Info("JWT_KEY: '%s'\n", JWTKey)
 }
 
 func GetCurrentUser(w *http.ResponseWriter, r *http.Request) *m.User {
@@ -1213,9 +1217,29 @@ func isAuthorized(next http.Handler) http.Handler {
 				fmt.Println("Remember me is off")
 			}
 		} else {
-			mlog.Error(fmt.Errorf("no session"))
+			// If path starts with /proxy, try JWT token authentication
+			if strings.HasPrefix(r.URL.Path, "/proxy") && JWTKey != "" {
+				authHeader := r.Header.Get("Authorization")
+				if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+					tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+					token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+						if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+							return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+						}
+						return []byte(JWTKey), nil
+					})
+					if err == nil && token.Valid {
+						next.ServeHTTP(w, r)
+						return
+					}
+					mlog.Error(fmt.Errorf("invalid JWT token: %v", err))
+				} else {
+					mlog.Error(fmt.Errorf("no Authorization header found"))
+				}
+			} else {
+				mlog.Error(fmt.Errorf("no session"))
+			}
 			uri := r.RequestURI
-			// uri = url.PathEscape(uri)
 			uri = strings.TrimPrefix(uri, "/")
 			http.Redirect(w, r, "/login?from_uri="+uri, http.StatusTemporaryRedirect)
 			return

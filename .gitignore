@@ -1,3 +1,4 @@
+.playwright-mcp/**
 webnote-go
 *.log
 webnote-linux-amd64-static
