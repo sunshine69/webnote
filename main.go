@@ -805,14 +805,22 @@ func DoGetNotesByIds(w http.ResponseWriter, r *http.Request) {
 }
 
 func DoProxyLlama(w http.ResponseWriter, r *http.Request) {
-	upstreamURL := u.Getenv("OPENAI_BASE_URL", "http://localhost:11434")
+	aiHostToken := r.PathValue("ai_server") // e.g., "bosgame"
+	// proxyPath := r.PathValue("proxy_path")   // e.g., "v1/chat/completions"
+
+	upstreamURL := u.Getenv("OPENAI_BASE_URL_"+aiHostToken, "")
+	if upstreamURL == "" {
+		w.Write([]byte("[ERROR] env var OPENAI_BASE_URL_" + aiHostToken + " not set."))
+		return
+	}
+
 	targetURL, err := url.Parse(upstreamURL)
 	if err != nil {
 		mlog.Error(fmt.Errorf("failed to parse proxy target: %s", err.Error()))
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	pathBase := "/proxy/llama"
+	pathBase := "/proxy/llama/" + aiHostToken
 	proxy := &httputil.ReverseProxy{
 		FlushInterval: -1,
 		Rewrite: func(preq *httputil.ProxyRequest) {
@@ -878,8 +886,8 @@ func HandleRequests() {
 	router.HandleFunc("/add_attachment_to_note", DoAttachmentToNote)
 	router.HandleFunc("/delete_note_attachment", DoAttachmentToNote)
 	router.HandleFunc("/get_notes_titles", DoGetNoteTitles)
-	router.HandleFunc("/get_notes_by_id", DoGetNotesByIds)
-	router.HandleFunc("/proxy/llama/", DoProxyLlama) // Using trailing slash for prefix matching if needed, or just exact
+	router.HandleFunc("/get_notes_by_id", DoGetNotesByIds) // Using trailing slash for prefix matching if needed, or just exact
+	router.HandleFunc("/proxy/llama/{ai_server}/{proxy_path...}", DoProxyLlama)
 
 	//User management
 	router.HandleFunc("/edituser", DoEditUser)
