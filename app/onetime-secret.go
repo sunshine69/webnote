@@ -42,8 +42,9 @@ func GenerateOnetimeSecURL(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	secnote := m.NoteNew(m.Note{
-		Title:   note_title,
-		Content: secret,
+		Title:     note_title,
+		Content:   secret,
+		RawEditor: 1,
 		Object: m.Object{
 			Permission: 0,
 			AuthorID:   1,
