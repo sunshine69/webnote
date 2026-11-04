@@ -1205,6 +1205,7 @@ func isAuthorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for _, ptn := range bypass_authorized_paths_pattern {
 			if ptn.MatchString(r.URL.Path) {
+				mlog.Info("Bypass auth for %s\n", ptn.String())
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -1222,7 +1223,7 @@ func isAuthorized(next http.Handler) http.Handler {
 					return
 				}
 			} else {
-				fmt.Println("Remember me is off")
+				mlog.Info("Remember me is off\n")
 			}
 		} else {
 			// If path starts with /proxy, try JWT token authentication
@@ -1232,6 +1233,7 @@ func isAuthorized(next http.Handler) http.Handler {
 					tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 					token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 						if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+							mlog.Info("can not parse jwt - unexpected signing method")
 							return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 						}
 						return []byte(JWTKey), nil
