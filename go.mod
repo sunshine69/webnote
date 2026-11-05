@@ -14,7 +14,7 @@ require (
 	github.com/sergi/go-diff v1.4.0
 	github.com/sunshine69/golang-tools/utils v0.0.0-20260929004552-7cfde2ede788
 	github.com/sunshine69/kodirpc v0.0.2
-	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark v1.8.7
 	golang.org/x/term v0.47.0
 )
 
@@ -30,11 +30,11 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/pkg/sftp v1.13.11 // indirect
+	github.com/pkg/sftp v1.13.12 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/ulikunitz/xz v0.5.17 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/net v0.61.0 // indirect
+	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
