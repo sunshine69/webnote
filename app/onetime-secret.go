@@ -33,58 +33,83 @@ const onetimeDisplayTemplate = `<!DOCTYPE html>
     <style>
         body {
             margin: 0;
-            font-family: sans-serif;
-            background-color: #f5f5f5;
+            padding: 20px 0;
+            background: #f5f7fa;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding-top: 40px;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #444;
         }
 
         #secretDisplay {
-            width: 80%;
-            max-width: 600px;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: 'Segoe UI', sans-serif;
             min-height: 100px;
-            font-size: 16px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            height: 40vh;
+            max-height: 70vh;
+            overflow: auto;
+            resize: vertical;
+            background: white;
             white-space: pre-wrap;
-            word-wrap: break-word;
-            word-break: break-all;
             overflow-wrap: break-word;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            background-color: white;
-            box-sizing: border-box;
             line-height: 1.4;
+            box-sizing: border-box;
+        }
+
+        .resize-hint {
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            font-size: 12px;
+            color: #888;
         }
 
         .btn-row {
             display: flex;
+            flex-direction: column;
             gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
         button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
+            background-color: #4f46e5;
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
             transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #3730a3;
         }
 
         .copy-message {
@@ -106,8 +131,11 @@ const onetimeDisplayTemplate = `<!DOCTYPE html>
 </head>
 <body>
     <div class="container">
+        <h2>One-Time Secret</h2>
+        <label for="secretDisplay">Secret Content:</label>
         <div id="secret-b64" style="display:none">{{ .SecretB64 }}</div>
         <div id="secretDisplay"></div>
+        <div class="resize-hint">Scroll to read long content &#8250; drag the corner to resize</div>
         <div class="btn-row">
             <button id="toggleBtn" onclick="toggleSecret()">Reveal</button>
             <button onclick="copyToClipboard()">Copy to Clipboard</button>
